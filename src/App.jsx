@@ -33,8 +33,8 @@ function StartScreen({ onStart }) {
         </div>
         <button
           onClick={onStart}
-          className="px-12 py-4 rounded-full font-bold text-lg cursor-pointer"
-          style={{ background: 'var(--accent)', color: 'var(--bg-primary)', border: 'none', boxShadow: 'var(--glow)', transition: 'transform 0.2s' }}
+          className="w-full max-w-xs py-5 rounded-full font-bold text-xl cursor-pointer"
+          style={{ background: 'var(--accent)', color: 'var(--bg-primary)', border: 'none', boxShadow: '0 0 40px rgba(34,211,238,0.4)', transition: 'transform 0.2s', letterSpacing: '0.1em' }}
           onMouseEnter={e => e.target.style.transform = 'scale(1.05)'}
           onMouseLeave={e => e.target.style.transform = 'scale(1)'}
         >
@@ -156,13 +156,15 @@ function ResultScreen({ personality, traits, onRestart }) {
               {Object.entries(traits)
                 .sort(([, a], [, b]) => b - a)
                 .map(([key, val]) => (
-                  <div key={key}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                      <span style={{ fontSize: '12px', color: '#e2e8f0' }}>{traitLabels[key]}</span>
-                      <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '12px', color: '#94a3b8' }}>{Math.max(0, val)}</span>
-                    </div>
-                    <div style={{ height: '6px', background: 'rgba(148,163,184,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
-                      <div style={{ height: '100%', borderRadius: '3px', width: `${Math.max(0, (val / maxTrait) * 100)}%`, background: personality.color }} />
+                  <div key={key} style={{ display: 'table', width: '100%', tableLayout: 'fixed' }}>
+                    <div style={{ display: 'table-row' }}>
+                      <span style={{ display: 'table-cell', fontSize: '12px', color: '#e2e8f0', width: '80px', verticalAlign: 'middle', paddingBottom: '4px' }}>{traitLabels[key]}</span>
+                      <span style={{ display: 'table-cell', verticalAlign: 'middle', paddingBottom: '4px' }}>
+                        <div style={{ height: '6px', background: 'rgba(148,163,184,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
+                          <div style={{ height: '100%', borderRadius: '3px', width: `${Math.max(0, (val / maxTrait) * 100)}%`, background: personality.color, transition: 'width 0.8s ease' }} />
+                        </div>
+                      </span>
+                      <span style={{ display: 'table-cell', fontFamily: "'Space Mono', monospace", fontSize: '12px', color: '#94a3b8', width: '32px', textAlign: 'right', verticalAlign: 'middle', paddingBottom: '4px' }}>{Math.max(0, val)}</span>
                     </div>
                   </div>
                 ))}
