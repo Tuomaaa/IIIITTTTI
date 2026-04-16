@@ -33,9 +33,9 @@ function StartScreen({ onStart }) {
         </div>
         <button
           onClick={onStart}
-          className="w-full max-w-xs py-5 rounded-full font-bold text-xl cursor-pointer"
-          style={{ background: 'var(--accent)', color: 'var(--bg-primary)', border: 'none', boxShadow: '0 0 40px rgba(34,211,238,0.4)', transition: 'transform 0.2s', letterSpacing: '0.1em' }}
-          onMouseEnter={e => e.target.style.transform = 'scale(1.05)'}
+          className="w-full py-5 rounded-full font-bold text-base cursor-pointer"
+          style={{ background: 'var(--accent)', color: 'var(--bg-primary)', border: 'none', boxShadow: '0 0 40px rgba(34,211,238,0.4)', transition: 'transform 0.2s', letterSpacing: '0.15em' }}
+          onMouseEnter={e => e.target.style.transform = 'scale(1.02)'}
           onMouseLeave={e => e.target.style.transform = 'scale(1)'}
         >
           开始测试
@@ -152,11 +152,11 @@ function ResultScreen({ personality, traits, onRestart }) {
           <div style={{ borderTop: '1px solid rgba(148,163,184,0.1)', margin: '24px 0' }} />
           <div style={{ marginBottom: '16px' }}>
             <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '12px', marginBottom: '16px', color: '#94a3b8' }}>维度分析</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div>
               {Object.entries(traits)
                 .sort(([, a], [, b]) => b - a)
                 .map(([key, val]) => (
-                  <div key={key} style={{ display: 'table', width: '100%', tableLayout: 'fixed' }}>
+                  <div key={key} style={{ display: 'table', width: '100%', tableLayout: 'fixed', marginBottom: '12px' }}>
                     <div style={{ display: 'table-row' }}>
                       <span style={{ display: 'table-cell', fontSize: '12px', color: '#e2e8f0', width: '80px', verticalAlign: 'middle', paddingBottom: '4px' }}>{traitLabels[key]}</span>
                       <span style={{ display: 'table-cell', verticalAlign: 'middle', paddingBottom: '4px' }}>
@@ -172,13 +172,16 @@ function ResultScreen({ personality, traits, onRestart }) {
           </div>
           <div style={{ marginTop: '24px' }}>
             <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '12px', marginBottom: '12px', color: '#94a3b8' }}>你的前三特质</div>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <div>
               {topTraits.map((t) => (
                 <span key={t.key} style={{
+                  display: 'inline-block',
                   fontFamily: "'Space Mono', monospace", fontSize: '12px',
-                  padding: '4px 12px', borderRadius: '9999px',
+                  padding: '5px 14px', borderRadius: '9999px',
                   background: 'rgba(34,211,238,0.15)', color: '#22d3ee',
                   border: '1px solid rgba(34,211,238,0.2)',
+                  marginRight: '8px', marginBottom: '8px',
+                  lineHeight: '1.4',
                 }}>
                   #{t.name}
                 </span>
