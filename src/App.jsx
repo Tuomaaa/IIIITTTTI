@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { questions } from './data/questions';
-import { matchPersonality, calculateTraits, getTopTraits } from './data/personalities';
+import { matchPersonality, calculateTraits } from './data/personalities';
 
 function shuffle(arr) {
   const a = [...arr];
@@ -89,7 +89,6 @@ function QuestionScreen({ question, index, total, onAnswer }) {
 }
 
 function ResultScreen({ personality, traits, onRestart }) {
-  const topTraits = getTopTraits(traits);
   const cardRef = useRef(null);
   const [shareImg, setShareImg] = useState(null);
   const [generating, setGenerating] = useState(false);
@@ -168,24 +167,6 @@ function ResultScreen({ personality, traits, onRestart }) {
                     </div>
                   </div>
                 ))}
-            </div>
-          </div>
-          <div style={{ marginTop: '24px' }}>
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '12px', marginBottom: '12px', color: '#94a3b8' }}>你的前三特质</div>
-            <div>
-              {topTraits.map((t) => (
-                <span key={t.key} style={{
-                  display: 'inline-block',
-                  fontFamily: "'Space Mono', monospace", fontSize: '12px',
-                  padding: '5px 14px', borderRadius: '9999px',
-                  background: 'rgba(34,211,238,0.15)', color: '#22d3ee',
-                  border: '1px solid rgba(34,211,238,0.2)',
-                  marginRight: '8px', marginBottom: '8px',
-                  lineHeight: '1.4',
-                }}>
-                  #{t.name}
-                </span>
-              ))}
             </div>
           </div>
           <div style={{ marginTop: '24px', textAlign: 'center' }}>
