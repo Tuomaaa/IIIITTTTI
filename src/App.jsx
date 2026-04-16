@@ -18,7 +18,7 @@ function StartScreen({ onStart }) {
         <div className="font-mono text-sm tracking-widest mb-4" style={{ color: 'var(--accent)' }}>
           — PERSONALITY TEST v1.0 —
         </div>
-        <h1 className="text-5xl font-black mb-2 tracking-tight">ECETI</h1>
+        <h1 className="text-6xl font-black mb-2 tracking-tight">??TI</h1>
         <p className="font-mono text-xs mb-6" style={{ color: 'var(--text-secondary)' }}>
           EE · CE · CS Type Indicator
         </p>
@@ -33,7 +33,7 @@ function StartScreen({ onStart }) {
         </div>
         <button
           onClick={onStart}
-          className="px-8 py-3 rounded-full font-bold text-base cursor-pointer"
+          className="px-12 py-4 rounded-full font-bold text-lg cursor-pointer"
           style={{ background: 'var(--accent)', color: 'var(--bg-primary)', border: 'none', boxShadow: 'var(--glow)', transition: 'transform 0.2s' }}
           onMouseEnter={e => e.target.style.transform = 'scale(1.05)'}
           onMouseLeave={e => e.target.style.transform = 'scale(1)'}
@@ -105,7 +105,16 @@ function ResultScreen({ personality, traits, onRestart }) {
     setGenerating(true);
     try {
       const { default: html2canvas } = await import('html2canvas');
-      const canvas = await html2canvas(cardRef.current, { backgroundColor: '#0a0a0f', scale: 2 });
+      // Wait for fonts to load
+      await document.fonts.ready;
+      const canvas = await html2canvas(cardRef.current, {
+        backgroundColor: '#0a0a0f',
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        width: cardRef.current.scrollWidth,
+        height: cardRef.current.scrollHeight,
+      });
       setShareImg(canvas.toDataURL('image/png'));
     } catch (err) { console.error(err); }
     setGenerating(false);
@@ -115,55 +124,67 @@ function ResultScreen({ personality, traits, onRestart }) {
     if (!shareImg) return;
     const a = document.createElement('a');
     a.href = shareImg;
-    a.download = `ECETI_${personality.code}.png`;
+    a.download = `QQTI_${personality.code}.png`;
     a.click();
   }, [shareImg, personality]);
 
   return (
     <div className="min-h-screen flex flex-col items-center px-4 py-12">
       <div className="w-full max-w-lg animate-fade-in">
-        <div className="result-card" ref={cardRef}>
-          <div className="text-center mb-6">
-            <div className="font-mono text-xs tracking-widest mb-3" style={{ color: 'var(--text-secondary)' }}>你的ECETI人格是</div>
-            <div className="text-5xl mb-3">{personality.emoji}</div>
-            <h1 className="font-mono text-3xl font-bold mb-1" style={{ color: personality.color }}>{personality.code}</h1>
-            <div className="text-xl font-bold mb-2">{personality.name}</div>
-            <div className="font-mono text-xs" style={{ color: 'var(--text-secondary)' }}>{personality.tagline}</div>
+        <div ref={cardRef} style={{
+          background: '#141420',
+          border: '1px solid rgba(148,163,184,0.15)',
+          borderRadius: '20px',
+          padding: '40px',
+          position: 'relative',
+          overflow: 'hidden',
+          borderTop: `4px solid ${personality.color}`,
+        }}>
+          <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '12px', letterSpacing: '0.1em', marginBottom: '12px', color: '#94a3b8' }}>你的??TI人格是</div>
+            <div style={{ fontSize: '48px', marginBottom: '12px', lineHeight: 1 }}>{personality.emoji}</div>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '28px', fontWeight: 'bold', marginBottom: '4px', color: personality.color }}>{personality.code}</div>
+            <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '8px', color: '#e2e8f0' }}>{personality.name}</div>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '12px', color: '#94a3b8' }}>{personality.tagline}</div>
           </div>
-          <div className="my-6" style={{ borderTop: '1px solid rgba(148,163,184,0.1)' }} />
-          <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--text-secondary)' }}>{personality.desc}</p>
-          <div className="my-6" style={{ borderTop: '1px solid rgba(148,163,184,0.1)' }} />
-          <div className="mb-4">
-            <div className="font-mono text-xs mb-4" style={{ color: 'var(--text-secondary)' }}>维度分析</div>
-            <div className="flex flex-col gap-3">
+          <div style={{ borderTop: '1px solid rgba(148,163,184,0.1)', margin: '24px 0' }} />
+          <p style={{ fontSize: '14px', lineHeight: 1.8, marginBottom: '24px', color: '#94a3b8' }}>{personality.desc}</p>
+          <div style={{ borderTop: '1px solid rgba(148,163,184,0.1)', margin: '24px 0' }} />
+          <div style={{ marginBottom: '16px' }}>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '12px', marginBottom: '16px', color: '#94a3b8' }}>维度分析</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {Object.entries(traits)
                 .sort(([, a], [, b]) => b - a)
                 .map(([key, val]) => (
                   <div key={key}>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-xs">{traitLabels[key]}</span>
-                      <span className="font-mono text-xs" style={{ color: 'var(--text-secondary)' }}>{Math.max(0, val)}</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '12px', color: '#e2e8f0' }}>{traitLabels[key]}</span>
+                      <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '12px', color: '#94a3b8' }}>{Math.max(0, val)}</span>
                     </div>
-                    <div className="trait-bar">
-                      <div className="trait-fill" style={{ width: `${Math.max(0, (val / maxTrait) * 100)}%`, background: personality.color }} />
+                    <div style={{ height: '6px', background: 'rgba(148,163,184,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', borderRadius: '3px', width: `${Math.max(0, (val / maxTrait) * 100)}%`, background: personality.color }} />
                     </div>
                   </div>
                 ))}
             </div>
           </div>
-          <div className="mt-6">
-            <div className="font-mono text-xs mb-3" style={{ color: 'var(--text-secondary)' }}>你的前三特质</div>
-            <div className="flex gap-2 flex-wrap">
+          <div style={{ marginTop: '24px' }}>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '12px', marginBottom: '12px', color: '#94a3b8' }}>你的前三特质</div>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               {topTraits.map((t) => (
-                <span key={t.key} className="font-mono text-xs px-3 py-1 rounded-full"
-                  style={{ background: 'var(--accent-dim)', color: 'var(--accent)', border: '1px solid rgba(34,211,238,0.2)' }}>
+                <span key={t.key} style={{
+                  fontFamily: "'Space Mono', monospace", fontSize: '12px',
+                  padding: '4px 12px', borderRadius: '9999px',
+                  background: 'rgba(34,211,238,0.15)', color: '#22d3ee',
+                  border: '1px solid rgba(34,211,238,0.2)',
+                }}>
                   #{t.name}
                 </span>
               ))}
             </div>
           </div>
-          <div className="mt-6 text-center">
-            <span className="font-mono text-xs" style={{ color: 'rgba(148,163,184,0.3)' }}>ECETI · EE-CE-CS Type Indicator</span>
+          <div style={{ marginTop: '24px', textAlign: 'center' }}>
+            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '12px', color: 'rgba(148,163,184,0.3)' }}>??TI · EE-CE-CS Type Indicator</span>
           </div>
         </div>
 
@@ -185,7 +206,7 @@ function ResultScreen({ personality, traits, onRestart }) {
             <div className="text-center mb-3">
               <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>长按保存或点击下载</span>
             </div>
-            <img src={shareImg} alt="ECETI分享卡片" className="w-full rounded-xl" style={{ border: '1px solid rgba(148,163,184,0.1)' }} />
+            <img src={shareImg} alt="??TI分享卡片" className="w-full rounded-xl" style={{ border: '1px solid rgba(148,163,184,0.1)' }} />
             <button onClick={downloadImage} className="w-full mt-3 py-3 rounded-xl font-bold text-sm cursor-pointer"
               style={{ background: 'var(--bg-card)', color: 'var(--accent)', border: '1px solid rgba(34,211,238,0.2)' }}>
               💾 下载图片
@@ -194,7 +215,7 @@ function ResultScreen({ personality, traits, onRestart }) {
         )}
 
         <p className="font-mono text-xs mt-8 text-center" style={{ color: 'rgba(148,163,184,0.3)' }}>
-          本测试纯属娱乐，不代表你的真实能力。<br />你比任何四个字母的标签都要复杂。
+          本测试纯属娱乐，不代表你的真实能力。<br />你比任何标签都要复杂。
         </p>
       </div>
     </div>
