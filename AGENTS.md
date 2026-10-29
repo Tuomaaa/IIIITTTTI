@@ -15,5 +15,6 @@
 共同规则：
 - 数据只在 `data/plan.json` 一个地方，格式见 `src/core/types.ts` 和 `data/schema.json`。
 - 直接 push 到 `main`。数据改动不会触发重新部署；代码改动会自动部署。
+- 想让别的项目目录里的本地 agent 也能改日程：按 [docs/agents/local-setup.md](docs/agents/local-setup.md) 装一个 user-level skill。
 - 过期 / 推后规则的设计讨论在 `docs/overdue.md`（草案，等用户定稿）。
 - 用户偏好：中文交流，专业名词可以用英文；不用 em dash。
