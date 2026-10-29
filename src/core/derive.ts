@@ -496,11 +496,6 @@ export function layoutBlocks(blocks: Block[]): { block: Block; col: number; cols
   return out
 }
 
-/** Days a task's window covers, for rendering. */
-export function taskDays(tv: TaskView): ISODate[] {
-  return daysBetween(tv.task.start, tv.visualEnd)
-}
-
 function groupBy<T>(xs: T[], key: (x: T) => string): Map<string, T[]> {
   const m = new Map<string, T[]>()
   for (const x of xs) {
