@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { addDays, diffDays, md, mdw, relDay } from '../core/date'
 import { settings, type InboxItem, type PlanView } from '../core/derive'
-import { pushTask, setMilestoneDone, setTaskDone, suggestPush } from '../core/ops'
+import { pushTask, remove, setMilestoneDone, setTaskDone, setTodoDate, suggestPush, toggleTodo } from '../core/ops'
 import type { ISODate } from '../core/types'
+import { fetchCommits, type CommitInfo } from '../data/github'
 import { useStore } from '../data/store'
 import { useUI } from '../data/ui'
 import { levelColor, tint } from '../lib/ui'
@@ -13,6 +14,7 @@ export function SidePanel({ view }: { view: PlanView }) {
       <Inbox view={view} />
       <Upcoming view={view} />
       <Slips view={view} />
+      <Changes />
     </div>
   )
 }
@@ -91,6 +93,22 @@ function InboxRow({ it, view }: { it: InboxItem; view: PlanView }) {
           ) : (
             <PushForm id={tv.task.id} view={view} onDone={() => setPushing(false)} />
           )}
+        </div>
+      )}
+      {it.kind === 'todo-stale' && (
+        <div className="mt-1 flex flex-wrap gap-1">
+          <button className="btn" onClick={() => apply(`完成 todo「${it.title}」`, (p) => toggleTodo(p, it.id, view.today))}>
+            ✓ 完成
+          </button>
+          <button className="btn" onClick={() => apply(`todo「${it.title}」改到明天`, (p) => setTodoDate(p, it.id, addDays(view.today, 1)))}>
+            明天
+          </button>
+          <button className="btn" onClick={() => apply(`todo「${it.title}」放回 backlog`, (p) => setTodoDate(p, it.id, undefined))}>
+            扔 backlog
+          </button>
+          <button className="btn" style={{ color: 'var(--red)' }} onClick={() => apply(`删除 todo「${it.title}」`, (p) => remove(p, it.id))}>
+            删除
+          </button>
         </div>
       )}
       {it.kind === 'milestone-overdue' && (
@@ -311,6 +329,83 @@ function Slips({ view }: { view: PlanView }) {
           </li>
         )}
       </ul>
+    </section>
+  )
+}
+
+function ago(iso: string): string {
+  const min = Math.round((Date.now() - new Date(iso).getTime()) / 60000)
+  if (min < 1) return '刚刚'
+  if (min < 60) return `${min} 分钟前`
+  if (min < 24 * 60) return `${Math.round(min / 60)} 小时前`
+  const d = new Date(iso)
+  return `${d.getMonth() + 1}/${d.getDate()}`
+}
+
+/** Recent commits to the data file, so it's visible what the agent (or another device) changed. */
+function Changes() {
+  const source = useStore((s) => s.source)
+  const lastSync = useStore((s) => s.lastSync)
+  const [open, setOpen] = useState(false)
+  const [items, setItems] = useState<CommitInfo[] | null>(null)
+  const [err, setErr] = useState<string | null>(null)
+  useEffect(() => {
+    if (!open) return
+    let alive = true
+    fetchCommits(source)
+      .then((c) => alive && (setItems(c), setErr(null)))
+      .catch((e) => alive && setErr(e instanceof Error ? e.message : String(e)))
+    return () => {
+      alive = false
+    }
+  }, [open, source, lastSync])
+  return (
+    <section className="panel overflow-hidden">
+      <button className="flex w-full items-center gap-2 px-3 py-2.5" onClick={() => setOpen(!open)}>
+        <span className="section-title">{open ? '▾' : '▸'} 最近改动</span>
+        <span className="text-[10.5px]" style={{ color: 'var(--faint)' }}>
+          谁改了什么（git 记录）
+        </span>
+      </button>
+      {open && (
+        <ul className="pb-1.5">
+          {err && (
+            <li className="px-3 pb-2 text-[11px]" style={{ color: 'var(--red)' }}>
+              {err}
+            </li>
+          )}
+          {!items && !err && (
+            <li className="px-3 pb-2 text-[11px]" style={{ color: 'var(--muted)' }}>
+              读取中…
+            </li>
+          )}
+          {items?.map((c) => {
+            const [title, ...rest] = c.message.split('\n')
+            const body = rest.filter((l) => l.startsWith('- ')).slice(0, 4)
+            return (
+              <li key={c.sha} className="border-t px-3 py-1" style={{ borderColor: 'var(--line-2)' }}>
+                <a href={c.url} target="_blank" rel="noreferrer" className="flex items-baseline gap-1.5">
+                  <span
+                    className="shrink-0 rounded px-1 text-[9.5px] font-semibold"
+                    style={{ background: c.agent ? 'var(--accent-soft)' : 'var(--panel-2)', color: c.agent ? 'var(--accent)' : 'var(--muted)' }}
+                  >
+                    {c.agent ? 'Claude' : '网页/手动'}
+                  </span>
+                  <span className="min-w-0 flex-1 truncate">{title.replace(/^plan:\s*/, '')}</span>
+                  <span className="num shrink-0 text-[10px]" style={{ color: 'var(--faint)' }}>
+                    {ago(c.date)}
+                  </span>
+                </a>
+                {body.map((l, i) => (
+                  <div key={i} className="truncate pl-1 text-[10.5px]" style={{ color: 'var(--muted)' }}>
+                    {l}
+                  </div>
+                ))}
+              </li>
+            )
+          })}
+        </ul>
+      )}
     </section>
   )
 }

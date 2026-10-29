@@ -59,7 +59,8 @@ export function toggleTodo(plan: Plan, id: string, today: ISODate): Plan {
 
 export function addTodo(plan: Plan, todo: Omit<Todo, 'id'> & { id?: string }): Plan {
   const p = clone(plan)
-  p.todos.push({ ...todo, id: todo.id ?? newId('td', p) })
+  const { id, ...rest } = todo
+  p.todos.push({ id: id ?? newId('td', p), ...rest })
   return touch(p)
 }
 
@@ -67,26 +68,30 @@ export function addTask(plan: Plan, task: Omit<Task, 'id'> & { id?: string }): P
   const p = clone(plan)
   if (!p.tracks.some((t) => t.id === task.trackId)) throw new OpError(`找不到 track ${task.trackId}`)
   if (task.end < task.start) throw new OpError('end 早于 start')
-  p.tasks.push({ ...task, id: task.id ?? newId('tk', p) })
+  const { id, ...rest } = task
+  p.tasks.push({ id: id ?? newId('tk', p), ...rest })
   return touch(p)
 }
 
 export function addBlock(plan: Plan, block: Omit<Block, 'id'> & { id?: string }): Plan {
   const p = clone(plan)
   if (block.end <= block.start) throw new OpError('block 的 end 要晚于 start')
-  p.blocks.push({ ...block, id: block.id ?? newId('bk', p) })
+  const { id, ...rest } = block
+  p.blocks.push({ id: id ?? newId('bk', p), ...rest })
   return touch(p)
 }
 
 export function addMilestone(plan: Plan, m: Omit<Milestone, 'id'> & { id?: string }): Plan {
   const p = clone(plan)
-  p.milestones.push({ ...m, id: m.id ?? newId('ms', p) })
+  const { id, ...rest } = m
+  p.milestones.push({ id: id ?? newId('ms', p), ...rest })
   return touch(p)
 }
 
 export function addTrack(plan: Plan, t: Omit<Track, 'id'> & { id?: string }): Plan {
   const p = clone(plan)
-  p.tracks.push({ ...t, id: t.id ?? newId('tr', p) })
+  const { id, ...rest } = t
+  p.tracks.push({ id: id ?? newId('tr', p), ...rest })
   return touch(p)
 }
 
@@ -172,6 +177,16 @@ export function setMilestoneDone(plan: Plan, id: string, done: boolean): Plan {
   const m = p.milestones.find((x) => x.id === id)
   if (!m) throw new OpError(`找不到 milestone ${id}`)
   m.done = done
+  return touch(p)
+}
+
+/** Reschedule a todo; `date` undefined moves it to the backlog. The first planned day is kept in `origDate`. */
+export function setTodoDate(plan: Plan, id: string, date: ISODate | undefined): Plan {
+  const p = clone(plan)
+  const t = findTodo(p, id)
+  if (t.date && t.date !== date) t.origDate ??= t.date
+  if (date) t.date = date
+  else delete t.date
   return touch(p)
 }
 

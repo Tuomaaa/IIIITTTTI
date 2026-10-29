@@ -90,16 +90,17 @@ export function TaskDrawer({ view, mobile }: { view: PlanView; mobile: boolean }
                 const inWin = d >= task.start && d <= task.end
                 const f = tv.focus.includes(d)
                 const tail = d > task.end && d <= tv.visualEnd
+                const isBaseline = !!task.baseline && task.baseline !== task.end && d === task.baseline
                 return (
                   <div
                     key={d}
                     className="num flex h-[30px] w-[26px] flex-col items-center justify-center rounded-[3px] text-[9.5px] leading-[11px]"
                     style={{
                       background: f ? tint(color, d < today ? 45 : 80) : tail ? 'var(--red-soft)' : inWin ? tint(color, 14) : 'transparent',
-                      border: d === today ? '1.5px solid var(--text)' : `1px solid ${tail ? 'var(--red)' : inWin ? tint(color, 40) : 'var(--line)'}`,
+                      border: d === today ? '1.5px solid var(--text)' : isBaseline ? '1.5px dashed var(--text)' : `1px solid ${tail ? 'var(--red)' : inWin ? tint(color, 40) : 'var(--line)'}`,
                       color: weekday(d) % 6 === 0 ? 'var(--muted)' : undefined,
                     }}
-                    title={d}
+                    title={isBaseline ? `${d}（原定 end）` : d}
                   >
                     <span>{WEEKDAY_ZH[weekday(d)]}</span>
                     <span className="font-semibold">{Number(d.slice(8))}</span>
@@ -107,6 +108,11 @@ export function TaskDrawer({ view, mobile }: { view: PlanView; mobile: boolean }
                 )
               })}
             </div>
+            {task.baseline && task.baseline !== task.end && (
+              <div className="mt-1 text-[11px]" style={{ color: 'var(--muted)' }}>
+                虚线框 = 原定 end {md(task.baseline)}
+              </div>
+            )}
             {tv.unscheduled && (
               <div className="mt-1 text-[11px]" style={{ color: 'var(--orange)' }}>
                 今天之后没有排任何一天。

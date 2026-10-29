@@ -105,3 +105,30 @@ export async function savePlan(src: Source, plan: Plan, sha: string, message: st
   const body = (await res.json()) as { content: { sha: string } }
   return body.content.sha
 }
+
+export interface CommitInfo {
+  sha: string
+  message: string
+  date: string
+  url: string
+  /** Commit carries a Claude co-author trailer. */
+  agent: boolean
+}
+
+/** Recent commits that touched the data file. */
+export async function fetchCommits(src: Source, n = 15): Promise<CommitInfo[]> {
+  const q = new URLSearchParams({ path: src.path, sha: src.branch, per_page: String(n) })
+  const res = await fetch(`https://api.github.com/repos/${src.owner}/${src.repo}/commits?${q}`, {
+    headers: headers(src),
+    cache: 'no-store',
+  })
+  if (!res.ok) throw await explain(res)
+  const body = (await res.json()) as { sha: string; html_url: string; commit: { message: string; committer: { date: string } } }[]
+  return body.map((c) => ({
+    sha: c.sha,
+    message: c.commit.message,
+    date: c.commit.committer.date,
+    url: c.html_url,
+    agent: /co-authored-by:\s*claude/i.test(c.commit.message),
+  }))
+}
