@@ -3,6 +3,11 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: ['main']
+    # The site reads data/plan.json live from the GitHub API, so data-only
+    # commits don't need a rebuild.
+    paths-ignore:
+      - 'data/plan.json'
+      - '**/*.md'
   workflow_dispatch:
 
 permissions:
@@ -21,9 +26,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
       - run: npm ci
+      - run: npm test
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:

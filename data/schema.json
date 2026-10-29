@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "plan.schema.json",
+  "title": "多线程 planner data",
+  "description": "Source of truth for the planner. Semantic rules (references, start <= end, etc.) live in src/core/validate.ts. Run `npm run plan -- validate`.",
+  "type": "object",
+  "required": ["version", "meta", "tracks", "tasks", "milestones", "todos", "blocks"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "const": 1 },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string" },
+        "tz": { "type": "string", "description": "IANA zone the agent/CLI uses for 'today'. The web UI uses the device clock." },
+        "dayStart": { "$ref": "#/$defs/time" },
+        "dayEnd": { "$ref": "#/$defs/time" },
+        "maxParallel": { "type": "integer", "minimum": 1, "description": "More focus tasks than this on one day = overload (red)." },
+        "staleAfterDays": { "type": "integer", "minimum": 1, "description": "Unfinished todo this many days past its first planned day = stale." },
+        "maxPushDays": { "type": "integer", "minimum": 1, "description": "Default size of one push; bigger pushes need a reason / re-plan." },
+        "demo": { "type": "boolean", "description": "True while the file only holds sample data." },
+        "updatedAt": { "type": "string" }
+      }
+    },
+    "tracks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "color"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "type": "string", "minLength": 1 },
+          "color": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+          "group": { "type": "string" },
+          "paused": { "type": "boolean" },
+          "archived": { "type": "boolean" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "trackId", "title", "start", "end"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "trackId": { "$ref": "#/$defs/id" },
+          "title": { "type": "string", "minLength": 1 },
+          "start": { "$ref": "#/$defs/date" },
+          "end": { "$ref": "#/$defs/date", "description": "Inclusive." },
+          "focus": { "type": "array", "items": { "$ref": "#/$defs/date" }, "description": "Days planned for working on it (solid cells)." },
+          "progress": { "type": "number", "minimum": 0, "maximum": 1, "description": "Omit to derive from linked todos." },
+          "hard": { "type": "boolean", "description": "end is a hard deadline; never push." },
+          "milestoneId": { "$ref": "#/$defs/id" },
+          "baseline": { "$ref": "#/$defs/date", "description": "Original end, set on the first push." },
+          "slips": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["at", "from", "to"],
+              "additionalProperties": false,
+              "properties": {
+                "at": { "$ref": "#/$defs/date" },
+                "from": { "$ref": "#/$defs/date" },
+                "to": { "$ref": "#/$defs/date" },
+                "reason": { "type": "string" },
+                "by": { "enum": ["user", "agent", "auto"] }
+              }
+            }
+          },
+          "done": { "type": "boolean" },
+          "doneAt": { "$ref": "#/$defs/date" },
+          "parked": { "type": "boolean" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "milestones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "trackId", "title", "date"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "trackId": { "$ref": "#/$defs/id" },
+          "title": { "type": "string", "minLength": 1 },
+          "date": { "$ref": "#/$defs/date" },
+          "hard": { "type": "boolean" },
+          "done": { "type": "boolean" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "todos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "title": { "type": "string", "minLength": 1 },
+          "date": { "$ref": "#/$defs/date", "description": "Omit = backlog." },
+          "origDate": { "$ref": "#/$defs/date", "description": "First planned day; kept across rollovers." },
+          "trackId": { "$ref": "#/$defs/id" },
+          "taskId": { "$ref": "#/$defs/id" },
+          "done": { "type": "boolean" },
+          "doneAt": { "$ref": "#/$defs/date" },
+          "est": { "type": "integer", "minimum": 1, "description": "Minutes." },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "blocks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "date", "start", "end", "title"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "date": { "$ref": "#/$defs/date" },
+          "start": { "$ref": "#/$defs/time" },
+          "end": { "$ref": "#/$defs/time" },
+          "title": { "type": "string", "minLength": 1 },
+          "trackId": { "$ref": "#/$defs/id" },
+          "taskId": { "$ref": "#/$defs/id" },
+          "todoId": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["focus", "event", "routine"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$" },
+    "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "time": { "type": "string", "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$|^24:00$" }
+  }
+}
