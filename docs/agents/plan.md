@@ -47,6 +47,7 @@ npm run plan -- validate
 - id 约定：可读的 slug 最好（`tk-ml-hw5`、线程用 `surf-exp` 这种短名），CLI 不给 `--id` 时会随机生成。
 - 线程颜色用对比明显的饱和色，避免纯红（红色留给过期）。
 - 一个 task 最好挂上几个 todo：用户只要勾 todo，进度和甘特条就会自己动。
+- **用户约定：有截止的东西（作业、quiz、report、提交）一律做成 hard milestone，不要做成 todo。** todo 对用户来说是没有时间限制的备忘录 / 软 ddl，不会显示在甘特图上。课程放在 `课程` group，每门课一条线程。
 
 ## 过期 / 推后协议（暂定，等用户看完 docs/overdue.md 再定稿）
 
