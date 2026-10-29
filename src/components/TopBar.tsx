@@ -60,7 +60,7 @@ export function Stats({ view, desktop = false }: { view: PlanView; desktop?: boo
       <Stat label="todo" value={`${s.todosToday.done}/${s.todosToday.total}`} />
       <Stat label="过期" value={s.overdue} tone={s.overdue ? 'red' : undefined} onClick={() => setTab('inbox')} />
       <Stat label="拖延 todo" value={s.stale} tone={s.stale ? 'orange' : undefined} onClick={() => setTab('inbox')} />
-      <Stat label="本周推迟" value={`${s.weekSlips.count}次 ${s.weekSlips.days}天`} tone={s.weekSlips.count ? 'orange' : undefined} />
+      <Stat label="近7天推迟" value={`${s.weekSlips.count}次 ${s.weekSlips.days}天`} tone={s.weekSlips.count ? 'orange' : undefined} />
       {nm && (
         <span className="chip" title={nm.title}>
           <span style={{ color: nm.hard ? 'var(--red)' : 'var(--accent)' }}>◆</span>
