@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-29T14:11:00.175Z"
+    "updatedAt": "2026-10-29T14:18:21.704Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -23,7 +23,8 @@
     { "id": "school", "name": "课程 · 校历", "color": "#64748b", "group": "课程" },
     { "id": "merl-arm", "name": "MERL · Robot arm", "color": "#65a30d", "group": "MERL" },
     { "id": "merl-sim", "name": "MERL · Simulation", "color": "#c026d3", "group": "MERL" },
-    { "id": "ece497", "name": "课程 · ECE497 ECG DNN", "color": "#0ea5e9", "group": "课程" }
+    { "id": "ece497", "name": "课程 · ECE497 ECG DNN", "color": "#0ea5e9", "group": "课程" },
+    { "id": "so101", "name": "SO101 Personal", "color": "#f59e0b", "group": "Personal" }
   ],
   "tasks": [
     { "id": "tk-surf-pad", "trackId": "surf-hw", "title": "铜箔 15×8 pad 制作", "start": "2026-10-31", "end": "2026-10-31", "note": "前提：Amazon 的料周五前到" },
@@ -126,6 +127,27 @@
       "start": "2026-10-29",
       "end": "2026-11-06",
       "focus": ["2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06"]
+    },
+    { "id": "tk-so-b", "trackId": "so101", "title": "B 赌狗篇硬件", "start": "2026-11-20", "end": "2026-11-23", "note": "flexible，无硬 ddl；日期是暂排", "parked": true },
+    {
+      "id": "tk-so-c",
+      "trackId": "so101",
+      "title": "C ACT vs goal-conditioned ACT",
+      "start": "2026-11-24",
+      "end": "2026-11-27",
+      "note": "flexible，无硬 ddl；日期是暂排",
+      "parked": true
+    },
+    { "id": "tk-so-d", "trackId": "so101", "title": "D SmolVLA", "start": "2026-11-28", "end": "2026-12-06", "note": "flexible，无硬 ddl；日期是暂排", "parked": true },
+    { "id": "tk-so-e", "trackId": "so101", "title": "E 量化 VLA", "start": "2026-12-07", "end": "2026-12-17", "note": "flexible，无硬 ddl；日期是暂排", "parked": true },
+    {
+      "id": "tk-so-f",
+      "trackId": "so101",
+      "title": "F pi0.5 reference",
+      "start": "2026-12-19",
+      "end": "2027-01-03",
+      "note": "flexible，无硬 ddl；日期是暂排",
+      "parked": true
     }
   ],
   "milestones": [
@@ -181,7 +203,30 @@
     { "id": "td-iaof", "title": "交 Hw 9", "date": "2026-11-12", "trackId": "ece551" },
     { "id": "td-6bax", "title": "Final Exam + Proj: Paper and Pres（期末周，日期待定）", "trackId": "ece551" },
     { "id": "td-5w1e", "title": "交 Homework 3", "date": "2026-10-30", "trackId": "ece497" },
-    { "id": "td-6p7m", "title": "交 Beat By Beat ECG detection using DNN Part 2a", "date": "2026-11-01", "trackId": "ece497" }
+    { "id": "td-6p7m", "title": "交 Beat By Beat ECG detection using DNN Part 2a", "date": "2026-11-01", "trackId": "ece497" },
+    { "id": "td-p7w1", "title": "手丢球测试：确认不卡，看同一位置的落点散布", "trackId": "so101", "taskId": "tk-so-b", "est": 240 },
+    { "id": "td-ouiv", "title": "计分电路：每槽红外对射 + ESP32 + serial", "trackId": "so101", "taskId": "tk-so-b", "est": 480 },
+    { "id": "td-sfml", "title": "固定释放 100 次，测 noise floor", "trackId": "so101", "taskId": "tk-so-b", "est": 240 },
+    { "id": "td-tzsb", "title": "回球漏斗 + 取球杯，遥操作试玩 ⚠️", "trackId": "so101", "taskId": "tk-so-b", "est": 480 },
+    { "id": "td-wpo0", "title": "自己遥操作 30 次，记人类水平", "trackId": "so101", "taskId": "tk-so-b", "est": 240 },
+    { "id": "td-b6m7", "title": "录约 75 个 episode，标注目标", "trackId": "so101", "taskId": "tk-so-c", "est": 480 },
+    { "id": "td-tixj", "title": "训练普通 ACT + goal-conditioned ACT（+1 晚）", "trackId": "so101", "taskId": "tk-so-c", "est": 240 },
+    { "id": "td-x9ei", "title": "交替 eval，前后各测 noise floor", "trackId": "so101", "taskId": "tk-so-c", "est": 480 },
+    { "id": "td-r3j4", "title": "4070 笔记本装 Ubuntu 和环境（0.5 到 1 天）", "trackId": "so101", "taskId": "tk-so-d", "est": 480 },
+    { "id": "td-97dt", "title": "Fine-tune SmolVLA（+1 晚）", "trackId": "so101", "taskId": "tk-so-d", "est": 240 },
+    { "id": "td-t9y8", "title": "配置 async inference", "trackId": "so101", "taskId": "tk-so-d", "est": 240 },
+    { "id": "td-6ib6", "title": "Eval Level 1 + Level 3", "trackId": "so101", "taskId": "tk-so-d", "est": 480 },
+    { "id": "td-p9gc", "title": "int8 PTQ（sanity check）", "trackId": "so101", "taskId": "tk-so-e", "est": 240 },
+    { "id": "td-dt6u", "title": "int4：PTQ vs QAT", "trackId": "so101", "taskId": "tk-so-e", "est": 960 },
+    { "id": "td-v3ul", "title": "Eval", "trackId": "so101", "taskId": "tk-so-e", "est": 480 },
+    { "id": "td-ityn", "title": "问 csseadmin 能否在 cluster 上跑 pi0.5 推理（越早问越好）", "date": "2026-10-29", "trackId": "so101", "taskId": "tk-so-f", "est": 30 },
+    { "id": "td-5x40", "title": "L40S 上 LoRA fine-tune（+1 晚）", "trackId": "so101", "taskId": "tk-so-f", "est": 480 },
+    { "id": "td-bbs9", "title": "解决推理硬件 ⚠️", "trackId": "so101", "taskId": "tk-so-f", "est": 480 },
+    { "id": "td-031n", "title": "Eval", "trackId": "so101", "taskId": "tk-so-f", "est": 480 },
+    { "id": "td-2sfc", "title": "支线：HSV + calibration + IK + waypoint baseline（上限 20 小时）", "trackId": "so101", "est": 1200 },
+    { "id": "td-slcg", "title": "支线：Ternary ACT QAT + bitnet.cpp kernel（1 到 2 周）", "trackId": "so101" },
+    { "id": "td-gqdk", "title": "支线：FINN 可行性调研", "trackId": "so101", "est": 480 },
+    { "id": "td-s69q", "title": "支线：BitVLA（未估）", "trackId": "so101" }
   ],
   "blocks": [
     {
