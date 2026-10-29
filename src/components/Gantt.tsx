@@ -140,8 +140,8 @@ export function Gantt({ view, compact = false }: Props) {
           </div>
         )}
         {!rows.length && (
-          <div className="p-6 text-center" style={{ color: 'var(--muted)' }}>
-            没有进行中的线程
+          <div className="sticky left-0 p-6 text-[12px]" style={{ width: width, color: 'var(--muted)' }}>
+            {view.tracks.length ? '没有活跃的线程（关掉「只看活跃」看全部）' : '还没有线程。跟 Claude 说说你最近在忙哪几件事，它会帮你建好。'}
           </div>
         )}
       </div>

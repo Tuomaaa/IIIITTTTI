@@ -4,7 +4,7 @@
 <https://tuomaaa.github.io/IIIITTTTI/>
 
 - **数据**：`data/plan.json`（格式见 `data/schema.json` 和 `src/core/types.ts`）。网页通过 GitHub API 实时读取，改数据不需要重新部署。
-- **改数据**：主要由 agent 通过 `npm run plan -- <命令>` 完成，说明见 [CLAUDE.md](CLAUDE.md)。网页上填了 token 之后也能勾 todo、推后、快速添加。
+- **改数据**：主要由 agent 通过 `npm run plan -- <命令>` 完成，说明见 [AGENTS.md](AGENTS.md)。网页上填了 token 之后也能勾 todo、推后、快速添加。
 - **过期 / 推后规则**：见 [docs/overdue.md](docs/overdue.md)。
 - **多端**：手机打开同一个网址，浏览器菜单里「添加到主屏幕」。
 
