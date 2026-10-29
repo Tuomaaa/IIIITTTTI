@@ -184,7 +184,8 @@ export const useStore = create<State>((set, get) => {
       if (!force && Date.now() - lastRefresh < 30_000) return
       lastRefresh = Date.now()
       if (get().inflight.length) return
-      if (get().sync !== 'error') set({ sync: 'loading' })
+      // Background refreshes keep showing the current state; only a cold start shows "loading".
+      if (get().origin !== 'live' && get().sync !== 'error') set({ sync: 'loading' })
       try {
         const { plan, sha } = await fetchPlan(get().source)
         write(CACHE_KEY, { key: sourceKey(get().source), plan, sha, at: Date.now() })

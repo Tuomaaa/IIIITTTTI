@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { addDays, diffDays, md, mdw, relDay } from '../core/date'
+import { addDays, diffDays, md, mdw, relDay, weekday, WEEKDAY_ZH } from '../core/date'
 import { settings, type InboxItem, type PlanView } from '../core/derive'
 import { pushTask, remove, setMilestoneDone, setTaskDone, setTodoDate, suggestPush, toggleTodo } from '../core/ops'
 import type { ISODate } from '../core/types'
@@ -274,19 +274,39 @@ function Slips({ view }: { view: PlanView }) {
     .filter((t) => t.slipDays > 0)
     .sort((a, b) => b.slipDays - a.slipDays)
   const max = Math.max(1, ...byTrack.map((t) => t.slipDays))
-  const { weekSlips, totalSlipDays } = view.stats
+  const { weekSlips, totalSlipDays, weekDone, doneByDay } = view.stats
+  const maxDone = Math.max(1, ...doneByDay.map((d) => d.todos))
 
   return (
     <section className="panel overflow-hidden">
-      <header className="flex items-baseline gap-2 px-3 pt-2.5 pb-1.5">
-        <span className="section-title">推迟记录</span>
-        <span className="num text-[10.5px]" style={{ color: weekSlips.count ? 'var(--orange)' : 'var(--muted)' }}>
-          本周 {weekSlips.count} 次 / {weekSlips.days} 天
+      <header className="flex items-baseline gap-2 px-3 pt-2.5 pb-1">
+        <span className="section-title">最近 7 天</span>
+        <span className="num text-[10.5px]" style={{ color: 'var(--green)' }}>
+          完成 {weekDone.todos} todo · {weekDone.tasks} task
         </span>
+        <span className="num ml-auto text-[10.5px]" style={{ color: weekSlips.count ? 'var(--orange)' : 'var(--muted)' }}>
+          推迟 {weekSlips.count} 次 / {weekSlips.days} 天
+        </span>
+      </header>
+      <div className="flex items-end gap-[3px] px-3 pb-2" aria-label="每天完成的 todo 数和推迟次数">
+        {doneByDay.map((d) => (
+          <div key={d.date} className="flex flex-1 flex-col items-center gap-[2px]" title={`${md(d.date)}：完成 ${d.todos} 个 todo，推迟 ${d.slips} 次`}>
+            <div className="flex h-[26px] w-full items-end justify-center gap-[2px]">
+              <div className="w-[60%] rounded-t-[2px]" style={{ height: `${(d.todos / maxDone) * 100}%`, minHeight: d.todos ? 3 : 1, background: d.todos ? 'var(--green)' : 'var(--line)' }} />
+              {d.slips > 0 && <div className="w-[3px] rounded-t-[1px]" style={{ height: Math.min(26, d.slips * 9), background: 'var(--orange)' }} />}
+            </div>
+            <span className="num text-[9px]" style={{ color: d.date === view.today ? 'var(--accent)' : 'var(--faint)' }}>
+              {WEEKDAY_ZH[weekday(d.date)]}
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className="flex items-baseline px-3 pb-1">
+        <span className="section-title">推迟记录</span>
         <span className="num ml-auto text-[10.5px]" style={{ color: 'var(--muted)' }}>
           累计 {totalSlipDays} 天
         </span>
-      </header>
+      </div>
       {byTrack.length > 0 && (
         <div className="space-y-[3px] px-3 pb-2">
           {byTrack.map((t) => (

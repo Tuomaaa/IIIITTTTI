@@ -121,6 +121,10 @@ export interface Stats {
   /** Pushes decided in the last 7 days. */
   weekSlips: { count: number; days: number }
   totalSlipDays: number
+  /** Finished in the last 7 days (today included). */
+  weekDone: { todos: number; tasks: number }
+  /** Todos finished per day over the last 7 days, oldest first. */
+  doneByDay: { date: ISODate; todos: number; slips: number }[]
   nextMilestone?: Milestone
 }
 
@@ -432,6 +436,12 @@ function buildStats(
         days += Math.max(0, diffDays(s.from, s.to))
       }
   const todayTodos = todos.filter((t) => t.showOn === today || (t.todo.done && t.todo.doneAt === today))
+  const inWeek = (d?: ISODate) => !!d && d >= weekAgo && d <= today
+  const doneByDay = daysBetween(weekAgo, today).map((date) => ({
+    date,
+    todos: plan.todos.filter((t) => t.done && t.doneAt === date).length,
+    slips: plan.tasks.reduce((n, t) => n + (t.slips ?? []).filter((x) => x.at === date).length, 0),
+  }))
   return {
     active: tvs.filter((t) => t.phase === 'active' || t.phase === 'overdue').length,
     focusToday: tvs.filter((t) => t.focusToday).length,
@@ -440,6 +450,11 @@ function buildStats(
     stale: inbox.filter((i) => i.kind === 'todo-stale').length,
     weekSlips: { count, days },
     totalSlipDays: tvs.reduce((s, t) => s + t.slipDays, 0),
+    weekDone: {
+      todos: plan.todos.filter((t) => t.done && inWeek(t.doneAt)).length,
+      tasks: plan.tasks.filter((t) => t.done && inWeek(t.doneAt)).length,
+    },
+    doneByDay,
     nextMilestone: plan.milestones
       .filter((m) => !m.done && m.date >= today)
       .sort((a, b) => a.date.localeCompare(b.date))[0],

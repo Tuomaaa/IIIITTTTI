@@ -178,7 +178,7 @@ function summary() {
   const out: string[] = []
   const s = v.stats
   out.push(`# ${mdw(today)} ${today} · W${isoWeek(today)}${plan.meta.tz ? ` · ${plan.meta.tz}` : ''}${plan.meta.demo ? ' · ⚠ 示例数据' : ''}`)
-  out.push(`进行中 ${s.active} · 今日聚焦 ${s.focusToday} · todo ${s.todosToday.done}/${s.todosToday.total} · 过期 ${s.overdue} · 拖延todo ${s.stale} · 本周推迟 ${s.weekSlips.count}次/${s.weekSlips.days}天 · 累计推迟 ${s.totalSlipDays}天`)
+  out.push(`进行中 ${s.active} · 今日聚焦 ${s.focusToday} · todo ${s.todosToday.done}/${s.todosToday.total} · 过期 ${s.overdue} · 拖延todo ${s.stale} · 7天内完成 ${s.weekDone.todos} todo/${s.weekDone.tasks} task · 7天内推迟 ${s.weekSlips.count}次/${s.weekSlips.days}天 · 累计推迟 ${s.totalSlipDays}天`)
 
   out.push('', `## 需处理 (${v.inbox.length})`)
   for (const it of v.inbox) out.push(`- ${'!'.repeat(it.level)} [${it.kind}] ${it.title} (${it.id}) · ${it.detail}`)
