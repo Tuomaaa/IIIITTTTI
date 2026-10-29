@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-29T14:18:21.704Z"
+    "updatedAt": "2026-10-29T14:19:44.336Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -24,7 +24,7 @@
     { "id": "merl-arm", "name": "MERL · Robot arm", "color": "#65a30d", "group": "MERL" },
     { "id": "merl-sim", "name": "MERL · Simulation", "color": "#c026d3", "group": "MERL" },
     { "id": "ece497", "name": "课程 · ECE497 ECG DNN", "color": "#0ea5e9", "group": "课程" },
-    { "id": "so101", "name": "SO101 Personal", "color": "#f59e0b", "group": "Personal" }
+    { "id": "so101", "name": "SO101&VLA", "color": "#f59e0b", "group": "Personal" }
   ],
   "tasks": [
     { "id": "tk-surf-pad", "trackId": "surf-hw", "title": "铜箔 15×8 pad 制作", "start": "2026-10-31", "end": "2026-10-31", "note": "前提：Amazon 的料周五前到" },
