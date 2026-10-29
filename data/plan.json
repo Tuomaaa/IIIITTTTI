@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-29T15:31:33.506Z"
+    "updatedAt": "2026-10-29T15:36:28.931Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -156,7 +156,6 @@
     { "id": "ms-65su", "trackId": "surf-out", "title": "给 Yu She 发邮件", "date": "2026-11-13" },
     { "id": "ms-k3dq", "trackId": "surf-app", "title": "学生申请开放（往年 12/1，待确认）", "date": "2026-12-01" },
     { "id": "ms-eilq", "trackId": "surf-app", "title": "SURF Priority deadline（travel subsidy）", "date": "2027-01-15", "hard": true },
-    { "id": "ms-sbcz", "trackId": "school", "title": "最后退课日（W）", "date": "2026-10-30", "hard": true },
     { "id": "ms-tipo", "trackId": "school", "title": "Fall term 结束 / 秋冬之间放假", "date": "2026-11-23" },
     { "id": "ms-j30v", "trackId": "school", "title": "Winter 开课", "date": "2026-11-30" },
     { "id": "ms-22kz", "trackId": "school", "title": "Winter 选课截止 4pm", "date": "2026-12-02", "hard": true },
