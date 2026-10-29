@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-29T14:01:04.021Z"
+    "updatedAt": "2026-10-29T14:07:28.947Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -20,7 +20,9 @@
     { "id": "csse416", "name": "课程 · CSSE416 LLM", "color": "#d4a017", "group": "课程" },
     { "id": "csse232", "name": "课程 · CSSE232 Arch", "color": "#db2777", "group": "课程" },
     { "id": "ece551", "name": "课程 · ECE551 VLSI", "color": "#4f46e5", "group": "课程" },
-    { "id": "school", "name": "课程 · 校历", "color": "#64748b", "group": "课程" }
+    { "id": "school", "name": "课程 · 校历", "color": "#64748b", "group": "课程" },
+    { "id": "merl-arm", "name": "MERL · Robot arm", "color": "#65a30d", "group": "MERL" },
+    { "id": "merl-sim", "name": "MERL · Simulation", "color": "#c026d3", "group": "MERL" }
   ],
   "tasks": [
     { "id": "tk-surf-pad", "trackId": "surf-hw", "title": "铜箔 15×8 pad 制作", "start": "2026-10-31", "end": "2026-10-31", "note": "前提：Amazon 的料周五前到" },
@@ -106,7 +108,24 @@
       "hard": true,
       "note": "11/13 交 code、slides、reflections"
     },
-    { "id": "tk-232-p9", "trackId": "csse232", "title": "Practical9 Pipelined Processor III", "start": "2026-11-06", "end": "2026-11-12" }
+    { "id": "tk-232-p9", "trackId": "csse232", "title": "Practical9 Pipelined Processor III", "start": "2026-11-06", "end": "2026-11-12" },
+    {
+      "id": "tk-arm-check",
+      "trackId": "merl-arm",
+      "title": "确认所有 existing arm working",
+      "start": "2026-10-29",
+      "end": "2026-10-30",
+      "focus": ["2026-10-29", "2026-10-30"]
+    },
+    { "id": "tk-arm-print", "trackId": "merl-arm", "title": "Print new arm part", "start": "2026-10-29", "end": "2026-11-06" },
+    {
+      "id": "tk-arm-build",
+      "trackId": "merl-arm",
+      "title": "Build 5 more arm",
+      "start": "2026-10-29",
+      "end": "2026-11-06",
+      "focus": ["2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06"]
+    }
   ],
   "milestones": [
     { "id": "ms-d6gk", "trackId": "surf-hw", "title": "FPC 和控制板到货（估计）", "date": "2026-11-06" },
@@ -123,7 +142,8 @@
     { "id": "ms-8m5x", "trackId": "csse232", "title": "Quiz 4（HW11、HW12）", "date": "2026-10-30", "hard": true },
     { "id": "ms-oh5e", "trackId": "csse232", "title": "Quiz 5（HW15、HW16）", "date": "2026-11-10", "hard": true },
     { "id": "ms-tzp8", "trackId": "ece551", "title": "Quiz 4", "date": "2026-11-02", "hard": true },
-    { "id": "ms-1yfe", "trackId": "ece551", "title": "Quiz 5", "date": "2026-11-13", "hard": true }
+    { "id": "ms-1yfe", "trackId": "ece551", "title": "Quiz 5", "date": "2026-11-13", "hard": true },
+    { "id": "ms-lup0", "trackId": "merl-sim", "title": "写 tutorial（今晚，约 30 分钟）", "date": "2026-10-29" }
   ],
   "todos": [
     { "id": "td-2nch", "title": "Sprint 1 Status Report（3pm）", "date": "2026-10-29", "trackId": "csse416", "taskId": "tk-416-final" },
@@ -152,5 +172,26 @@
     { "id": "td-iaof", "title": "交 Hw 9", "date": "2026-11-12", "trackId": "ece551" },
     { "id": "td-6bax", "title": "Final Exam + Proj: Paper and Pres（期末周，日期待定）", "trackId": "ece551" }
   ],
-  "blocks": []
+  "blocks": [
+    {
+      "id": "bk-0mw1",
+      "date": "2026-10-29",
+      "start": "14:00",
+      "end": "16:00",
+      "title": "确认 existing arm",
+      "trackId": "merl-arm",
+      "taskId": "tk-arm-check",
+      "kind": "focus"
+    },
+    {
+      "id": "bk-a6ke",
+      "date": "2026-10-30",
+      "start": "14:00",
+      "end": "16:00",
+      "title": "确认 existing arm",
+      "trackId": "merl-arm",
+      "taskId": "tk-arm-check",
+      "kind": "focus"
+    }
+  ]
 }
