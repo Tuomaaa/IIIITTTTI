@@ -9,14 +9,18 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-29T13:30:37.636Z"
+    "updatedAt": "2026-10-29T13:52:51.918Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
     { "id": "surf-act", "name": "SURF · ACT 实验", "color": "#2f6db8", "group": "SURF" },
     { "id": "surf-bay", "name": "SURF · Bayesian gate", "color": "#1f8f99", "group": "SURF" },
     { "id": "surf-out", "name": "SURF · 联系", "color": "#2f8a5f", "group": "SURF" },
-    { "id": "surf-app", "name": "SURF · 申请", "color": "#7a4fb3", "group": "SURF" }
+    { "id": "surf-app", "name": "SURF · 申请", "color": "#7a4fb3", "group": "SURF" },
+    { "id": "csse416", "name": "课程 · CSSE416 LLM", "color": "#d4a017", "group": "课程" },
+    { "id": "csse232", "name": "课程 · CSSE232 Arch", "color": "#db2777", "group": "课程" },
+    { "id": "ece551", "name": "课程 · ECE551 VLSI", "color": "#4f46e5", "group": "课程" },
+    { "id": "school", "name": "课程 · 校历", "color": "#64748b", "group": "课程" }
   ],
   "tasks": [
     { "id": "tk-surf-pad", "trackId": "surf-hw", "title": "铜箔 15×8 pad 制作", "start": "2026-10-31", "end": "2026-10-31", "note": "前提：Amazon 的料周五前到" },
@@ -57,14 +61,70 @@
       "end": "2026-11-06",
       "note": "外部窗口，估计"
     },
-    { "id": "tk-surf-sop", "trackId": "surf-app", "title": "填申请、Statement of Purpose", "start": "2026-12-01", "end": "2026-12-15" }
+    { "id": "tk-surf-sop", "trackId": "surf-app", "title": "填申请、Statement of Purpose", "start": "2026-12-01", "end": "2026-12-15" },
+    {
+      "id": "tk-fall-finals",
+      "trackId": "school",
+      "title": "Fall 期末考试周",
+      "start": "2026-11-16",
+      "end": "2026-11-19",
+      "hard": true,
+      "note": "11/16 8am 到 11/19 5pm"
+    },
+    {
+      "id": "tk-416-final",
+      "trackId": "csse416",
+      "title": "Final Project（Sprint 1 → 2 → 展示）",
+      "start": "2026-10-29",
+      "end": "2026-11-13",
+      "hard": true,
+      "note": "11/13 交 code、slides、reflections"
+    },
+    { "id": "tk-232-p9", "trackId": "csse232", "title": "Practical9 Pipelined Processor III", "start": "2026-11-06", "end": "2026-11-12" }
   ],
   "milestones": [
     { "id": "ms-d6gk", "trackId": "surf-hw", "title": "FPC 和控制板到货（估计）", "date": "2026-11-06" },
     { "id": "ms-65su", "trackId": "surf-out", "title": "给 Yu She 发邮件", "date": "2026-11-13" },
     { "id": "ms-k3dq", "trackId": "surf-app", "title": "学生申请开放（往年 12/1，待确认）", "date": "2026-12-01" },
-    { "id": "ms-eilq", "trackId": "surf-app", "title": "SURF Priority deadline（travel subsidy）", "date": "2027-01-15", "hard": true }
+    { "id": "ms-eilq", "trackId": "surf-app", "title": "SURF Priority deadline（travel subsidy）", "date": "2027-01-15", "hard": true },
+    { "id": "ms-sbcz", "trackId": "school", "title": "最后退课日（W）", "date": "2026-10-30", "hard": true },
+    { "id": "ms-tipo", "trackId": "school", "title": "Fall term 结束 / 秋冬之间放假", "date": "2026-11-23" },
+    { "id": "ms-j30v", "trackId": "school", "title": "Winter 开课", "date": "2026-11-30" },
+    { "id": "ms-22kz", "trackId": "school", "title": "Winter 选课截止 4pm", "date": "2026-12-02", "hard": true },
+    { "id": "ms-8vzi", "trackId": "school", "title": "寒假开始（课后）", "date": "2026-12-18" },
+    { "id": "ms-xhji", "trackId": "school", "title": "Winter 复课", "date": "2027-01-04" },
+    { "id": "ms-4esk", "trackId": "csse416", "title": "Test 2", "date": "2026-11-03", "hard": true },
+    { "id": "ms-8m5x", "trackId": "csse232", "title": "Quiz 4（HW11、HW12）", "date": "2026-10-30", "hard": true },
+    { "id": "ms-oh5e", "trackId": "csse232", "title": "Quiz 5（HW15、HW16）", "date": "2026-11-10", "hard": true },
+    { "id": "ms-tzp8", "trackId": "ece551", "title": "Quiz 4", "date": "2026-11-02", "hard": true },
+    { "id": "ms-1yfe", "trackId": "ece551", "title": "Quiz 5", "date": "2026-11-13", "hard": true }
   ],
-  "todos": [],
+  "todos": [
+    { "id": "td-2nch", "title": "Sprint 1 Status Report（3pm）", "date": "2026-10-29", "trackId": "csse416", "taskId": "tk-416-final" },
+    { "id": "td-747s", "title": "Sprint 1 Meeting", "date": "2026-10-30", "trackId": "csse416", "taskId": "tk-416-final" },
+    { "id": "td-j1db", "title": "交 Random lesson", "date": "2026-11-02", "trackId": "csse416" },
+    { "id": "td-1hyw", "title": "Test 2 复习", "date": "2026-11-02", "trackId": "csse416" },
+    { "id": "td-aa6u", "title": "Sprint 2 Status Report（3pm）", "date": "2026-11-05", "trackId": "csse416", "taskId": "tk-416-final" },
+    { "id": "td-naxf", "title": "Sprint 2 System Demo + Meeting", "date": "2026-11-06", "trackId": "csse416", "taskId": "tk-416-final" },
+    { "id": "td-cju6", "title": "给其他组写 feedback（Moodle，自己不展示的那天）", "date": "2026-11-09", "trackId": "csse416" },
+    { "id": "td-se4g", "title": "给其他组写 feedback（Moodle，自己不展示的那天）", "date": "2026-11-10", "trackId": "csse416" },
+    { "id": "td-bkp2", "title": "给其他组写 feedback（Moodle，自己不展示的那天）", "date": "2026-11-12", "trackId": "csse416" },
+    { "id": "td-9v0h", "title": "给其他组写 feedback（Moodle，自己不展示的那天）", "date": "2026-11-13", "trackId": "csse416" },
+    { "id": "td-0rgc", "title": "交 Final Project：code、slides、reflections", "date": "2026-11-13", "trackId": "csse416", "taskId": "tk-416-final" },
+    { "id": "td-qzd3", "title": "交 HW15", "date": "2026-10-30", "trackId": "csse232" },
+    { "id": "td-72bq", "title": "交 Practical8", "date": "2026-11-05", "trackId": "csse232" },
+    { "id": "td-qoaw", "title": "交 HW16", "date": "2026-11-06", "trackId": "csse232" },
+    { "id": "td-1sqq", "title": "交 Practical9", "date": "2026-11-12", "trackId": "csse232", "taskId": "tk-232-p9" },
+    { "id": "td-nn32", "title": "Wrap up（必须出勤）", "date": "2026-11-13", "trackId": "csse232" },
+    { "id": "td-y27f", "title": "CATME pipeline team eval", "date": "2026-11-16", "trackId": "csse232" },
+    { "id": "td-ue7m", "title": "Practical 10 Pipeline Design Presentation（期末周，日期待定）", "trackId": "csse232" },
+    { "id": "td-9k2h", "title": "交 Hw 7", "date": "2026-10-29", "trackId": "ece551" },
+    { "id": "td-drhb", "title": "Project: Proposal", "date": "2026-10-30", "trackId": "ece551" },
+    { "id": "td-l1hk", "title": "Proj: Proposal Timing", "date": "2026-11-04", "trackId": "ece551" },
+    { "id": "td-zkao", "title": "交 Hw 8", "date": "2026-11-05", "trackId": "ece551" },
+    { "id": "td-u7vq", "title": "Proj: Proposal P&R", "date": "2026-11-11", "trackId": "ece551" },
+    { "id": "td-iaof", "title": "交 Hw 9", "date": "2026-11-12", "trackId": "ece551" },
+    { "id": "td-6bax", "title": "Final Exam + Proj: Paper and Pres（期末周，日期待定）", "trackId": "ece551" }
+  ],
   "blocks": []
 }
