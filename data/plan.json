@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-29T14:27:28.350Z"
+    "updatedAt": "2026-10-29T15:31:33.506Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -167,7 +167,7 @@
     { "id": "ms-oh5e", "trackId": "csse232", "title": "Quiz 5（HW15、HW16）", "date": "2026-11-10", "hard": true },
     { "id": "ms-tzp8", "trackId": "ece551", "title": "Quiz 4", "date": "2026-11-02", "hard": true },
     { "id": "ms-1yfe", "trackId": "ece551", "title": "Quiz 5", "date": "2026-11-13", "hard": true },
-    { "id": "ms-lup0", "trackId": "merl-sim", "title": "写 tutorial（今晚，约 30 分钟）", "date": "2026-10-29" },
+    { "id": "ms-lup0", "trackId": "merl-sim", "title": "写 tutorial（约 30 分钟）", "date": "2026-10-30", "hard": true, "note": "原定 10/29 晚，用户推到周五" },
     { "id": "ms-j9ge", "trackId": "ece551", "title": "Project: Proposal", "date": "2026-10-30", "hard": true },
     { "id": "ms-b2aw", "trackId": "ece551", "title": "Proj: Proposal Timing", "date": "2026-11-04", "hard": true },
     { "id": "ms-2m6d", "trackId": "ece551", "title": "Proj: Proposal P&R", "date": "2026-11-11", "hard": true },
