@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-29T14:19:44.336Z"
+    "updatedAt": "2026-10-29T14:22:45.628Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -148,7 +148,8 @@
       "end": "2027-01-03",
       "note": "flexible，无硬 ddl；日期是暂排",
       "parked": true
-    }
+    },
+    { "id": "tk-551-proj", "trackId": "ece551", "title": "ECE551 Project", "start": "2026-10-29", "end": "2026-11-19", "note": "Paper and Pres 在期末周，具体日期待定" }
   ],
   "milestones": [
     { "id": "ms-d6gk", "trackId": "surf-hw", "title": "FPC 和控制板到货（估计）", "date": "2026-11-06" },
@@ -166,7 +167,10 @@
     { "id": "ms-oh5e", "trackId": "csse232", "title": "Quiz 5（HW15、HW16）", "date": "2026-11-10", "hard": true },
     { "id": "ms-tzp8", "trackId": "ece551", "title": "Quiz 4", "date": "2026-11-02", "hard": true },
     { "id": "ms-1yfe", "trackId": "ece551", "title": "Quiz 5", "date": "2026-11-13", "hard": true },
-    { "id": "ms-lup0", "trackId": "merl-sim", "title": "写 tutorial（今晚，约 30 分钟）", "date": "2026-10-29" }
+    { "id": "ms-lup0", "trackId": "merl-sim", "title": "写 tutorial（今晚，约 30 分钟）", "date": "2026-10-29" },
+    { "id": "ms-j9ge", "trackId": "ece551", "title": "Project: Proposal", "date": "2026-10-30", "hard": true },
+    { "id": "ms-b2aw", "trackId": "ece551", "title": "Proj: Proposal Timing", "date": "2026-11-04", "hard": true },
+    { "id": "ms-2m6d", "trackId": "ece551", "title": "Proj: Proposal P&R", "date": "2026-11-11", "hard": true }
   ],
   "todos": [
     {
@@ -196,12 +200,11 @@
     { "id": "td-y27f", "title": "CATME pipeline team eval", "date": "2026-11-16", "trackId": "csse232" },
     { "id": "td-ue7m", "title": "Practical 10 Pipeline Design Presentation（期末周，日期待定）", "trackId": "csse232" },
     { "id": "td-9k2h", "title": "交 Hw 7", "date": "2026-10-29", "trackId": "ece551" },
-    { "id": "td-drhb", "title": "Project: Proposal", "date": "2026-10-30", "trackId": "ece551" },
-    { "id": "td-l1hk", "title": "Proj: Proposal Timing", "date": "2026-11-04", "trackId": "ece551" },
+    { "id": "td-drhb", "title": "Project: Proposal", "date": "2026-10-30", "trackId": "ece551", "taskId": "tk-551-proj" },
+    { "id": "td-l1hk", "title": "Proj: Proposal Timing", "date": "2026-11-04", "trackId": "ece551", "taskId": "tk-551-proj" },
     { "id": "td-zkao", "title": "交 Hw 8", "date": "2026-11-05", "trackId": "ece551" },
-    { "id": "td-u7vq", "title": "Proj: Proposal P&R", "date": "2026-11-11", "trackId": "ece551" },
+    { "id": "td-u7vq", "title": "Proj: Proposal P&R", "date": "2026-11-11", "trackId": "ece551", "taskId": "tk-551-proj" },
     { "id": "td-iaof", "title": "交 Hw 9", "date": "2026-11-12", "trackId": "ece551" },
-    { "id": "td-6bax", "title": "Final Exam + Proj: Paper and Pres（期末周，日期待定）", "trackId": "ece551" },
     { "id": "td-5w1e", "title": "交 Homework 3", "date": "2026-10-30", "trackId": "ece497" },
     { "id": "td-6p7m", "title": "交 Beat By Beat ECG detection using DNN Part 2a", "date": "2026-11-01", "trackId": "ece497" },
     { "id": "td-p7w1", "title": "手丢球测试：确认不卡，看同一位置的落点散布", "trackId": "so101", "taskId": "tk-so-b", "est": 240 },
@@ -226,7 +229,10 @@
     { "id": "td-2sfc", "title": "支线：HSV + calibration + IK + waypoint baseline（上限 20 小时）", "trackId": "so101", "est": 1200 },
     { "id": "td-slcg", "title": "支线：Ternary ACT QAT + bitnet.cpp kernel（1 到 2 周）", "trackId": "so101" },
     { "id": "td-gqdk", "title": "支线：FINN 可行性调研", "trackId": "so101", "est": 480 },
-    { "id": "td-s69q", "title": "支线：BitVLA（未估）", "trackId": "so101" }
+    { "id": "td-s69q", "title": "支线：BitVLA（未估）", "trackId": "so101" },
+    { "id": "td-t4e4", "title": "跑完昨天 Lab 5 的 power analysis", "date": "2026-10-29", "trackId": "ece551" },
+    { "id": "td-gnnl", "title": "Final Exam（期末周，日期待定）", "trackId": "ece551" },
+    { "id": "td-1yew", "title": "Proj: Paper and Pres（期末周，日期待定）", "trackId": "ece551", "taskId": "tk-551-proj" }
   ],
   "blocks": [
     {
