@@ -83,10 +83,8 @@ export function MonthMini({ view, cellH = 30, compact = false }: { view: PlanVie
               style={{
                 height: cellH,
                 background: n ? `color-mix(in oklab, var(--accent) ${Math.min(22, 4 + n * 3.5)}%, var(--panel))` : 'var(--panel)',
-                outline: isSel ? '1.5px solid var(--accent)' : undefined,
-                outlineOffset: -1,
                 opacity: past && !isToday ? 0.55 : 1,
-                border: `1px solid ${thisWeek ? 'var(--line)' : 'var(--line-2)'}`,
+                border: isSel ? '2px solid var(--ink)' : `1px solid ${thisWeek ? 'var(--line)' : 'var(--line-2)'}`,
               }}
               onClick={() => setDay(d === today ? null : d)}
               onMouseEnter={(e) =>
@@ -109,8 +107,9 @@ export function MonthMini({ view, cellH = 30, compact = false }: { view: PlanVie
               <span
                 className="num absolute top-[1px] left-[3px] text-[10px] font-semibold"
                 style={{
-                  color: isToday ? 'var(--panel)' : over ? 'var(--red)' : wd === 0 || wd === 6 ? 'var(--muted)' : 'var(--text)',
-                  background: isToday ? 'var(--accent)' : undefined,
+                  color: isToday ? 'var(--bar-ink)' : over ? 'var(--red)' : wd === 0 || wd === 6 ? 'var(--muted)' : 'var(--text)',
+                  background: isToday ? 'var(--hl)' : undefined,
+                  outline: isToday ? '1.5px solid var(--bar-ink)' : undefined,
                   borderRadius: 3,
                   padding: isToday ? '0 2px' : undefined,
                   lineHeight: '12px',

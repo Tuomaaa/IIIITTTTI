@@ -178,8 +178,8 @@ export function QuickAdd({ autoFocus = false, onDone }: { autoFocus?: boolean; o
       <input
         ref={ref}
         autoFocus={autoFocus}
-        className="h-[28px] w-full rounded-md border px-2.5 text-[12px] outline-none"
-        style={{ background: 'var(--panel-2)', borderColor: focused ? 'var(--accent)' : 'var(--line)' }}
+        className="h-[28px] w-full rounded-md px-2.5 text-[12px] outline-none"
+        style={{ background: focused ? 'var(--panel)' : 'var(--panel-2)', border: '1.5px solid var(--ink)', boxShadow: focused ? 'var(--shadow-sm)' : undefined }}
         placeholder="快速添加…  按 / 聚焦"
         value={text}
         onChange={(e) => setText(e.target.value)}
@@ -194,7 +194,7 @@ export function QuickAdd({ autoFocus = false, onDone }: { autoFocus?: boolean; o
         }}
       />
       {focused && (
-        <div className="fade-in absolute top-[32px] right-0 z-40 w-[min(460px,92vw)] rounded-md border p-2 text-[11px]" style={{ background: 'var(--panel)', borderColor: 'var(--line)', boxShadow: 'var(--shadow)' }}>
+        <div className="fade-in absolute top-[34px] right-0 z-40 w-[min(460px,92vw)] rounded-md p-2 text-[11px]" style={{ background: 'var(--panel)', border: '2px solid var(--ink)', boxShadow: 'var(--shadow-sm)' }}>
           {r ? (
             <div style={{ color: r.kind === 'error' ? 'var(--red)' : 'var(--text)' }}>
               {r.kind === 'error' ? '⚠ ' : '↵ '}
@@ -221,9 +221,11 @@ export function TopBar({ view }: { view: PlanView }) {
   const plan = useStore((s) => s.plan)
   const pinned = useStore((s) => s.todayPinned)
   return (
-    <header className="flex items-center gap-3 px-3 py-1.5" style={{ borderBottom: '1px solid var(--line)', background: 'var(--panel)' }}>
+    <header className="flex items-center gap-3 px-3 py-1.5" style={{ borderBottom: '2px solid var(--ink)', background: 'var(--panel)' }}>
       <div className="flex shrink-0 items-baseline gap-2">
-        <span className="text-[14px] font-bold tracking-tight">多线程</span>
+        <span className="display -rotate-2 rounded-[5px] px-1.5 text-[14px] font-bold" style={{ background: 'var(--hl)', color: 'var(--bar-ink)', border: '1.5px solid var(--bar-ink)', boxShadow: '2px 2px 0 var(--bar-ink)' }}>
+          多线程
+        </span>
         <span className="num text-[12px] font-medium">{mdw(view.today)}</span>
         <span className="num text-[11px]" style={{ color: 'var(--muted)' }}>
           W{isoWeek(view.today)}

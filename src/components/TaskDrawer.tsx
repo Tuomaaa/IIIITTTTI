@@ -4,7 +4,7 @@ import type { PlanView } from '../core/derive'
 import { setParked, setProgress, setTaskDone } from '../core/ops'
 import { useStore } from '../data/store'
 import { useUI } from '../data/ui'
-import { pct, pressureColor, tint } from '../lib/ui'
+import { pastel, pct, pressureColor } from '../lib/ui'
 import { TodoRow } from './DayPanel'
 import { Sheet } from './Sheet'
 import { PushForm } from './SidePanel'
@@ -86,11 +86,12 @@ export function TaskDrawer({ view, mobile }: { view: PlanView; mobile: boolean }
                 return (
                   <div
                     key={d}
-                    className="num flex h-[30px] w-[26px] flex-col items-center justify-center rounded-[3px] text-[9.5px] leading-[11px]"
+                    className={`num flex h-[30px] w-[26px] flex-col items-center justify-center rounded-[4px] text-[9.5px] leading-[11px] ${tail ? 'tape' : ''}`}
                     style={{
-                      background: f ? tint(color, d < today ? 45 : 80) : tail ? 'var(--red-soft)' : inWin ? tint(color, 14) : 'transparent',
-                      border: d === today ? '1.5px solid var(--text)' : isBaseline ? '1.5px dashed var(--text)' : `1px solid ${tail ? 'var(--red)' : inWin ? tint(color, 40) : 'var(--line)'}`,
-                      color: weekday(d) % 6 === 0 ? 'var(--muted)' : undefined,
+                      background: f ? (d < today ? pastel(color, 62) : color) : tail ? undefined : inWin ? pastel(color) : 'transparent',
+                      border: isBaseline ? '2px dotted var(--bar-ink)' : `1.5px solid ${inWin || tail || f ? 'var(--bar-ink)' : 'var(--line)'}`,
+                      outline: d === today ? '2.5px solid var(--hl)' : undefined,
+                      color: inWin || tail || f ? 'var(--bar-ink)' : weekday(d) % 6 === 0 ? 'var(--muted)' : undefined,
                     }}
                     title={isBaseline ? `${d}（原定 end）` : d}
                   >

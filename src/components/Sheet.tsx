@@ -12,8 +12,8 @@ export function Sheet({ mobile, onClose, z = 50, children }: { mobile: boolean; 
           background: 'var(--panel)',
           boxShadow: 'var(--shadow)',
           ...(mobile
-            ? { left: 0, right: 0, bottom: 0, maxHeight: '82vh', borderTop: '1px solid var(--line)', borderRadius: '12px 12px 0 0' }
-            : { top: 8, right: 8, bottom: 8, width: 380, border: '1px solid var(--line)', borderRadius: 10 }),
+            ? { left: 0, right: 0, bottom: 0, maxHeight: '82vh', borderTop: '2px solid var(--ink)', borderRadius: '14px 14px 0 0' }
+            : { top: 10, right: 12, bottom: 12, width: 380, border: '2px solid var(--ink)', borderRadius: 12 }),
         }}
       >
         {children}

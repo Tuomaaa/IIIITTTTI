@@ -1,4 +1,8 @@
 import { useState, type ReactNode } from 'react'
+import { addDays, diffDays } from '../core/date'
+import { buildView, type PlanView } from '../core/derive'
+import type { ISODate, Plan } from '../core/types'
+import { Bar } from './Gantt'
 import { DEFAULT_SOURCE, fetchPlan, type Source } from '../data/github'
 import { useStore, type Theme } from '../data/store'
 import { useUI } from '../data/ui'
@@ -6,8 +10,8 @@ import { useUI } from '../data/ui'
 function Modal({ title, children, onClose }: { title: string; children: ReactNode; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-3 sm:p-10" style={{ background: 'rgba(0,0,0,.25)' }} onClick={onClose}>
-      <div className="panel fade-in w-full max-w-[560px]" style={{ boxShadow: 'var(--shadow)' }} onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center px-4 pt-3 pb-2" style={{ borderBottom: '1px solid var(--line-2)' }}>
+      <div className="panel fade-in w-full max-w-[640px]" style={{ boxShadow: 'var(--shadow)' }} onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center px-4 pt-3 pb-2" style={{ borderBottom: '2px solid var(--ink)' }}>
           <div className="text-[14px] font-semibold">{title}</div>
           <button className="btn btn-ghost ml-auto" onClick={onClose} aria-label="关闭">
             ✕
@@ -39,139 +43,109 @@ export function Modals() {
 
 const C = '#10b981'
 
-function Sample({ children, w = 150 }: { children: ReactNode; w?: number }) {
+/** A tiny plan whose tasks exercise every bar state; rendered with the real <Bar>. */
+function legendView(today: ISODate) {
+  const d = (n: number) => addDays(today, n)
+  const plan: Plan = {
+    version: 1,
+    meta: {},
+    tracks: [{ id: 'x', name: '示例', color: C }],
+    milestones: [],
+    todos: [],
+    blocks: [],
+    tasks: [
+      { id: 'window', trackId: 'x', title: '时间窗口', start: d(-2), end: d(5) },
+      { id: 'focus', trackId: 'x', title: '打算做的日子', start: d(-2), end: d(5), focus: [d(-1), d(0), d(1), d(3)] },
+      { id: 'progress', trackId: 'x', title: '进度 60%', start: d(-2), end: d(5), progress: 0.6 },
+      { id: 'upcoming', trackId: 'x', title: '未开始', start: d(1), end: d(6), focus: [d(2)] },
+      { id: 'overdue', trackId: 'x', title: '过期', start: d(-6), end: d(-2), focus: [d(-5), d(-4)] },
+      {
+        id: 'pushed',
+        trackId: 'x',
+        title: '推过 3 次',
+        start: d(-3),
+        end: d(3),
+        baseline: d(-1),
+        slips: [
+          { at: d(-2), from: d(-1), to: d(0) },
+          { at: d(-1), from: d(0), to: d(1) },
+          { at: d(0), from: d(1), to: d(3) },
+        ],
+      },
+      { id: 'hard', trackId: 'x', title: '硬 ddl', start: d(-2), end: d(4), hard: true },
+      { id: 'done', trackId: 'x', title: '已完成', start: d(-6), end: d(-1), done: true },
+      { id: 'parked', trackId: 'x', title: '暂停', start: d(-2), end: d(4), parked: true },
+    ],
+  }
+  return { view: buildView(plan, today), origin: d(-6) }
+}
+
+function BarSample({ id, view, origin, today }: { id: string; view: PlanView; origin: ISODate; today: ISODate }) {
+  const DW = 15
+  const tv = view.taskById.get(id)!
   return (
-    <div className="relative shrink-0" style={{ width: w, height: 18 }}>
-      {children}
+    <div className="relative shrink-0" style={{ width: 13 * DW + 70, height: 20 }}>
+      <div className="absolute top-0 bottom-0" style={{ left: diffDays(origin, today) * DW, width: DW, background: 'var(--hl-soft)' }} />
+      <Bar tv={tv} left={diffDays(origin, tv.task.start) * DW} top={2} dw={DW} today={today} stick={0} />
     </div>
   )
 }
 
-function Win({ w, dashed, faded }: { w: number; dashed?: boolean; faded?: boolean }) {
-  return (
-    <div
-      className="absolute top-[1px] left-0 h-[16px] rounded-[3px]"
-      style={{
-        width: w,
-        background: dashed ? 'transparent' : `color-mix(in oklab, ${C} 18%, var(--panel))`,
-        border: `1px ${dashed ? 'dashed' : 'solid'} color-mix(in oklab, ${C} 55%, var(--panel))`,
-        opacity: faded ? 0.5 : 1,
-      }}
-    />
-  )
-}
-
-function Cell({ x, strong = true, ring }: { x: number; strong?: boolean; ring?: boolean }) {
-  return (
-    <div
-      className="absolute top-[1px] h-[16px] rounded-[2px]"
-      style={{
-        left: x + 1,
-        width: 18,
-        background: `color-mix(in oklab, ${C} ${strong ? 78 : 42}%, var(--panel))`,
-        boxShadow: ring ? `0 0 0 1.5px var(--panel), 0 0 0 3px ${C}` : undefined,
-      }}
-    />
-  )
-}
-
 function Legend() {
+  const today = useStore((s) => s.today)
+  const { view, origin } = legendView(today)
+  const bar = (id: string) => <BarSample id={id} view={view} origin={origin} today={today} />
   const rows: [ReactNode, string][] = [
+    [bar('window'), '浅色条 = task 的时间窗口（start → end），颜色 = 所属线程。黄色竖条 = 今天'],
+    [bar('focus'), '实心格 = 打算做它的日子（focus day），过去的变浅。来源：focus 字段、挂在它上面的时间块和 todo'],
+    [bar('progress'), '底部黑线 = 进度。没手动填时按挂在它上面的 todo 完成比例算'],
+    [bar('upcoming'), '没有阴影 = 还没开始；有黑色硬阴影 = 正在进行'],
+    [bar('overdue'), '红白警戒条纹 = 过了 end 还没完成，每天长一格，直到你推后或完成'],
+    [bar('pushed'), '点线 = 原定的 end。+4d×3 = 一共推了 4 天、推了 3 次。贴纸颜色：黄 1 次 · 橙 2 次 · 红 ≥3 次'],
+    [bar('hard'), '右端红块 = 硬 ddl，不能推'],
+    [bar('done'), '变灰 + ✓ = 已完成'],
+    [bar('parked'), '虚线框 = 暂停（parked），不计入负载'],
     [
-      <Sample>
-        <Win w={140} />
-      </Sample>,
-      '浅色条 = task 的时间窗口（start → end），颜色 = 所属线程',
-    ],
-    [
-      <Sample>
-        <Win w={140} />
-        <Cell x={0} strong={false} />
-        <Cell x={40} ring />
-        <Cell x={60} />
-        <Cell x={100} />
-      </Sample>,
-      '实心格 = 打算做它的日子（focus day）。过去的变浅，今天的带外圈。来源：focus 字段、挂在它上面的时间块和 todo',
-    ],
-    [
-      <Sample>
-        <Win w={140} />
-        <div className="absolute bottom-[1px] left-0 h-[2.5px] rounded" style={{ width: 84, background: `color-mix(in oklab, ${C} 65%, var(--text))` }} />
-      </Sample>,
-      '底部细线 = 进度。没手动填时按挂在它上面的 todo 完成比例算',
-    ],
-    [
-      <Sample>
-        <Win w={80} />
-        <div className="hatch-red absolute top-[1px] h-[16px] rounded-r-[3px]" style={{ left: 80, width: 40, border: '1px solid var(--red)', borderLeft: 'none' }} />
-        <span className="absolute top-0 text-[10px] font-semibold" style={{ left: 124, color: 'var(--red)' }}>
-          过期2d
-        </span>
-      </Sample>,
-      '红色斜纹 = 过了 end 还没完成，每天变长一格，直到你推后或完成',
-    ],
-    [
-      <Sample>
-        <Win w={110} />
-        <div className="absolute" style={{ left: 59, top: -1, bottom: -1, borderLeft: '1.5px dashed var(--text)', opacity: 0.55 }} />
-        <span className="absolute top-0 text-[10px] font-semibold" style={{ left: 114, color: 'var(--red)' }}>
-          +7d×3
-        </span>
-      </Sample>,
-      '虚线 = 原定的 end（baseline）。+7d×3 = 一共推了 7 天、推了 3 次。颜色：黄 1 次 · 橙 2 次 · 红 ≥3 次',
-    ],
-    [
-      <Sample>
-        <Win w={140} />
-        <div className="absolute top-0 h-[18px] rounded-r-[3px]" style={{ left: 137, width: 3, background: 'var(--red)' }} />
-      </Sample>,
-      '右端红色竖条 = 硬 ddl，不能推',
-    ],
-    [
-      <Sample>
-        <span className="absolute top-[4px] left-2 inline-block h-[8px] w-[8px] rotate-45" style={{ background: C }} />
-        <span className="absolute top-[4px] left-8 inline-block h-[8px] w-[8px] rotate-45" style={{ background: 'var(--red)' }} />
-        <span className="absolute top-[4px] left-14 inline-block h-[8px] w-[8px] rotate-45" style={{ border: '1.5px solid var(--faint)' }} />
-      </Sample>,
+      <div className="flex shrink-0 items-center gap-2" style={{ width: 13 * 15 + 70 }}>
+        {[C, 'var(--sticker-red)', 'transparent'].map((fill, i) => (
+          <span key={i} className="inline-block rotate-45" style={{ width: 9, height: 9, background: fill, border: `1.5px solid ${i === 2 ? 'var(--faint)' : 'var(--ink)'}`, boxShadow: i === 2 ? undefined : '1.5px 1.5px 0 var(--ink)' }} />
+        ))}
+      </div>,
       '◆ milestone（线程色）· 红 ◆ = 硬 ddl · 空心 = 已完成',
     ],
     [
-      <Sample>
-        <Win w={140} dashed faded />
-        <span className="absolute top-[1px] left-1 text-[11px]">⏸ 暂停</span>
-      </Sample>,
-      '虚线框 = 暂停（parked），不计入负载；变淡 + ✓ = 已完成',
-    ],
-    [
-      <Sample>
-        <span className="num absolute top-0 left-0 rounded px-1 text-[10px] font-semibold" style={{ background: 'color-mix(in oklab, var(--accent) 29%, transparent)' }}>
-          3
+      <div className="flex shrink-0 items-center gap-1" style={{ width: 13 * 15 + 70 }}>
+        <span className="num rounded-[3px] px-1.5 text-[9.5px] font-bold" style={{ background: 'color-mix(in srgb, var(--accent) 38%, var(--panel))' }}>
+          2
         </span>
-        <span className="num absolute top-0 left-6 rounded px-1 text-[10px] font-semibold" style={{ background: 'var(--red-soft)', color: 'var(--red)' }}>
+        <span className="num rounded-[3px] px-1.5 text-[9.5px] font-bold text-white" style={{ background: 'var(--sticker-red)', border: '1.5px solid var(--bar-ink)' }}>
           5
         </span>
-      </Sample>,
+      </div>,
       '表头第二行 = 当天要并行推进几个 task。超过 maxParallel（默认 4）变红',
     ],
     [
-      <Sample>
-        <span className="num absolute top-0 left-0 rounded px-1 text-[10px] font-semibold" style={{ background: 'var(--orange-soft)', color: 'var(--orange)' }}>
+      <div className="flex shrink-0 items-center gap-1" style={{ width: 13 * 15 + 70 }}>
+        <span className="num rounded px-1 text-[9.5px] font-semibold" style={{ background: 'var(--orange-soft)', color: 'var(--orange)' }}>
           ↻2d
         </span>
-      </Sample>,
+        <span className="num rounded px-1 text-[9.5px] font-semibold" style={{ background: 'var(--red-soft)', color: 'var(--red)' }}>
+          ↻3d
+        </span>
+      </div>,
       '没完成的 todo 自动滚到今天，↻N 表示拖了 N 天。≥3 天变红并进「需处理」',
     ],
   ]
   return (
     <div className="space-y-2.5 text-[12px]">
-      {rows.map(([s, t], i) => (
+      {rows.map(([sample, text], i) => (
         <div key={i} className="flex items-center gap-3">
-          {s}
-          <div style={{ color: 'var(--muted)' }}>{t}</div>
+          {sample}
+          <div style={{ color: 'var(--muted)' }}>{text}</div>
         </div>
       ))}
       <div className="pt-1 text-[11px]" style={{ color: 'var(--faint)' }}>
-        线程按「今天有没有事」排序：今天有聚焦或有过期的在最上面，暂停的在最下面。键盘：/ 快速添加。
+        线程按「今天有没有事」排序：今天有聚焦或有过期的在最上面，暂停的在最下面。点线程名看这条线的全部内容。键盘：/ 快速添加，Esc 关闭。
       </div>
     </div>
   )

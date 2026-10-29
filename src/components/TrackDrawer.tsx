@@ -1,7 +1,7 @@
 import { diffDays, md, relDay } from '../core/date'
 import type { PlanView, TaskView } from '../core/derive'
 import { useUI } from '../data/ui'
-import { pct, pressureColor, tint } from '../lib/ui'
+import { pastel, pct, pressureColor } from '../lib/ui'
 import { TodoRow } from './DayPanel'
 import { Sheet } from './Sheet'
 
@@ -128,8 +128,8 @@ function TaskRow({ tv, today, onOpen, color }: { tv: TaskView; today: string; on
           <span className="num w-[92px] shrink-0 text-[10.5px]" style={{ color: 'var(--muted)' }}>
             {md(task.start)} → {md(task.end)}
           </span>
-          <span className="h-[5px] flex-1 overflow-hidden rounded" style={{ background: tint(color, 18) }}>
-            <span className="block h-full rounded" style={{ width: pct(tv.progress ?? 0), background: color }} />
+          <span className="h-[8px] flex-1 overflow-hidden rounded-[3px]" style={{ background: pastel(color, 25), border: '1.5px solid var(--bar-ink)' }}>
+            <span className="block h-full" style={{ width: pct(tv.progress ?? 0), background: color }} />
           </span>
           <span className="num w-[30px] shrink-0 text-right text-[10.5px]" style={{ color: 'var(--muted)' }}>
             {pct(tv.progress)}

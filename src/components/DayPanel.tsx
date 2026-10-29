@@ -5,7 +5,7 @@ import { toggleTodo } from '../core/ops'
 import type { Block, ISODate } from '../core/types'
 import { useStore } from '../data/store'
 import { useUI } from '../data/ui'
-import { cx, pct, tint } from '../lib/ui'
+import { cx, pastel, pct } from '../lib/ui'
 import { MonthMini } from './MonthMini'
 
 function todosOn(view: PlanView, day: ISODate): TodoView[] {
@@ -107,14 +107,14 @@ function FocusChip(props: { id: string; title: string; color: string; progress: 
   const openTask = useUI((s) => s.openTask)
   return (
     <button
-      className="flex max-w-full items-center gap-1 overflow-hidden rounded-[4px] py-[2px] pr-1.5 pl-0 text-[11px]"
-      style={{ background: tint(props.color, 14), border: `1px solid ${tint(props.color, 40)}` }}
+      className="flex max-w-full items-center gap-1 overflow-hidden rounded-[5px] py-[2px] pr-1.5 pl-0 text-[11px] font-semibold"
+      style={{ background: pastel(props.color, 28), border: '1.5px solid var(--bar-ink)', color: 'var(--bar-ink)', boxShadow: props.overdue ? '2px 2px 0 var(--bar-ink)' : undefined }}
       onClick={() => openTask(props.id)}
     >
-      <span className="self-stretch" style={{ width: 3, background: props.color }} />
+      <span className="self-stretch" style={{ width: 5, background: props.color, borderRight: '1.5px solid var(--bar-ink)' }} />
       <span className="truncate">{props.title}</span>
       {props.progress != null && (
-        <span className="num shrink-0 text-[10px]" style={{ color: 'var(--muted)' }}>
+        <span className="num shrink-0 text-[10px]" style={{ opacity: 0.6 }}>
           {pct(props.progress)}
         </span>
       )}
@@ -165,15 +165,16 @@ function HourGrid({ blocks, day, today, hourH, view, range }: { blocks: Block[];
         return (
           <div
             key={b.id}
-            className={cx('absolute overflow-hidden rounded-[3px] px-1 text-[10.5px] leading-[12px]', b.taskId && 'cursor-pointer')}
+            className={cx('absolute overflow-hidden rounded-[4px] px-1 text-[10.5px] leading-[12px]', b.taskId && 'cursor-pointer')}
             style={{
               top,
               height: h,
               left: `calc(${GUTTER}px + (100% - ${GUTTER}px) * ${col / cols})`,
               width: `calc((100% - ${GUTTER}px) / ${cols} - 2px)`,
-              background: kind === 'routine' ? 'var(--panel-2)' : tint(color, kind === 'event' ? 30 : 16),
-              borderLeft: `3px solid ${kind === 'routine' ? 'var(--line)' : color}`,
-              color: kind === 'routine' ? 'var(--muted)' : 'var(--text)',
+              background: kind === 'routine' ? 'var(--panel-2)' : pastel(color, kind === 'event' ? 60 : 30),
+              border: kind === 'routine' ? '1.5px dashed var(--line)' : '1.5px solid var(--bar-ink)',
+              borderLeft: kind === 'routine' ? undefined : `5px solid ${color}`,
+              color: kind === 'routine' ? 'var(--muted)' : 'var(--bar-ink)',
               paddingTop: h > 20 ? 2 : 0,
             }}
             onClick={() => b.taskId && openTask(b.taskId)}
@@ -197,7 +198,7 @@ function HourGrid({ blocks, day, today, hourH, view, range }: { blocks: Block[];
           >
             <span className={cx(kind === 'event' && 'font-semibold')}>{b.title}</span>
             {h >= 24 && (
-              <div className="num text-[9.5px]" style={{ color: 'var(--muted)' }}>
+              <div className="num text-[9.5px]" style={{ opacity: 0.65 }}>
                 {b.start}–{b.end}
               </div>
             )}

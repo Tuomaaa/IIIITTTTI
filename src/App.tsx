@@ -145,9 +145,11 @@ function MobileLayout({ view }: { view: PlanView }) {
   ]
   return (
     <div className="flex h-full flex-col" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-      <header className="space-y-1.5 px-3 pt-2 pb-2" style={{ background: 'var(--panel)', borderBottom: '1px solid var(--line)' }}>
+      <header className="space-y-1.5 px-3 pt-2 pb-2" style={{ background: 'var(--panel)', borderBottom: '2px solid var(--ink)' }}>
         <div className="flex items-center gap-2">
-          <span className="text-[15px] font-bold">多线程</span>
+          <span className="display -rotate-2 rounded-[5px] px-1.5 text-[14px] font-bold" style={{ background: 'var(--hl)', color: 'var(--bar-ink)', border: '1.5px solid var(--bar-ink)', boxShadow: '2px 2px 0 var(--bar-ink)' }}>
+            多线程
+          </span>
           <span className="num text-[13px] font-medium">{mdw(view.today)}</span>
           <span className="num text-[11px]" style={{ color: 'var(--muted)' }}>
             W{isoWeek(view.today)}
@@ -196,16 +198,16 @@ function MobileLayout({ view }: { view: PlanView }) {
           </div>
         )}
       </main>
-      <nav className="flex items-stretch" style={{ background: 'var(--panel)', borderTop: '1px solid var(--line)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
+      <nav className="flex items-stretch" style={{ background: 'var(--panel)', borderTop: '2px solid var(--ink)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
         {tabs.map(([k, label, n]) => (
-          <button key={k} className="relative flex-1 py-2.5 text-[12.5px] font-medium" style={{ color: tab === k ? 'var(--accent)' : 'var(--muted)' }} onClick={() => setTab(k)}>
+          <button key={k} className="relative flex-1 py-2.5 text-[12.5px] font-bold" style={{ color: tab === k ? 'var(--text)' : 'var(--muted)' }} onClick={() => setTab(k)}>
             {label}
             {!!n && (
               <span className="num ml-1 rounded-full px-1.5 text-[10px] font-semibold" style={{ background: 'var(--red-soft)', color: 'var(--red)' }}>
                 {n}
               </span>
             )}
-            {tab === k && <span className="absolute top-0 right-6 left-6 h-[2px] rounded" style={{ background: 'var(--accent)' }} />}
+            {tab === k && <span className="absolute top-0 right-6 left-6 h-[4px] rounded-b" style={{ background: 'var(--hl)', borderBottom: '1.5px solid var(--bar-ink)' }} />}
           </button>
         ))}
         <button className="w-14 text-[20px] font-light" style={{ color: 'var(--accent)' }} onClick={() => setAdding(!adding)} aria-label="快速添加">
@@ -223,9 +225,10 @@ function Toast() {
     <div
       className="fade-in fixed bottom-16 left-1/2 z-[60] max-w-[90vw] -translate-x-1/2 rounded-md px-3 py-2 text-[12px]"
       style={{
-        background: toast.kind === 'error' ? 'var(--red)' : 'var(--text)',
-        color: 'var(--panel)',
-        boxShadow: 'var(--shadow)',
+        background: toast.kind === 'error' ? 'var(--sticker-red)' : 'var(--hl)',
+        color: toast.kind === 'error' ? '#fff' : 'var(--bar-ink)',
+        border: '2px solid var(--bar-ink)',
+        boxShadow: '3px 3px 0 var(--bar-ink)',
       }}
     >
       {toast.msg}

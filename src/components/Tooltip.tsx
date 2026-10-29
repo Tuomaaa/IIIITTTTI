@@ -24,7 +24,7 @@ export function Tooltip() {
     <div
       ref={ref}
       className="pointer-events-none fixed z-50 max-w-[320px] rounded-md border px-2.5 py-2 text-[11.5px]"
-      style={{ left: pos.left, top: pos.top, background: 'var(--panel)', borderColor: 'var(--line)', boxShadow: 'var(--shadow)' }}
+      style={{ left: pos.left, top: pos.top, background: 'var(--panel)', border: '2px solid var(--ink)', boxShadow: 'var(--shadow-sm)' }}
     >
       {hover.content}
     </div>

@@ -4,10 +4,10 @@ import { packLanes, settings, type PlanView, type TaskView, type TrackView } fro
 import type { ISODate, Milestone } from '../core/types'
 import { useStore } from '../data/store'
 import { useUI, type Zoom } from '../data/ui'
-import { cx, pressureColor, tint } from '../lib/ui'
+import { pastel, stickerStyle } from '../lib/ui'
 import { MilestoneTip, TaskTip } from './Tooltip'
 
-const LANE_H = 20
+const LANE_H = 21
 const BAR_H = 16
 const ROW_PAD = 4
 const MS_STRIP = 13
@@ -94,17 +94,24 @@ export function Gantt({ view, compact = false }: Props) {
   )
 }
 
-/** Approx. pixel width of the slip / overdue badge drawn after a bar. */
-function badgeWidth(t: TaskView): number {
-  const text = badgeText(t)
-  return text ? text.length * 6.2 + 8 : 0
+interface Badge {
+  text: string
+  level: 1 | 2 | 3 | 'overdue'
 }
 
-function badgeText(t: TaskView): string {
-  const parts: string[] = []
-  if (t.phase === 'overdue') parts.push(`过期${t.overdueDays}d`)
-  if (t.pushCount) parts.push(`+${t.slipDays}d×${t.pushCount}`)
-  return parts.join(' ')
+/** Stickers drawn after a bar: days overdue, then total slip (+days × pushes). */
+function badges(t: TaskView): Badge[] {
+  const out: Badge[] = []
+  if (t.phase === 'overdue') out.push({ text: `过期${t.overdueDays}d`, level: 'overdue' })
+  if (t.pushCount) out.push({ text: `+${t.slipDays}d×${t.pushCount}`, level: (t.pushCount >= 3 ? 3 : t.pushCount) as 1 | 2 | 3 })
+  return out
+}
+
+/** Approx. pixel width of the stickers, so lane packing leaves room for them. */
+function badgeWidth(t: TaskView): number {
+  const textW = (s: string) => [...s].reduce((w, ch) => w + (ch.charCodeAt(0) > 0x2e80 ? 10 : 6), 0)
+  const bs = badges(t)
+  return bs.length ? bs.reduce((w, b) => w + textW(b.text) + 14, 5) : 0
 }
 
 const Header = memo(function Header({
@@ -132,10 +139,10 @@ const Header = memo(function Header({
   const setHover = useUI((s) => s.setHover)
   const months = days.filter((d, i) => i === 0 || d.endsWith('-01'))
   return (
-    <div className="sticky top-0 z-20 flex" style={{ height: HEAD_H, background: 'var(--panel)', borderBottom: '1px solid var(--line)' }}>
+    <div className="sticky top-0 z-20 flex" style={{ height: HEAD_H, background: 'var(--panel)', borderBottom: '2px solid var(--ink)' }}>
       <div
         className="sticky left-0 z-30 flex shrink-0 flex-col justify-end px-2 pb-1"
-        style={{ width: labelW, background: 'var(--panel)', borderRight: '1px solid var(--line)' }}
+        style={{ width: labelW, background: 'var(--panel)', borderRight: '2px solid var(--ink)' }}
       >
         <div className="section-title">{compact ? '线程' : `线程 · ${trackCount}`}</div>
         <div className="text-[10px]" style={{ color: 'var(--faint)', height: HEAD_LOAD - 2 }}>
@@ -146,7 +153,7 @@ const Header = memo(function Header({
         {months.map((d) => {
           const i = days.indexOf(d)
           return (
-            <div key={d} className="absolute top-0 pl-1 text-[10.5px] font-semibold" style={{ left: i * dw, height: HEAD_MONTH, color: 'var(--muted)', borderLeft: i ? '1px solid var(--line)' : undefined }}>
+            <div key={d} className="display absolute top-0 pl-1 text-[11px] font-bold" style={{ left: i * dw, height: HEAD_MONTH, color: 'var(--text)', borderLeft: i ? '1.5px solid var(--ink)' : undefined }}>
               {Number(d.slice(5, 7))}月
             </div>
           )
@@ -175,14 +182,15 @@ const Header = memo(function Header({
               aria-label={`选择 ${d}`}
             >
               <div
-                className={cx('num flex flex-col items-center rounded leading-[11px]')}
+                className="num flex flex-col items-center rounded-[4px] leading-[11px]"
                 style={{
                   width: dw - 2,
                   height: HEAD_DAY - 2,
-                  paddingTop: 2,
-                  background: isToday ? 'var(--accent)' : undefined,
-                  color: isToday ? 'var(--panel)' : wd === 0 || wd === 6 ? 'var(--faint)' : 'var(--text)',
-                  outline: selected === d && !isToday ? '1.5px solid var(--accent)' : undefined,
+                  paddingTop: 1,
+                  background: isToday ? 'var(--hl)' : undefined,
+                  border: isToday ? '1.5px solid var(--bar-ink)' : selected === d ? '1.5px dashed var(--ink)' : '1.5px solid transparent',
+                  color: isToday ? 'var(--bar-ink)' : wd === 0 || wd === 6 ? 'var(--faint)' : 'var(--text)',
+                  fontWeight: isToday ? 700 : undefined,
                 }}
               >
                 {dw >= 24 ? (
@@ -198,13 +206,14 @@ const Header = memo(function Header({
                 )}
               </div>
               <div
-                className="num mt-[1px] flex items-center justify-center text-[9.5px] font-semibold"
+                className="num mt-[1px] flex items-center justify-center text-[9.5px] font-bold"
                 style={{
-                  width: dw - 2,
+                  width: dw - 4,
                   height: HEAD_LOAD - 3,
-                  borderRadius: 2,
-                  background: n ? (over ? 'var(--red-soft)' : `color-mix(in oklab, var(--accent) ${Math.min(40, 8 + n * 7)}%, transparent)`) : undefined,
-                  color: over ? 'var(--red)' : n ? 'var(--text)' : 'transparent',
+                  borderRadius: 3,
+                  background: n ? (over ? 'var(--sticker-red)' : `color-mix(in srgb, var(--accent) ${Math.min(70, 10 + n * 14)}%, var(--panel))`) : undefined,
+                  border: over ? '1.5px solid var(--bar-ink)' : undefined,
+                  color: over ? '#fff' : n >= 3 ? '#fff' : n ? 'var(--text)' : 'transparent',
                 }}
               >
                 {n || ''}
@@ -254,13 +263,13 @@ const Grid = memo(function Grid({ days, dw, labelW, today, height }: { days: ISO
             style={{
               left: i * dw,
               width: dw,
-              background: isToday ? 'var(--accent-soft)' : wd === 0 || wd === 6 ? 'var(--weekend)' : undefined,
-              borderLeft: wd === 1 ? '1px solid var(--line-2)' : undefined,
+              background: isToday ? 'var(--hl-soft)' : wd === 0 || wd === 6 ? 'var(--weekend)' : undefined,
+              borderLeft: wd === 1 ? '1px dashed var(--line)' : undefined,
             }}
           />
         )
       })}
-      <div className="absolute top-0 bottom-0" style={{ left: diffDays(days[0], today) * dw, width: 1.5, background: 'var(--accent)', opacity: 0.6 }} />
+      <div className="absolute top-0 bottom-0" style={{ left: diffDays(days[0], today) * dw - 1, width: 2, background: 'var(--ink)' }} />
     </div>
   )
 })
@@ -290,7 +299,7 @@ function Row({
   const setHover = useUI((s) => s.setHover)
   const msTop = ROW_PAD + Math.max(1, lanes.length) * LANE_H - 2
   return (
-    <div className="relative flex" style={{ height: h, borderBottom: '1px solid var(--line-2)', opacity: track.paused ? 0.5 : 1 }}>
+    <div className="relative flex" style={{ height: h, borderBottom: '1px solid var(--line)', opacity: track.paused ? 0.5 : 1 }}>
       <Label tv={tv} labelW={labelW} today={today} compact={compact} />
       <div className="relative flex-1">
         {lanes.map((lane, li) =>
@@ -298,11 +307,11 @@ function Row({
         )}
         {ms.map((m) => {
           const overdue = !m.done && m.date < today
-          const c = m.done ? 'var(--faint)' : m.hard || overdue ? 'var(--red)' : track.color
+          const fill = m.done ? 'transparent' : m.hard || overdue ? 'var(--sticker-red)' : track.color
           return (
             <div
               key={m.id}
-              className="absolute flex items-center gap-[3px] whitespace-nowrap"
+              className="absolute flex items-center gap-[4px] whitespace-nowrap"
               style={{ left: x(m.date) + dw / 2 - 5, top: msTop, height: MS_STRIP }}
               onMouseEnter={(e) => setHover({ x: e.clientX, y: e.clientY, content: <MilestoneTip m={m} track={track} today={today} /> })}
               onMouseLeave={() => setHover(null)}
@@ -310,15 +319,15 @@ function Row({
               <span
                 className="inline-block"
                 style={{
-                  width: 8,
-                  height: 8,
+                  width: 9,
+                  height: 9,
                   transform: 'rotate(45deg)',
-                  background: m.done ? 'transparent' : c,
-                  border: `1.5px solid ${m.done ? 'var(--faint)' : c}`,
-                  boxShadow: '0 0 0 1.5px var(--panel)',
+                  background: fill,
+                  border: `1.5px solid ${m.done ? 'var(--faint)' : 'var(--ink)'}`,
+                  boxShadow: m.done ? undefined : '1.5px 1.5px 0 var(--ink)',
                 }}
               />
-              <span className="text-[10px] font-medium" style={{ color: m.hard ? 'var(--red)' : 'var(--muted)', textDecoration: m.done ? 'line-through' : undefined }}>
+              <span className="text-[10px] font-semibold" style={{ color: m.hard || overdue ? 'var(--red)' : 'var(--text)', textDecoration: m.done ? 'line-through' : undefined, opacity: m.done ? 0.5 : 1 }}>
                 {m.title}
               </span>
             </div>
@@ -334,15 +343,15 @@ function Label({ tv, labelW, today, compact }: { tv: TrackView; labelW: number; 
   const openTrack = useUI((s) => s.openTrack)
   return (
     <button
-      className="sticky left-0 z-10 flex shrink-0 overflow-hidden text-left hover:brightness-[.97]"
-      style={{ width: labelW, background: 'var(--panel)', borderRight: '1px solid var(--line)' }}
+      className="sticky left-0 z-10 flex shrink-0 overflow-hidden text-left hover:bg-[var(--panel-2)]"
+      style={{ width: labelW, background: 'var(--panel)', borderRight: '2px solid var(--ink)' }}
       title={track.note ?? `${track.name}：点开看这条线的全部内容`}
       onClick={() => openTrack(track.id)}
     >
-      <div className="shrink-0" style={{ width: 3, background: track.color }} />
+      <div className="shrink-0" style={{ width: 6, background: track.color, borderRight: '1.5px solid var(--ink)' }} />
       <div className="min-w-0 flex-1 px-1.5 pt-[3px]">
         <div className="flex items-center gap-1">
-          <span className="truncate font-semibold" style={{ fontSize: compact ? 11 : 12 }}>
+          <span className="truncate font-bold" style={{ fontSize: compact ? 11 : 12 }}>
             {track.name}
           </span>
           {track.paused && (
@@ -350,16 +359,24 @@ function Label({ tv, labelW, today, compact }: { tv: TrackView; labelW: number; 
               暂停
             </span>
           )}
-          <span className="ml-auto flex shrink-0 items-center gap-1 text-[10px] font-semibold num">
-            {tv.overdueCount > 0 && <span style={{ color: 'var(--red)' }}>!{tv.overdueCount}</span>}
-            {!compact && tv.slipDays > 0 && <span style={{ color: pressureColor(tv.pushCount >= 3 ? 3 : 2) }}>+{tv.slipDays}d</span>}
+          <span className="ml-auto flex shrink-0 items-center gap-1">
+            {tv.overdueCount > 0 && (
+              <span className="sticker" style={stickerStyle('overdue')} title={`${tv.overdueCount} 个过期 task`}>
+                !{tv.overdueCount}
+              </span>
+            )}
+            {!compact && tv.slipDays > 0 && (
+              <span className="sticker" style={stickerStyle(tv.pushCount >= 3 ? 3 : 2)} title={`这条线累计推迟 ${tv.slipDays} 天`}>
+                +{tv.slipDays}d
+              </span>
+            )}
           </span>
         </div>
         {!compact && tv.next && (
           <div className="flex items-center gap-1 text-[10.5px]" style={{ color: 'var(--muted)' }}>
             <span className="truncate">→ {tv.next.title}</span>
             {tv.next.date ? (
-              <span className="num ml-auto shrink-0" style={{ color: tv.next.date < today ? 'var(--orange)' : tv.next.date === today ? 'var(--accent)' : 'var(--faint)' }}>
+              <span className="num ml-auto shrink-0 font-semibold" style={{ color: tv.next.date < today ? 'var(--orange)' : tv.next.date === today ? 'var(--accent)' : 'var(--faint)' }}>
                 {relDay(tv.next.date, today)}
               </span>
             ) : (
@@ -376,98 +393,86 @@ function Label({ tv, labelW, today, compact }: { tv: TrackView; labelW: number; 
   )
 }
 
-const Bar = memo(function Bar({ tv, left, top, dw, today, stick }: { tv: TaskView; left: number; top: number; dw: number; today: ISODate; stick: number }) {
+export const Bar = memo(function Bar({ tv, left, top, dw, today, stick }: { tv: TaskView; left: number; top: number; dw: number; today: ISODate; stick: number }) {
   const setHover = useUI((s) => s.setHover)
   const openTask = useUI((s) => s.openTask)
   const { task } = tv
-  const color = tv.track?.color ?? '#888'
+  const color = tv.track?.color ?? '#888888'
   const span = diffDays(task.start, task.end) + 1
+  const winW = span * dw
   const width = (diffDays(task.start, tv.visualEnd) + 1) * dw
   const done = tv.phase === 'done'
   const parked = tv.phase === 'parked'
-  const badge = badgeText(tv)
+  const overdue = tv.phase === 'overdue'
+  // In-progress work "pops" with a hard shadow; future, done and parked bars stay flat.
+  const lifted = tv.phase === 'active' || overdue
   const at = (d: ISODate) => diffDays(task.start, d) * dw
+  const ink = 'var(--bar-ink)'
 
   return (
     <div
       className="absolute cursor-pointer"
-      style={{ left, top, width, height: BAR_H, opacity: done ? 0.5 : parked ? 0.55 : tv.phase === 'upcoming' ? 0.78 : 1 }}
+      style={{ left, top, width, height: BAR_H, opacity: done ? 0.45 : parked ? 0.6 : 1 }}
       onClick={() => openTask(task.id)}
       onMouseEnter={(e) => setHover({ x: e.clientX, y: e.clientY, content: <TaskTip tv={tv} today={today} /> })}
       onMouseMove={(e) => setHover({ x: e.clientX, y: e.clientY, content: <TaskTip tv={tv} today={today} /> })}
       onMouseLeave={() => setHover(null)}
     >
-      {/* window */}
+      {/* overdue tail: caution tape glued to the end of the window */}
+      {overdue && (
+        <div
+          className="tape absolute top-0 bottom-0 rounded-r-[4px]"
+          style={{ left: winW - 4, width: tv.overdueDays * dw + 4, border: `1.5px solid ${ink}`, boxShadow: '2px 2px 0 var(--bar-shadow)' }}
+        />
+      )}
+      {/* window + focus days, clipped by the outline */}
       <div
-        className="absolute top-0 bottom-0 left-0 rounded-[3px]"
+        className="absolute top-0 bottom-0 left-0 overflow-hidden rounded-[4px]"
         style={{
-          width: span * dw,
-          background: parked ? 'transparent' : tint(color, done ? 14 : 18),
-          border: `1px ${parked ? 'dashed' : 'solid'} ${tint(color, 55)}`,
+          width: winW,
+          background: parked ? 'transparent' : done ? '#e4e0d6' : pastel(color),
+          border: `1.5px ${parked ? 'dashed' : 'solid'} ${ink}`,
+          boxShadow: lifted && !overdue ? '2px 2px 0 var(--bar-shadow)' : undefined,
         }}
-      />
-      {/* focus days */}
-      {!parked &&
-        tv.focus.map((d) => {
-          const past = d < today
-          const isToday = d === today
-          return (
+      >
+        {!parked &&
+          !done &&
+          tv.focus.map((d) => (
             <div
               key={d}
-              className="absolute top-0 bottom-0 rounded-[2px]"
-              style={{
-                left: at(d) + 1,
-                width: dw - 2,
-                background: tint(color, done ? 40 : past ? 42 : 78),
-                boxShadow: isToday ? `0 0 0 1.5px var(--panel), 0 0 0 3px ${color}` : undefined,
-                zIndex: isToday ? 1 : undefined,
-              }}
+              className="absolute top-0 bottom-0"
+              style={{ left: at(d) - 1.5, width: dw, background: d < today ? pastel(color, 62) : color }}
             />
-          )
-        })}
-      {/* overdue tail */}
-      {tv.phase === 'overdue' && (
-        <div
-          className="hatch-red absolute top-0 bottom-0 rounded-r-[3px]"
-          style={{ left: span * dw, width: tv.overdueDays * dw, border: '1px solid var(--red)', borderLeft: 'none', background: 'var(--red-soft)' }}
-        >
-          <div className="hatch-red absolute inset-0" />
-        </div>
-      )}
-      {/* progress */}
-      {tv.progress != null && tv.progress > 0 && !done && (
-        <div
-          className="absolute bottom-0 left-0 rounded-bl-[3px]"
-          style={{ width: Math.max(2, span * dw * tv.progress), height: 2.5, background: `color-mix(in oklab, ${color} 65%, var(--text))` }}
-        />
-      )}
+          ))}
+        {/* progress */}
+        {tv.progress != null && tv.progress > 0 && !done && (
+          <div className="absolute bottom-0 left-0" style={{ width: Math.max(3, winW * tv.progress), height: 3, background: ink }} />
+        )}
+        {/* hard deadline cap */}
+        {task.hard && !done && <div className="absolute top-0 right-0 bottom-0" style={{ width: 5, background: 'var(--sticker-red)', borderLeft: `1.5px solid ${ink}` }} />}
+      </div>
       {/* baseline: where it was originally supposed to end */}
       {task.baseline && task.baseline < task.end && (
-        <div
-          className="absolute"
-          style={{ left: at(task.baseline) + dw - 1, top: -2, bottom: -2, borderLeft: '1.5px dashed var(--text)', opacity: 0.55 }}
-        />
+        <div className="absolute" style={{ left: at(task.baseline) + dw - 1, top: -3, bottom: -3, borderLeft: `2px dotted ${ink}` }} />
       )}
-      {/* hard deadline cap */}
-      {task.hard && !done && (
-        <div className="absolute top-[-1px] bottom-[-1px] rounded-r-[3px]" style={{ left: span * dw - 3, width: 3, background: 'var(--red)' }} />
-      )}
-      {/* title: sticks to the left edge of the viewport when the bar starts off-screen */}
-      <div className="pointer-events-none absolute inset-0" style={{ overflow: 'clip', zIndex: 2 }}>
+      {/* title: only over the planned window (never over the tail); sticks to the viewport edge */}
+      <div className="pointer-events-none absolute top-0 bottom-0 left-0" style={{ width: winW - (task.hard ? 6 : 1), overflow: 'clip', zIndex: 2 }}>
         <div
-          className="halo sticky inline-block max-w-full truncate px-1 align-top text-[11px] font-medium"
-          style={{ left: stick, lineHeight: `${BAR_H}px`, textDecoration: done ? 'line-through' : undefined }}
+          className="sticky inline-block max-w-full truncate px-[5px] align-top text-[11px] font-semibold"
+          style={{ left: stick, lineHeight: `${BAR_H}px`, color: ink, textDecoration: done ? 'line-through' : undefined }}
         >
           {done ? '✓ ' : parked ? '⏸ ' : ''}
           {task.title}
         </div>
       </div>
-      {badge && (
-        <div
-          className="num pointer-events-none absolute top-0 flex items-center whitespace-nowrap pl-1 text-[10px] font-semibold"
-          style={{ left: width, height: BAR_H, color: tv.phase === 'overdue' ? 'var(--red)' : pressureColor(tv.pressure) }}
-        >
-          {badge}
+      {/* stickers */}
+      {badges(tv).length > 0 && (
+        <div className="pointer-events-none absolute top-0 flex items-center gap-[3px] pl-[5px]" style={{ left: width, height: BAR_H }}>
+          {badges(tv).map((b) => (
+            <span key={b.text} className="sticker" style={stickerStyle(b.level)}>
+              {b.text}
+            </span>
+          ))}
         </div>
       )}
     </div>

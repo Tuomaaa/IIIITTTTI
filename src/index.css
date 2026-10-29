@@ -2,74 +2,98 @@
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
+/*
+ * Neobrutalist tokens: flat fills, ink outlines, hard offset shadows, a yellow highlighter.
+ * Bars, blocks and stickers use --bar-ink (always near-black) so they read the same in both
+ * themes; panels and controls use --ink, which flips in dark mode.
+ */
 :root {
-  --bg: #f4f4f2;
-  --panel: #ffffff;
-  --panel-2: #f9f9f8;
-  --line: #e4e3df;
-  --line-2: #efeeeb;
-  --text: #1c1b19;
-  --muted: #6f6c66;
-  --faint: #a3a09a;
-  --accent: #2563eb;
-  --accent-soft: rgba(37, 99, 235, 0.08);
-  --weekend: rgba(28, 27, 25, 0.028);
-  --red: #dc2626;
-  --red-soft: rgba(220, 38, 38, 0.1);
-  --orange: #ea580c;
-  --orange-soft: rgba(234, 88, 12, 0.1);
-  --amber: #b7791f;
-  --amber-soft: rgba(183, 121, 31, 0.12);
-  --green: #15803d;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 4px 16px rgba(0, 0, 0, 0.06);
+  --bg: #f3eee3;
+  --panel: #fffdf7;
+  --panel-2: #f6f1e6;
+  --line: #ddd5c4;
+  --line-2: #ebe5d8;
+  --text: #141414;
+  --muted: #69645a;
+  --faint: #a19b8e;
+  --ink: #141414;
+  --bar-ink: #141414;
+  /* Hard shadow under in-progress bars; flips to light in dark mode so they still "pop". */
+  --bar-shadow: #141414;
+  --accent: #2f5bff;
+  --accent-soft: rgba(47, 91, 255, 0.1);
+  --hl: #ffe14d;
+  --hl-soft: rgba(255, 225, 77, 0.32);
+  --weekend: rgba(20, 20, 20, 0.035);
+  --red: #e0322c;
+  --red-soft: #ffd9d4;
+  --orange: #e8620f;
+  --orange-soft: #ffe2c9;
+  --amber: #b07800;
+  --amber-soft: #fff0b8;
+  --green: #11924a;
+  --green-soft: #ccf2d9;
+  --sticker-red: #ff5a4f;
+  --sticker-orange: #ff9f43;
+  --sticker-yellow: #ffd84d;
+  --shadow: 4px 4px 0 var(--ink);
+  --shadow-sm: 2px 2px 0 var(--ink);
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --bg: #0e0e10;
-    --panel: #161618;
-    --panel-2: #1b1b1e;
-    --line: #2a2a2e;
-    --line-2: #212124;
-    --text: #e8e6e3;
-    --muted: #a09d98;
-    --faint: #6b6965;
-    --accent: #6ea8fe;
-    --accent-soft: rgba(110, 168, 254, 0.1);
-    --weekend: rgba(255, 255, 255, 0.025);
-    --red: #f87171;
-    --red-soft: rgba(248, 113, 113, 0.14);
-    --orange: #fb923c;
-    --orange-soft: rgba(251, 146, 60, 0.14);
-    --amber: #fbbf24;
-    --amber-soft: rgba(251, 191, 36, 0.13);
-    --green: #4ade80;
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.4);
+    --bg: #111111;
+    --panel: #1b1b1b;
+    --panel-2: #242424;
+    --line: #3a3833;
+    --line-2: #2b2a27;
+    --text: #f2efe8;
+    --muted: #aaa597;
+    --faint: #6f6b62;
+    --ink: #e9e4d8;
+    --bar-shadow: #e9e4d8;
+    --accent: #7c9bff;
+    --accent-soft: rgba(124, 155, 255, 0.12);
+    --hl: #ffe14d;
+    --hl-soft: rgba(255, 225, 77, 0.1);
+    --weekend: rgba(255, 255, 255, 0.03);
+    --red: #ff6b61;
+    --red-soft: rgba(255, 107, 97, 0.18);
+    --orange: #ffa05a;
+    --orange-soft: rgba(255, 160, 90, 0.18);
+    --amber: #ffd34d;
+    --amber-soft: rgba(255, 211, 77, 0.16);
+    --green: #4fdc8a;
+    --green-soft: rgba(79, 220, 138, 0.16);
     color-scheme: dark;
   }
 }
 
 :root[data-theme='dark'] {
-  --bg: #0e0e10;
-  --panel: #161618;
-  --panel-2: #1b1b1e;
-  --line: #2a2a2e;
-  --line-2: #212124;
-  --text: #e8e6e3;
-  --muted: #a09d98;
-  --faint: #6b6965;
-  --accent: #6ea8fe;
-  --accent-soft: rgba(110, 168, 254, 0.1);
-  --weekend: rgba(255, 255, 255, 0.025);
-  --red: #f87171;
-  --red-soft: rgba(248, 113, 113, 0.14);
-  --orange: #fb923c;
-  --orange-soft: rgba(251, 146, 60, 0.14);
-  --amber: #fbbf24;
-  --amber-soft: rgba(251, 191, 36, 0.13);
-  --green: #4ade80;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.4);
+  --bg: #111111;
+  --panel: #1b1b1b;
+  --panel-2: #242424;
+  --line: #3a3833;
+  --line-2: #2b2a27;
+  --text: #f2efe8;
+  --muted: #aaa597;
+  --faint: #6f6b62;
+  --ink: #e9e4d8;
+  --bar-shadow: #e9e4d8;
+  --accent: #7c9bff;
+  --accent-soft: rgba(124, 155, 255, 0.12);
+  --hl: #ffe14d;
+  --hl-soft: rgba(255, 225, 77, 0.1);
+  --weekend: rgba(255, 255, 255, 0.03);
+  --red: #ff6b61;
+  --red-soft: rgba(255, 107, 97, 0.18);
+  --orange: #ffa05a;
+  --orange-soft: rgba(255, 160, 90, 0.18);
+  --amber: #ffd34d;
+  --amber-soft: rgba(255, 211, 77, 0.16);
+  --green: #4fdc8a;
+  --green-soft: rgba(79, 220, 138, 0.16);
   color-scheme: dark;
 }
 
@@ -105,6 +129,13 @@ select {
   color: inherit;
 }
 
+.display,
+.num {
+  font-family:
+    'Space Grotesk', ui-sans-serif, -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', sans-serif;
+}
+
 .num {
   font-variant-numeric: tabular-nums;
 }
@@ -115,15 +146,16 @@ select {
 
 .panel {
   background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  box-shadow: 3px 3px 0 var(--ink);
 }
 
 .section-title {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
-  letter-spacing: 0.02em;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.01em;
 }
 
 .chip {
@@ -132,9 +164,9 @@ select {
   gap: 4px;
   height: 22px;
   padding: 0 8px;
-  border-radius: 999px;
-  background: var(--panel-2);
-  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+  border: 1.5px solid var(--ink);
   white-space: nowrap;
   font-size: 11.5px;
 }
@@ -146,22 +178,54 @@ select {
   height: 24px;
   padding: 0 8px;
   border-radius: 6px;
-  border: 1px solid var(--line);
+  border: 1.5px solid var(--ink);
   background: var(--panel);
+  box-shadow: 2px 2px 0 var(--ink);
   white-space: nowrap;
   font-size: 11.5px;
+  font-weight: 600;
+  transition:
+    transform 60ms,
+    box-shadow 60ms;
 }
 .btn:hover {
   background: var(--panel-2);
 }
+.btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 var(--ink);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
 .btn[aria-pressed='true'] {
-  background: var(--text);
-  color: var(--panel);
-  border-color: var(--text);
+  background: var(--hl);
+  color: var(--bar-ink);
 }
 .btn-ghost {
   border-color: transparent;
   background: transparent;
+  box-shadow: none;
+}
+.btn-ghost:active {
+  transform: none;
+}
+
+/* A small label with an ink outline, e.g. "过期2d", "+3d×1". */
+.sticker {
+  display: inline-flex;
+  align-items: center;
+  height: 15px;
+  padding: 0 4px;
+  border: 1.5px solid var(--bar-ink);
+  border-radius: 4px;
+  color: var(--bar-ink);
+  font-size: 9.5px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .scroll-thin {
@@ -169,19 +233,13 @@ select {
   scrollbar-color: var(--line) transparent;
 }
 
-.hatch-red {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    color-mix(in oklab, var(--red) 55%, transparent) 0 2px,
-    transparent 2px 5px
-  );
+/* Caution-tape fill for overdue tails. */
+.tape {
+  background: repeating-linear-gradient(-45deg, var(--sticker-red) 0 4px, #ffe1dd 4px 8px);
 }
 
-.halo {
-  text-shadow:
-    0 0 2px var(--panel),
-    0 0 2px var(--panel),
-    0 0 1px var(--panel);
+.hatch-red {
+  background-image: repeating-linear-gradient(-45deg, var(--sticker-red) 0 2px, transparent 2px 5px);
 }
 
 .fade-in {

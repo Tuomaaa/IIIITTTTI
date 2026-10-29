@@ -6,7 +6,7 @@ import type { ISODate } from '../core/types'
 import { fetchCommits, type CommitInfo } from '../data/github'
 import { useStore } from '../data/store'
 import { useUI } from '../data/ui'
-import { levelColor, tint } from '../lib/ui'
+import { levelColor } from '../lib/ui'
 
 export function SidePanel({ view }: { view: PlanView }) {
   return (
@@ -39,7 +39,7 @@ export function Inbox({ view }: { view: PlanView }) {
   return (
     <section className="panel overflow-hidden">
       <header className="flex items-center gap-2 px-3 pt-2.5 pb-1.5">
-        <span className="section-title">需处理</span>
+        <span className="section-title shrink-0 whitespace-nowrap">需处理</span>
         <span className="num rounded px-1.5 text-[10.5px] font-semibold" style={{ background: items.length ? 'var(--red-soft)' : 'var(--panel-2)', color: items.length ? 'var(--red)' : 'var(--muted)' }}>
           {items.length}
         </span>
@@ -333,7 +333,7 @@ function Slips({ view }: { view: PlanView }) {
               <span className="w-[78px] shrink-0 truncate" style={{ color: 'var(--muted)' }}>
                 {t.track.name}
               </span>
-              <span className="h-[7px] rounded-[2px]" style={{ width: `${(t.slipDays / max) * 100}%`, maxWidth: 'calc(100% - 120px)', background: tint(t.track.color, 70) }} />
+              <span className="h-[9px] rounded-[2px]" style={{ width: `${(t.slipDays / max) * 100}%`, maxWidth: 'calc(100% - 120px)', background: t.track.color, border: '1.5px solid var(--bar-ink)' }} />
               <span className="num shrink-0 font-semibold">{t.slipDays}d</span>
               <span className="num shrink-0" style={{ color: 'var(--faint)' }}>
                 ×{t.pushCount}
