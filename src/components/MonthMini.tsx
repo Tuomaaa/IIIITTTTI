@@ -12,20 +12,23 @@ const HEAD = ['一', '二', '三', '四', '五', '六', '日']
  * Compact rolling calendar (last week + this week + 3 weeks ahead) instead of a calendar
  * month, so it always looks forward. Per day: focus threads (dots), milestones (◆), load.
  */
-export function MonthMini({ view, cellH = 30 }: { view: PlanView; cellH?: number }) {
+export function MonthMini({ view, cellH = 30, compact = false }: { view: PlanView; cellH?: number; compact?: boolean }) {
   const sel = useUI((s) => s.day)
   const setDay = useUI((s) => s.setDay)
   const setHover = useUI((s) => s.setHover)
   const plan = useStore((s) => s.plan)
   const { today } = view
   const day = sel ?? today
-  const home = addDays(weekStart(today), -7)
+  const [expanded, setExpanded] = useState(!compact)
+  const weeks = expanded ? 5 : 2
+  const home = expanded ? addDays(weekStart(today), -7) : weekStart(today)
   const [start, setStart] = useState(home)
+  useEffect(() => setStart(home), [home])
   // Keep the selected day visible.
   useEffect(() => {
-    setStart((s) => (day < s || day > addDays(s, 34) ? addDays(weekStart(day), -7) : s))
-  }, [day])
-  const shown = Array.from({ length: 35 }, (_, i) => addDays(start, i))
+    setStart((s) => (day < s || day > addDays(s, weeks * 7 - 1) ? addDays(weekStart(day), expanded ? -7 : 0) : s))
+  }, [day, weeks, expanded])
+  const shown = Array.from({ length: weeks * 7 }, (_, i) => addDays(start, i))
   const maxParallel = settings(plan).maxParallel
   const msByDay = new Map<ISODate, typeof plan.milestones>()
   for (const m of plan.milestones) msByDay.set(m.date, [...(msByDay.get(m.date) ?? []), m])
@@ -43,10 +46,15 @@ export function MonthMini({ view, cellH = 30 }: { view: PlanView; cellH?: number
             本周
           </button>
         )}
-        <button className="btn btn-ghost ml-auto h-5 px-1.5" onClick={() => setStart(addDays(start, -28))} aria-label="往前 4 周">
+        {compact && (
+          <button className="btn btn-ghost ml-1 h-5 px-1.5 text-[10.5px]" onClick={() => setExpanded(!expanded)}>
+            {expanded ? '收起' : '展开 5 周'}
+          </button>
+        )}
+        <button className="btn btn-ghost ml-auto h-5 px-1.5" onClick={() => setStart(addDays(start, -weeks * 7 + (expanded ? 7 : 0)))} aria-label="往前">
           ‹
         </button>
-        <button className="btn btn-ghost h-5 px-1.5" onClick={() => setStart(addDays(start, 28))} aria-label="往后 4 周">
+        <button className="btn btn-ghost h-5 px-1.5" onClick={() => setStart(addDays(start, weeks * 7 - (expanded ? 7 : 0)))} aria-label="往后">
           ›
         </button>
       </div>

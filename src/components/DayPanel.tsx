@@ -60,7 +60,7 @@ export function DayPanel({ view, mobile = false }: { view: PlanView; mobile?: bo
         </span>
       </div>
 
-      <MonthMini view={view} cellH={mobile ? 34 : 30} />
+      <MonthMini view={view} cellH={mobile ? 34 : 30} compact={mobile} />
 
       {focus.length > 0 && (
         <div className="px-3 pb-2">
