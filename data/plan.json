@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-29T14:09:44.160Z"
+    "updatedAt": "2026-10-29T14:11:00.175Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -22,7 +22,8 @@
     { "id": "ece551", "name": "课程 · ECE551 VLSI", "color": "#4f46e5", "group": "课程" },
     { "id": "school", "name": "课程 · 校历", "color": "#64748b", "group": "课程" },
     { "id": "merl-arm", "name": "MERL · Robot arm", "color": "#65a30d", "group": "MERL" },
-    { "id": "merl-sim", "name": "MERL · Simulation", "color": "#c026d3", "group": "MERL" }
+    { "id": "merl-sim", "name": "MERL · Simulation", "color": "#c026d3", "group": "MERL" },
+    { "id": "ece497", "name": "课程 · ECE497 ECG DNN", "color": "#0ea5e9", "group": "课程" }
   ],
   "tasks": [
     { "id": "tk-surf-pad", "trackId": "surf-hw", "title": "铜箔 15×8 pad 制作", "start": "2026-10-31", "end": "2026-10-31", "note": "前提：Amazon 的料周五前到" },
@@ -178,7 +179,9 @@
     { "id": "td-zkao", "title": "交 Hw 8", "date": "2026-11-05", "trackId": "ece551" },
     { "id": "td-u7vq", "title": "Proj: Proposal P&R", "date": "2026-11-11", "trackId": "ece551" },
     { "id": "td-iaof", "title": "交 Hw 9", "date": "2026-11-12", "trackId": "ece551" },
-    { "id": "td-6bax", "title": "Final Exam + Proj: Paper and Pres（期末周，日期待定）", "trackId": "ece551" }
+    { "id": "td-6bax", "title": "Final Exam + Proj: Paper and Pres（期末周，日期待定）", "trackId": "ece551" },
+    { "id": "td-5w1e", "title": "交 Homework 3", "date": "2026-10-30", "trackId": "ece497" },
+    { "id": "td-6p7m", "title": "交 Beat By Beat ECG detection using DNN Part 2a", "date": "2026-11-01", "trackId": "ece497" }
   ],
   "blocks": [
     {
