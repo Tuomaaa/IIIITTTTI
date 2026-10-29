@@ -28,8 +28,14 @@ const KIND_ZH: Record<InboxItem['kind'], string> = {
   unscheduled: '没排期',
 }
 
+const INBOX_PREVIEW = 8
+
 export function Inbox({ view }: { view: PlanView }) {
   const items = view.inbox
+  const [all, setAll] = useState(false)
+  const counts = new Map<InboxItem['kind'], number>()
+  for (const it of items) counts.set(it.kind, (counts.get(it.kind) ?? 0) + 1)
+  const shown = all ? items : items.slice(0, INBOX_PREVIEW)
   return (
     <section className="panel overflow-hidden">
       <header className="flex items-center gap-2 px-3 pt-2.5 pb-1.5">
@@ -37,6 +43,11 @@ export function Inbox({ view }: { view: PlanView }) {
         <span className="num rounded px-1.5 text-[10.5px] font-semibold" style={{ background: items.length ? 'var(--red-soft)' : 'var(--panel-2)', color: items.length ? 'var(--red)' : 'var(--muted)' }}>
           {items.length}
         </span>
+        {counts.size > 1 && (
+          <span className="num ml-auto truncate text-[10px]" style={{ color: 'var(--muted)' }}>
+            {[...counts].map(([k, n]) => `${KIND_ZH[k]} ${n}`).join(' · ')}
+          </span>
+        )}
       </header>
       {!items.length && (
         <div className="px-3 pb-3 text-[11px]" style={{ color: 'var(--muted)' }}>
@@ -44,10 +55,15 @@ export function Inbox({ view }: { view: PlanView }) {
         </div>
       )}
       <ul>
-        {items.map((it) => (
+        {shown.map((it) => (
           <InboxRow key={`${it.kind}:${it.id}`} it={it} view={view} />
         ))}
       </ul>
+      {items.length > INBOX_PREVIEW && (
+        <button className="w-full border-t py-1.5 text-[11px]" style={{ borderColor: 'var(--line-2)', color: 'var(--accent)' }} onClick={() => setAll(!all)}>
+          {all ? '收起' : `显示全部 ${items.length} 条（还有 ${items.length - INBOX_PREVIEW} 条）`}
+        </button>
+      )}
     </section>
   )
 }
