@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-29T14:07:28.947Z"
+    "updatedAt": "2026-10-29T14:09:44.160Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -146,7 +146,15 @@
     { "id": "ms-lup0", "trackId": "merl-sim", "title": "写 tutorial（今晚，约 30 分钟）", "date": "2026-10-29" }
   ],
   "todos": [
-    { "id": "td-2nch", "title": "Sprint 1 Status Report（3pm）", "date": "2026-10-29", "trackId": "csse416", "taskId": "tk-416-final" },
+    {
+      "id": "td-2nch",
+      "title": "Sprint 1 Status Report（3pm）",
+      "date": "2026-10-29",
+      "trackId": "csse416",
+      "taskId": "tk-416-final",
+      "done": true,
+      "doneAt": "2026-10-29"
+    },
     { "id": "td-747s", "title": "Sprint 1 Meeting", "date": "2026-10-30", "trackId": "csse416", "taskId": "tk-416-final" },
     { "id": "td-j1db", "title": "交 Random lesson", "date": "2026-11-02", "trackId": "csse416" },
     { "id": "td-1hyw", "title": "Test 2 复习", "date": "2026-11-02", "trackId": "csse416" },
