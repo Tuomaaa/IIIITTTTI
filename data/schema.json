@@ -36,7 +36,8 @@
           "color": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
           "group": { "type": "string" },
           "paused": { "type": "boolean" },
-          "archived": { "type": "boolean" },
+          "archived": { "type": "boolean", "description": "Hidden from the gantt, inbox and stats; kept for history." },
+          "archivedAt": { "$ref": "#/$defs/date" },
           "note": { "type": "string" }
         }
       }

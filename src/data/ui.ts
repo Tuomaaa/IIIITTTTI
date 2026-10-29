@@ -18,8 +18,10 @@ interface UI {
   taskId: string | null
   /** Track open in the thread drawer. */
   trackId: string | null
-  modal: 'legend' | 'settings' | null
+  modal: 'legend' | 'settings' | 'archive' | null
   tab: MobileTab
+  /** Collapsed gantt groups: `g:<group>` or `__paused`. */
+  collapsed: string[]
   zoom: Zoom
   activeOnly: boolean
   hover: Hover | null
@@ -31,6 +33,7 @@ interface UI {
   setZoom(z: Zoom): void
   setActiveOnly(v: boolean): void
   setHover(h: Hover | null): void
+  toggleCollapsed(key: string): void
 }
 
 function readPref<T>(key: string, fallback: T): T {
@@ -58,6 +61,7 @@ export const useUI = create<UI>((set) => ({
   tab: 'today',
   zoom: readPref<Zoom>('planner.zoom', 'w4'),
   activeOnly: readPref('planner.activeOnly', false),
+  collapsed: readPref<string[]>('planner.collapsed', ['__paused']),
   hover: null,
   setDay: (day) => set({ day }),
   openTask: (taskId) => set({ taskId, hover: null }),
@@ -73,4 +77,10 @@ export const useUI = create<UI>((set) => ({
     set({ activeOnly })
   },
   setHover: (hover) => set({ hover }),
+  toggleCollapsed: (key) =>
+    set((s) => {
+      const collapsed = s.collapsed.includes(key) ? s.collapsed.filter((k) => k !== key) : [...s.collapsed, key]
+      writePref('planner.collapsed', collapsed)
+      return { collapsed }
+    }),
 }))

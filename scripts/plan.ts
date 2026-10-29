@@ -31,6 +31,8 @@ const HELP = `用法：npm run plan -- <命令> [参数]   （全局：--file da
   progress <taskId> <0.4 | 40%>
   focus <taskId> D [D ...] [--set | --remove]   默认是追加
   park <taskId> / unpark <taskId>
+  pause <trackId> / unpause <trackId>       暂停整条线程（甘特图里收进「暂停」组）
+  archive <trackId> / unarchive <trackId>   归档整条线程（从甘特图、需处理、统计里消失，网页「已归档」里能找回）
   set <id> key=value [key=value ...]   改任意字段（值按 JSON 解析，解析失败就当字符串；key= 留空表示删除）
   rollover                       把过去没完成的 todo 移到今天（保留 origDate）
   rm <id>
@@ -227,6 +229,7 @@ function summary() {
     return `${md(d)}:${l?.tasks.length ?? 0}`
   })
   out.push('', `## 未来 7 天并行数（上限 ${settings(plan).maxParallel}）`, load.join('  '))
+  if (v.archived.length) out.push('', `已归档线程 ${v.archived.length} 条：${v.archived.map((t) => `${t.name} (${t.id})`).join('、')}`)
   console.log(out.join('\n'))
 }
 
@@ -400,6 +403,21 @@ switch (cmd) {
   case 'unpark': {
     const id = need(args[0], 'taskId')
     run(() => ops.setParked(plan, id, cmd === 'park'), `${cmd === 'park' ? '暂停' : '恢复'} ${id}`)
+    break
+  }
+  case 'pause':
+  case 'unpause':
+  case 'archive':
+  case 'unarchive': {
+    const id = need(args[0], 'trackId')
+    const track = plan.tracks.find((t) => t.id === id) ?? die(`找不到线程 ${id}`)
+    if (cmd === 'archive') {
+      const open = plan.tasks.filter((t) => t.trackId === id && !t.done).length
+      if (open) console.warn(`⚠ ${track.name} 还有 ${open} 个没完成的 task，归档后它们不会再出现在甘特图和需处理里`)
+    }
+    const flags = cmd === 'pause' ? { paused: true } : cmd === 'unpause' ? { paused: false } : cmd === 'archive' ? { archived: true } : { archived: false }
+    const verb = { pause: '暂停', unpause: '恢复', archive: '归档', unarchive: '取消归档' }[cmd]
+    run(() => ops.setTrackFlags(plan, id, flags, today), `${verb}线程 ${id}（${track.name}）`)
     break
   }
   case 'set': {

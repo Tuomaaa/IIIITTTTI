@@ -62,7 +62,6 @@ export interface TodoView {
 export interface TrackView {
   track: Track
   tasks: TaskView[]
-  lanes: TaskView[][]
   milestones: Milestone[]
   /** Next concrete thing to do on this thread. */
   next?: { title: string; date?: ISODate; kind: 'todo' | 'task' }
@@ -103,7 +102,9 @@ export interface InboxItem {
 
 export interface PlanView {
   today: ISODate
+  /** Live (non-archived) threads, most relevant first. */
   tracks: TrackView[]
+  archived: Track[]
   taskById: Map<string, TaskView>
   trackById: Map<string, Track>
   todos: TodoView[]
@@ -168,7 +169,31 @@ export function todoView(todo: Todo, today: ISODate, staleAfter: number, plan?: 
   }
 }
 
-export function buildView(plan: Plan, today: ISODate): PlanView {
+/** The plan minus archived tracks and everything hanging off them. */
+export function withoutArchived(plan: Plan): Plan {
+  const gone = new Set(plan.tracks.filter((t) => t.archived).map((t) => t.id))
+  if (!gone.size) return plan
+  const goneTasks = new Set(plan.tasks.filter((t) => gone.has(t.trackId)).map((t) => t.id))
+  const keep = (x: { trackId?: string; taskId?: string }) => !(x.trackId && gone.has(x.trackId)) && !(x.taskId && goneTasks.has(x.taskId))
+  return {
+    ...plan,
+    tracks: plan.tracks.filter((t) => !gone.has(t.id)),
+    tasks: plan.tasks.filter((t) => !gone.has(t.trackId)),
+    milestones: plan.milestones.filter((m) => !gone.has(m.trackId)),
+    todos: plan.todos.filter(keep),
+    blocks: plan.blocks.filter(keep),
+  }
+}
+
+/** Track view for an archived thread (computed as if it were live), for the archive list. */
+export function archivedTrackView(plan: Plan, id: string, today: ISODate): TrackView | undefined {
+  const revived = { ...plan, tracks: plan.tracks.map((t) => (t.id === id ? { ...t, archived: false } : t)) }
+  return buildView(revived, today).tracks.find((t) => t.track.id === id)
+}
+
+export function buildView(full: Plan, today: ISODate): PlanView {
+  const archived = full.tracks.filter((t) => t.archived)
+  const plan = withoutArchived(full)
   const cfg = settings(plan)
   const trackById = new Map(plan.tracks.map((t) => [t.id, t]))
   const msById = new Map(plan.milestones.map((m) => [m.id, m]))
@@ -214,14 +239,13 @@ export function buildView(plan: Plan, today: ISODate): PlanView {
   const todos = plan.todos.map((t) => todoView(t, today, cfg.staleAfterDays, plan))
 
   const tracks = plan.tracks
-    .filter((t) => !t.archived)
     .map((track) => trackView(track, plan, taskById, todos, today))
     .sort((a, b) => a.rank - b.rank || plan.tracks.indexOf(a.track) - plan.tracks.indexOf(b.track))
 
   const load = dayLoad(plan, taskById, todos)
   const inbox = buildInbox(plan, taskById, todos, today)
   const stats = buildStats(plan, taskById, todos, inbox, today)
-  return { today, tracks, taskById, trackById, todos, load, inbox, stats }
+  return { today, tracks, archived, taskById, trackById, todos, load, inbox, stats }
 }
 
 function trackView(
@@ -276,7 +300,6 @@ function trackView(
   return {
     track,
     tasks,
-    lanes: packLanes(tasks),
     milestones,
     next,
     activeCount: live.length,
@@ -286,29 +309,6 @@ function trackView(
     rank,
     nextMilestone: milestones.find((m) => !m.done && m.date >= today),
   }
-}
-
-/**
- * Greedy interval packing so non-overlapping tasks share a row.
- * `pad` reserves extra days after a task (e.g. for a badge drawn past its end).
- */
-export function packLanes(tasks: TaskView[], pad: (t: TaskView) => number = () => 0): TaskView[][] {
-  const lanes: TaskView[][] = []
-  const laneEnd: ISODate[] = []
-  for (const t of tasks) {
-    const start = t.focus[0] && t.focus[0] < t.task.start ? t.focus[0] : t.task.start
-    let i = laneEnd.findIndex((e) => e < start)
-    if (i === -1) {
-      i = lanes.length
-      lanes.push([])
-      laneEnd.push('')
-    }
-    lanes[i].push(t)
-    const lastFocus = t.focus[t.focus.length - 1]
-    const end = lastFocus && lastFocus > t.visualEnd ? lastFocus : t.visualEnd
-    laneEnd[i] = addDays(end, pad(t))
-  }
-  return lanes
 }
 
 function dayLoad(plan: Plan, taskById: Map<string, TaskView>, todos: TodoView[]): Map<ISODate, DayLoad> {

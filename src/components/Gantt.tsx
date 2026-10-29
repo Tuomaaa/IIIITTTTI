@@ -1,22 +1,27 @@
 import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { addDays, daysBetween, diffDays, md, relDay, weekday, WEEKDAY_ZH } from '../core/date'
-import { packLanes, settings, type PlanView, type TaskView, type TrackView } from '../core/derive'
-import type { ISODate, Milestone } from '../core/types'
+import { settings, type PlanView, type TaskView, type TrackView } from '../core/derive'
+import type { ISODate, Milestone, Track } from '../core/types'
 import { useStore } from '../data/store'
-import { useUI, type Zoom } from '../data/ui'
+import { useUI, type Hover, type Zoom } from '../data/ui'
+import { packRow, textWidth, type PackedRow } from '../core/layout'
 import { pastel, stickerStyle } from '../lib/ui'
 import { MilestoneTip, TaskTip } from './Tooltip'
 
-const LANE_H = 21
-const BAR_H = 16
-const ROW_PAD = 4
-const MS_STRIP = 13
+const LANE_H = 28
+const BAR_H = 22
+/** Height of the focus-day band at the bottom of a bar. */
+const BAND_H = 6
+const ROW_PAD = 3
+const MINI_LANE = 9
+const GROUP_H = 26
 const HEAD_MONTH = 15
 const HEAD_DAY = 26
 const HEAD_LOAD = 16
 const HEAD_H = HEAD_MONTH + HEAD_DAY + HEAD_LOAD
 const PAST_DAYS = 21
 const FUTURE_DAYS = 120
+const PAUSED = '__paused'
 
 export const ZOOM_DAYS: Record<Zoom, number> = { w2: 14, w4: 21, w8: 42 }
 export const ZOOM_LABEL: Record<Zoom, string> = { w2: '2 周', w4: '3 周', w8: '6 周' }
@@ -26,16 +31,20 @@ interface Props {
   compact?: boolean
 }
 
+type GroupSection = { kind: 'group'; key: string; name: string; tracks: TrackView[]; collapsed: boolean }
+type Section = GroupSection | { kind: 'track'; tv: TrackView; inGroup: boolean }
+
 export function Gantt({ view, compact = false }: Props) {
   const zoom = useUI((s) => s.zoom)
   const activeOnly = useUI((s) => s.activeOnly)
   const selected = useUI((s) => s.day)
+  const collapsed = useUI((s) => s.collapsed)
+  const setModal = useUI((s) => s.setModal)
   const plan = useStore((s) => s.plan)
   const scroller = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(800)
   const { today } = view
-  const labelW = compact ? 92 : 208
-  const minRow = compact ? 30 : 36
+  const labelW = compact ? 96 : 212
 
   useLayoutEffect(() => {
     const el = scroller.current
@@ -65,25 +74,41 @@ export function Gantt({ view, compact = false }: Props) {
     return () => window.removeEventListener('gantt:today', h)
   })
 
-  const tracks = activeOnly ? view.tracks.filter((t) => t.rank <= 2) : view.tracks
-  const rows = tracks.map((tv) => {
-    const badgeDays = (t: TaskView) => Math.ceil(badgeWidth(t) / dw)
-    const lanes = packLanes(tv.tasks, badgeDays)
-    const ms = tv.milestones.filter((m) => m.date >= from && m.date <= to)
-    const h = Math.max(minRow, ROW_PAD * 2 + Math.max(1, lanes.length) * LANE_H + (ms.length ? MS_STRIP : 0))
-    return { tv, lanes, ms, h }
+  const rows = buildSections(view.tracks, activeOnly, collapsed).map((s) => {
+    if (s.kind === 'group') {
+      const tasks = s.tracks.flatMap((t) => t.tasks).sort((a, b) => a.task.start.localeCompare(b.task.start))
+      const mini = s.collapsed ? packMini(tasks) : []
+      return { s, h: s.collapsed ? Math.max(GROUP_H, mini.length * MINI_LANE + 8) : GROUP_H, mini, packed: undefined }
+    }
+    const packed = packRow(s.tv.tasks, s.tv.milestones, from, to, dw, badgeWidth)
+    return { s, h: ROW_PAD * 2 + packed.laneCount * LANE_H + 1, mini: [] as TaskView[][], packed }
   })
-  const bodyH = rows.reduce((s, r) => s + r.h, 0)
+  const bodyH = rows.reduce((n, r) => n + r.h, 0) + (view.archived.length ? GROUP_H : 0)
   const totalW = labelW + days.length * dw
 
   return (
     <div ref={scroller} className="scroll-thin relative h-full overflow-auto" style={{ overscrollBehaviorX: 'contain' }}>
       <div className="relative" style={{ width: totalW, minHeight: HEAD_H + bodyH }}>
-        <Header days={days} dw={dw} labelW={labelW} today={today} selected={selected} view={view} maxParallel={maxParallel} trackCount={tracks.length} compact={compact} />
+        <Header days={days} dw={dw} labelW={labelW} today={today} selected={selected} view={view} maxParallel={maxParallel} trackCount={view.tracks.length} compact={compact} />
         <Grid days={days} dw={dw} labelW={labelW} today={today} height={bodyH} />
-        {rows.map(({ tv, lanes, ms, h }) => (
-          <Row key={tv.track.id} tv={tv} lanes={lanes} ms={ms} h={h} x={x} dw={dw} labelW={labelW} today={today} compact={compact} />
-        ))}
+        {rows.map(({ s, h, mini, packed }) =>
+          s.kind === 'group' ? (
+            <GroupRow key={s.key} s={s} h={h} mini={mini} x={x} dw={dw} labelW={labelW} today={today} compact={compact} />
+          ) : (
+            <Row key={s.tv.track.id} tv={s.tv} inGroup={s.inGroup} packed={packed!} h={h} x={x} dw={dw} labelW={labelW} today={today} compact={compact} />
+          ),
+        )}
+        {view.archived.length > 0 && (
+          <div className="relative flex" style={{ height: GROUP_H }}>
+            <button
+              className="sticky left-0 z-10 flex shrink-0 items-center gap-1.5 px-2 text-left text-[11px] font-semibold hover:bg-[var(--panel-2)]"
+              style={{ width: labelW, background: 'var(--panel)', borderRight: '2px solid var(--ink)', color: 'var(--muted)' }}
+              onClick={() => setModal('archive')}
+            >
+              已归档 <span className="num">{view.archived.length}</span> 条 →
+            </button>
+          </div>
+        )}
         {!rows.length && (
           <div className="p-6 text-center" style={{ color: 'var(--muted)' }}>
             没有进行中的线程
@@ -92,6 +117,35 @@ export function Gantt({ view, compact = false }: Props) {
       </div>
     </div>
   )
+}
+
+/** Groups (tracks sharing `group`) keep the position of their most relevant member; paused tracks go last. */
+function buildSections(tracks: TrackView[], activeOnly: boolean, collapsed: string[]): Section[] {
+  const live = tracks.filter((t) => !t.track.paused && (!activeOnly || t.rank <= 2))
+  const paused = activeOnly ? [] : tracks.filter((t) => t.track.paused)
+  const order: string[] = []
+  const members = new Map<string, TrackView[]>()
+  for (const tv of live) {
+    const key = tv.track.group ? `g:${tv.track.group}` : `t:${tv.track.id}`
+    if (!members.has(key)) {
+      members.set(key, [])
+      order.push(key)
+    }
+    members.get(key)!.push(tv)
+  }
+  const out: Section[] = []
+  const pushGroup = (key: string, name: string, list: TrackView[]) => {
+    const isCollapsed = collapsed.includes(key)
+    out.push({ kind: 'group', key, name, tracks: list, collapsed: isCollapsed })
+    if (!isCollapsed) for (const tv of list) out.push({ kind: 'track', tv, inGroup: true })
+  }
+  for (const key of order) {
+    const list = members.get(key)!
+    if (key.startsWith('g:') && list.length > 1) pushGroup(key, key.slice(2), list)
+    else for (const tv of list) out.push({ kind: 'track', tv, inGroup: false })
+  }
+  if (paused.length) pushGroup(PAUSED, '暂停', paused)
+  return out
 }
 
 interface Badge {
@@ -109,9 +163,26 @@ function badges(t: TaskView): Badge[] {
 
 /** Approx. pixel width of the stickers, so lane packing leaves room for them. */
 function badgeWidth(t: TaskView): number {
-  const textW = (s: string) => [...s].reduce((w, ch) => w + (ch.charCodeAt(0) > 0x2e80 ? 10 : 6), 0)
   const bs = badges(t)
-  return bs.length ? bs.reduce((w, b) => w + textW(b.text) + 14, 5) : 0
+  return bs.length ? bs.reduce((w, b) => w + textWidth(b.text, 10, 6) + 14, 5) : 0
+}
+
+/** Thin, text-free packing for a collapsed group's summary row. */
+function packMini(tasks: TaskView[]): TaskView[][] {
+  const lanes: TaskView[][] = []
+  const ends: ISODate[] = []
+  for (const t of tasks) {
+    if (t.phase === 'done') continue
+    let i = ends.findIndex((e) => e < t.task.start)
+    if (i === -1) {
+      i = lanes.length
+      lanes.push([])
+      ends.push('')
+    }
+    lanes[i].push(t)
+    ends[i] = t.visualEnd
+  }
+  return lanes
 }
 
 const Header = memo(function Header({
@@ -170,14 +241,7 @@ const Header = memo(function Header({
               className="absolute flex flex-col items-center justify-start"
               style={{ left: i * dw, top: HEAD_MONTH, width: dw, height: HEAD_DAY + HEAD_LOAD }}
               onClick={() => setDay(d === today ? null : d)}
-              onMouseEnter={(e) =>
-                load &&
-                setHover({
-                  x: e.clientX,
-                  y: e.clientY,
-                  content: <LoadTip d={d} view={view} />,
-                })
-              }
+              onMouseEnter={(e) => load && setHover({ x: e.clientX, y: e.clientY, content: <LoadTip d={d} view={view} /> })}
               onMouseLeave={() => setHover(null)}
               aria-label={`选择 ${d}`}
             >
@@ -200,7 +264,7 @@ const Header = memo(function Header({
                   </>
                 ) : (
                   <>
-                    <span className="text-[9px] opacity-80">{wd === 1 ? '一' : '\u00a0'}</span>
+                    <span className="text-[9px] opacity-80">{wd === 1 ? '一' : ' '}</span>
                     <span className="text-[9.5px] font-medium tracking-tighter">{Number(d.slice(8))}</span>
                   </>
                 )}
@@ -274,10 +338,91 @@ const Grid = memo(function Grid({ days, dw, labelW, today, height }: { days: ISO
   )
 })
 
+function GroupRow({
+  s,
+  h,
+  mini,
+  x,
+  dw,
+  labelW,
+  today,
+  compact,
+}: {
+  s: GroupSection
+  h: number
+  mini: TaskView[][]
+  x: (d: ISODate) => number
+  dw: number
+  labelW: number
+  today: ISODate
+  compact: boolean
+}) {
+  const toggle = useUI((st) => st.toggleCollapsed)
+  const openTask = useUI((st) => st.openTask)
+  const setHover = useUI((st) => st.setHover)
+  const overdue = s.tracks.reduce((n, t) => n + t.overdueCount, 0)
+  const slip = s.tracks.reduce((n, t) => n + t.slipDays, 0)
+  const active = s.tracks.reduce((n, t) => n + t.activeCount, 0)
+  return (
+    <div className="relative flex" style={{ height: h, background: 'var(--panel-2)', borderBottom: '1.5px solid var(--ink)', opacity: s.key === PAUSED ? 0.75 : 1 }}>
+      <button
+        className="sticky left-0 z-10 flex shrink-0 items-center gap-1 px-2 text-left"
+        style={{ width: labelW, background: 'var(--panel-2)', borderRight: '2px solid var(--ink)' }}
+        onClick={() => toggle(s.key)}
+        title={s.collapsed ? '展开' : '折叠'}
+      >
+        <span className="w-3 shrink-0 text-[10px]">{s.collapsed ? '▸' : '▾'}</span>
+        <span className="display truncate text-[12px] font-bold">{s.name}</span>
+        <span className="num shrink-0 text-[10.5px]" style={{ color: 'var(--muted)' }}>
+          {compact ? s.tracks.length : `${s.tracks.length} 条${active ? ` · ${active} 进行中` : ''}`}
+        </span>
+        <span className="ml-auto flex shrink-0 items-center gap-1">
+          {overdue > 0 && (
+            <span className="sticker" style={stickerStyle('overdue')}>
+              !{overdue}
+            </span>
+          )}
+          {!compact && slip > 0 && (
+            <span className="sticker" style={stickerStyle(2)}>
+              +{slip}d
+            </span>
+          )}
+        </span>
+      </button>
+      {s.collapsed && (
+        <div className="relative flex-1">
+          {mini.map((lane, li) =>
+            lane.map((t) => {
+              const color = t.track?.color ?? '#888'
+              const winW = (diffDays(t.task.start, t.task.end) + 1) * dw
+              return (
+                <div
+                  key={t.task.id}
+                  className="absolute cursor-pointer"
+                  style={{ left: x(t.task.start), top: 4 + li * MINI_LANE, height: MINI_LANE - 2, width: (diffDays(t.task.start, t.visualEnd) + 1) * dw }}
+                  onClick={() => openTask(t.task.id)}
+                  onMouseEnter={(e) => setHover({ x: e.clientX, y: e.clientY, content: <TaskTip tv={t} today={today} /> })}
+                  onMouseLeave={() => setHover(null)}
+                >
+                  {t.phase === 'overdue' && <div className="tape absolute top-0 bottom-0 rounded-r-[2px]" style={{ left: winW - 2, right: 0, border: '1px solid var(--bar-ink)' }} />}
+                  <div
+                    className="absolute top-0 bottom-0 left-0 rounded-[2px]"
+                    style={{ width: winW, background: t.phase === 'upcoming' ? pastel(color, 45) : color, border: '1px solid var(--bar-ink)', opacity: t.phase === 'parked' ? 0.5 : 1 }}
+                  />
+                </div>
+              )
+            }),
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function Row({
   tv,
-  lanes,
-  ms,
+  inGroup,
+  packed,
   h,
   x,
   dw,
@@ -286,8 +431,8 @@ function Row({
   compact,
 }: {
   tv: TrackView
-  lanes: TaskView[][]
-  ms: Milestone[]
+  inGroup: boolean
+  packed: PackedRow
   h: number
   x: (d: ISODate) => number
   dw: number
@@ -297,48 +442,69 @@ function Row({
 }) {
   const { track } = tv
   const setHover = useUI((s) => s.setHover)
-  const msTop = ROW_PAD + Math.max(1, lanes.length) * LANE_H - 2
   return (
-    <div className="relative flex" style={{ height: h, borderBottom: '1px solid var(--line)', opacity: track.paused ? 0.5 : 1 }}>
-      <Label tv={tv} labelW={labelW} today={today} compact={compact} />
+    <div className="relative flex" style={{ height: h, borderBottom: '1px solid var(--line)', opacity: track.paused ? 0.6 : 1 }}>
+      <Label tv={tv} labelW={labelW} today={today} compact={compact} inGroup={inGroup} />
       <div className="relative flex-1">
-        {lanes.map((lane, li) =>
-          lane.map((t) => <Bar key={t.task.id} tv={t} left={x(t.task.start)} top={ROW_PAD + li * LANE_H} dw={dw} today={today} stick={labelW + 4} />),
+        {packed.lanes.map((lane, li) =>
+          lane.map((t) => <Bar key={t.task.id} tv={t} left={x(t.task.start)} top={ROW_PAD + li * LANE_H + (LANE_H - BAR_H) / 2} dw={dw} today={today} stick={labelW + 4} />),
         )}
-        {ms.map((m) => {
-          const overdue = !m.done && m.date < today
-          const fill = m.done ? 'transparent' : m.hard || overdue ? 'var(--sticker-red)' : track.color
-          return (
-            <div
-              key={m.id}
-              className="absolute flex items-center gap-[4px] whitespace-nowrap"
-              style={{ left: x(m.date) + dw / 2 - 5, top: msTop, height: MS_STRIP }}
-              onMouseEnter={(e) => setHover({ x: e.clientX, y: e.clientY, content: <MilestoneTip m={m} track={track} today={today} /> })}
-              onMouseLeave={() => setHover(null)}
-            >
-              <span
-                className="inline-block"
-                style={{
-                  width: 9,
-                  height: 9,
-                  transform: 'rotate(45deg)',
-                  background: fill,
-                  border: `1.5px solid ${m.done ? 'var(--faint)' : 'var(--ink)'}`,
-                  boxShadow: m.done ? undefined : '1.5px 1.5px 0 var(--ink)',
-                }}
-              />
-              <span className="text-[10px] font-semibold" style={{ color: m.hard || overdue ? 'var(--red)' : 'var(--text)', textDecoration: m.done ? 'line-through' : undefined, opacity: m.done ? 0.5 : 1 }}>
-                {m.title}
-              </span>
-            </div>
-          )
-        })}
+        {packed.ms.map(({ m, lane, label }) => (
+          <MilestoneMark key={m.id} m={m} label={label} track={track} today={today} left={x(m.date) + dw / 2} top={ROW_PAD + lane * LANE_H} onHover={setHover} />
+        ))}
       </div>
     </div>
   )
 }
 
-function Label({ tv, labelW, today, compact }: { tv: TrackView; labelW: number; today: ISODate; compact: boolean }) {
+function MilestoneMark({
+  m,
+  label,
+  track,
+  today,
+  left,
+  top,
+  onHover,
+}: {
+  m: Milestone
+  label: boolean
+  track: Track
+  today: ISODate
+  left: number
+  top: number
+  onHover: (h: Hover | null) => void
+}) {
+  const overdue = !m.done && m.date < today
+  const fill = m.done ? 'var(--panel)' : m.hard || overdue ? 'var(--sticker-red)' : track.color
+  return (
+    <div
+      className="absolute z-[3] flex items-center gap-[4px] whitespace-nowrap"
+      style={{ left: left - 6, top, height: LANE_H }}
+      onMouseEnter={(e) => onHover({ x: e.clientX, y: e.clientY, content: <MilestoneTip m={m} track={track} today={today} /> })}
+      onMouseLeave={() => onHover(null)}
+    >
+      <span className="inline-block shrink-0" style={{ width: 11, height: 11, transform: 'rotate(45deg)', background: fill, border: `1.5px solid ${m.done ? 'var(--faint)' : 'var(--bar-ink)'}` }} />
+      {label && (
+        <span
+          className="rounded-[3px] px-[3px] text-[10px] font-semibold"
+          style={{ color: m.hard || overdue ? 'var(--red)' : 'var(--text)', background: 'var(--panel)', textDecoration: m.done ? 'line-through' : undefined, opacity: m.done ? 0.5 : 1 }}
+        >
+          {m.title}
+        </span>
+      )}
+    </div>
+  )
+}
+
+/** "SURF · 文献" under the SURF group header reads as just "文献". */
+function withoutGroupPrefix(track: Track): string {
+  const g = track.group
+  if (!g || !track.name.startsWith(g)) return track.name
+  const rest = track.name.slice(g.length).replace(/^\s*[·・\-–/:：|]\s*/, '')
+  return rest && rest !== track.name.slice(g.length) ? rest : track.name
+}
+
+function Label({ tv, labelW, today, compact, inGroup }: { tv: TrackView; labelW: number; today: ISODate; compact: boolean; inGroup: boolean }) {
   const { track } = tv
   const openTrack = useUI((s) => s.openTrack)
   return (
@@ -348,17 +514,13 @@ function Label({ tv, labelW, today, compact }: { tv: TrackView; labelW: number; 
       title={track.note ?? `${track.name}：点开看这条线的全部内容`}
       onClick={() => openTrack(track.id)}
     >
+      {inGroup && <div className="shrink-0" style={{ width: 8, background: 'var(--panel-2)' }} />}
       <div className="shrink-0" style={{ width: 6, background: track.color, borderRight: '1.5px solid var(--ink)' }} />
-      <div className="min-w-0 flex-1 px-1.5 pt-[3px]">
+      <div className="flex min-w-0 flex-1 flex-col justify-center px-1.5">
         <div className="flex items-center gap-1">
           <span className="truncate font-bold" style={{ fontSize: compact ? 11 : 12 }}>
-            {track.name}
+            {inGroup ? withoutGroupPrefix(track) : track.name}
           </span>
-          {track.paused && (
-            <span className="shrink-0 text-[9.5px]" style={{ color: 'var(--muted)' }}>
-              暂停
-            </span>
-          )}
           <span className="ml-auto flex shrink-0 items-center gap-1">
             {tv.overdueCount > 0 && (
               <span className="sticker" style={stickerStyle('overdue')} title={`${tv.overdueCount} 个过期 task`}>
@@ -373,7 +535,7 @@ function Label({ tv, labelW, today, compact }: { tv: TrackView; labelW: number; 
           </span>
         </div>
         {!compact && tv.next && (
-          <div className="flex items-center gap-1 text-[10.5px]" style={{ color: 'var(--muted)' }}>
+          <div className="flex items-center gap-1 text-[10.5px] leading-[13px]" style={{ color: 'var(--muted)' }}>
             <span className="truncate">→ {tv.next.title}</span>
             {tv.next.date ? (
               <span className="num ml-auto shrink-0 font-semibold" style={{ color: tv.next.date < today ? 'var(--orange)' : tv.next.date === today ? 'var(--accent)' : 'var(--faint)' }}>
@@ -404,65 +566,48 @@ export const Bar = memo(function Bar({ tv, left, top, dw, today, stick }: { tv: 
   const done = tv.phase === 'done'
   const parked = tv.phase === 'parked'
   const overdue = tv.phase === 'overdue'
-  // In-progress work "pops" with a hard shadow; future, done and parked bars stay flat.
-  const lifted = tv.phase === 'active' || overdue
   const at = (d: ISODate) => diffDays(task.start, d) * dw
   const ink = 'var(--bar-ink)'
+  const band = !parked && !done
+  const textH = BAR_H - (band ? BAND_H : 0)
+  const showPct = tv.progress != null && !done && tv.progress > 0
 
   return (
     <div
       className="absolute cursor-pointer"
-      style={{ left, top, width, height: BAR_H, opacity: done ? 0.45 : parked ? 0.6 : 1 }}
+      style={{ left, top, width, height: BAR_H, opacity: done ? 0.45 : parked ? 0.6 : tv.phase === 'upcoming' ? 0.75 : 1 }}
       onClick={() => openTask(task.id)}
       onMouseEnter={(e) => setHover({ x: e.clientX, y: e.clientY, content: <TaskTip tv={tv} today={today} /> })}
       onMouseMove={(e) => setHover({ x: e.clientX, y: e.clientY, content: <TaskTip tv={tv} today={today} /> })}
       onMouseLeave={() => setHover(null)}
     >
       {/* overdue tail: caution tape glued to the end of the window */}
-      {overdue && (
-        <div
-          className="tape absolute top-0 bottom-0 rounded-r-[4px]"
-          style={{ left: winW - 4, width: tv.overdueDays * dw + 4, border: `1.5px solid ${ink}`, boxShadow: '2px 2px 0 var(--bar-shadow)' }}
-        />
-      )}
-      {/* window + focus days, clipped by the outline */}
+      {overdue && <div className="tape absolute top-0 bottom-0 rounded-r-[4px]" style={{ left: winW - 4, width: tv.overdueDays * dw + 4, border: `1.5px solid ${ink}` }} />}
+      {/* window: one flat colour, so the title always sits on a uniform background */}
       <div
         className="absolute top-0 bottom-0 left-0 overflow-hidden rounded-[4px]"
-        style={{
-          width: winW,
-          background: parked ? 'transparent' : done ? '#e4e0d6' : pastel(color),
-          border: `1.5px ${parked ? 'dashed' : 'solid'} ${ink}`,
-          boxShadow: lifted && !overdue ? '2px 2px 0 var(--bar-shadow)' : undefined,
-        }}
+        style={{ width: winW, background: parked ? 'var(--panel)' : done ? '#e4e0d6' : pastel(color, 30), border: `1.5px ${parked ? 'dashed' : 'solid'} ${ink}` }}
       >
-        {!parked &&
-          !done &&
-          tv.focus.map((d) => (
-            <div
-              key={d}
-              className="absolute top-0 bottom-0"
-              style={{ left: at(d) - 1.5, width: dw, background: d < today ? pastel(color, 62) : color }}
-            />
-          ))}
-        {/* progress */}
-        {tv.progress != null && tv.progress > 0 && !done && (
-          <div className="absolute bottom-0 left-0" style={{ width: Math.max(3, winW * tv.progress), height: 3, background: ink }} />
+        {/* focus days: a band along the bottom edge */}
+        {band && (
+          <div className="absolute right-0 bottom-0 left-0" style={{ height: BAND_H, borderTop: `1px solid ${ink}` }}>
+            {tv.focus.map((d) => (
+              <div key={d} className="absolute top-0 bottom-0" style={{ left: at(d) - 1.5, width: dw, background: d < today ? pastel(color, 60) : color }} />
+            ))}
+          </div>
         )}
-        {/* hard deadline cap */}
         {task.hard && !done && <div className="absolute top-0 right-0 bottom-0" style={{ width: 5, background: 'var(--sticker-red)', borderLeft: `1.5px solid ${ink}` }} />}
       </div>
       {/* baseline: where it was originally supposed to end */}
-      {task.baseline && task.baseline < task.end && (
-        <div className="absolute" style={{ left: at(task.baseline) + dw - 1, top: -3, bottom: -3, borderLeft: `2px dotted ${ink}` }} />
-      )}
-      {/* title: only over the planned window (never over the tail); sticks to the viewport edge */}
-      <div className="pointer-events-none absolute top-0 bottom-0 left-0" style={{ width: winW - (task.hard ? 6 : 1), overflow: 'clip', zIndex: 2 }}>
-        <div
-          className="sticky inline-block max-w-full truncate px-[5px] align-top text-[11px] font-semibold"
-          style={{ left: stick, lineHeight: `${BAR_H}px`, color: ink, textDecoration: done ? 'line-through' : undefined }}
-        >
-          {done ? '✓ ' : parked ? '⏸ ' : ''}
-          {task.title}
+      {task.baseline && task.baseline < task.end && <div className="absolute" style={{ left: at(task.baseline) + dw - 1, top: -3, bottom: -3, borderLeft: `2px dotted ${ink}` }} />}
+      {/* title + progress: upper part of the window only; sticks to the viewport edge */}
+      <div className="pointer-events-none absolute top-0 left-0" style={{ width: winW - (task.hard ? 6 : 1), height: textH, overflow: 'clip', zIndex: 2 }}>
+        <div className="sticky inline-flex max-w-full items-baseline gap-1 px-[5px] align-top" style={{ left: stick, lineHeight: `${textH}px`, color: ink }}>
+          <span className="truncate text-[11.5px] font-semibold" style={{ textDecoration: done ? 'line-through' : undefined }}>
+            {done ? '✓ ' : parked ? '⏸ ' : ''}
+            {task.title}
+          </span>
+          {showPct && <span className="num shrink-0 text-[10px] font-semibold opacity-60">{Math.round(tv.progress! * 100)}%</span>}
         </div>
       </div>
       {/* stickers */}

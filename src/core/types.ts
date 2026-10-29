@@ -43,7 +43,9 @@ export interface Track {
   /** Optional grouping, e.g. several SURF tracks. */
   group?: string
   paused?: boolean
+  /** Hidden from the gantt, inbox and stats; kept for history. */
   archived?: boolean
+  archivedAt?: ISODate
   note?: string
 }
 

@@ -33,6 +33,7 @@ npm run plan -- add-block --date 2026-10-30 --start 14:00 --end 15:30 --title "�
 npm run plan -- done td-05                             # task / todo / milestone 通用
 npm run plan -- push tk-stat --to 2026-11-02 --reason "数据没清完" --by agent
 npm run plan -- set tk-exp1 title="复现 baseline v2" note=   # 改任意字段，空值 = 删除该字段
+npm run plan -- archive jp                             # 归档整条线程（unarchive / pause / unpause 同理）
 npm run plan -- validate
 ```
 
@@ -43,7 +44,7 @@ npm run plan -- validate
 
 | 实体 | 关键字段 | 说明 |
 |---|---|---|
-| track | id, name, color, group?, paused? | 一条并行的线程。15 条左右 |
+| track | id, name, color, group?, paused?, archived? | 一条并行的线程。同一 `group` 的线程在甘特图里归成一个可折叠的组（组内显示时会去掉名字里的「组名 · 」前缀）。`paused` 收进底部「暂停」组；`archived` 从甘特图、需处理、统计里全部隐藏 |
 | task | trackId, start, end, focus[], progress?, hard?, milestoneId?, slips[], baseline? | 甘特条。`focus` = 打算做它的那几天（实心格） |
 | milestone | trackId, date, hard? | ◆。hard = 硬 ddl |
 | todo | date?, origDate?, taskId?, trackId?, done, est? | 没有 date = backlog。挂到 task 上会自动算进度、自动点亮那天的 focus |

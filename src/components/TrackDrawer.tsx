@@ -1,5 +1,8 @@
+import { useState } from 'react'
 import { diffDays, md, relDay } from '../core/date'
-import type { PlanView, TaskView } from '../core/derive'
+import { buildView, type PlanView, type TaskView } from '../core/derive'
+import { setTrackFlags } from '../core/ops'
+import { useStore } from '../data/store'
 import { useUI } from '../data/ui'
 import { pastel, pct, pressureColor } from '../lib/ui'
 import { TodoRow } from './DayPanel'
@@ -9,14 +12,25 @@ const PHASE_ORDER = { overdue: 0, active: 1, upcoming: 2, parked: 3, done: 4 } a
 const PHASE_ZH = { overdue: '过期', active: '进行中', upcoming: '未开始', parked: '暂停', done: '完成' } as const
 
 /** Everything on one thread: tasks by phase, milestones, open todos, slip total. */
-export function TrackDrawer({ view, mobile }: { view: PlanView; mobile: boolean }) {
+export function TrackDrawer({ view: liveView, mobile }: { view: PlanView; mobile: boolean }) {
   const id = useUI((s) => s.trackId)
   const openTrack = useUI((s) => s.openTrack)
   const openTask = useUI((s) => s.openTask)
+  const plan = useStore((s) => s.plan)
+  const apply = useStore((s) => s.apply)
+  const [confirmArchive, setConfirmArchive] = useState(false)
+  const archived = liveView.archived.some((t) => t.id === id)
+  // An archived thread is left out of the live view; rebuild one that includes it.
+  const view = archived ? buildView({ ...plan, tracks: plan.tracks.map((t) => (t.id === id ? { ...t, archived: false } : t)) }, liveView.today) : liveView
   const tv = view.tracks.find((t) => t.track.id === id)
   if (!tv) return null
-  const { track } = tv
+  const track = plan.tracks.find((t) => t.id === id) ?? tv.track
   const { today } = view
+  const openTasks = tv.tasks.filter((t) => t.phase !== 'done').length
+  const close = () => {
+    setConfirmArchive(false)
+    openTrack(null)
+  }
   const tasks = [...tv.tasks].sort((a, b) => PHASE_ORDER[a.phase] - PHASE_ORDER[b.phase] || a.task.end.localeCompare(b.task.end))
   const todos = view.todos
     .filter((t) => t.track?.id === track.id && !t.todo.done)
@@ -24,7 +38,7 @@ export function TrackDrawer({ view, mobile }: { view: PlanView; mobile: boolean 
   const doneTodos = view.todos.filter((t) => t.track?.id === track.id && t.todo.done).length
 
   return (
-    <Sheet mobile={mobile} onClose={() => openTrack(null)}>
+    <Sheet mobile={mobile} onClose={close}>
       <div className="sticky top-0 z-10 flex items-start gap-2 px-4 pt-3 pb-2" style={{ background: 'var(--panel)', borderBottom: '1px solid var(--line-2)' }}>
         <div className="mt-1 h-3 w-3 shrink-0 rounded-[3px]" style={{ background: track.color }} />
         <div className="min-w-0 flex-1">
@@ -33,12 +47,13 @@ export function TrackDrawer({ view, mobile }: { view: PlanView; mobile: boolean 
             {tv.activeCount} 进行中 · {tasks.filter((t) => t.phase === 'upcoming').length} 未开始 · {tasks.filter((t) => t.phase === 'done').length} 完成 · todo {doneTodos}/{doneTodos + todos.length}
             {tv.slipDays > 0 && <span style={{ color: 'var(--orange)' }}> · 累计推迟 {tv.slipDays} 天</span>}
             {track.paused && ' · 暂停中'}
+            {track.archived && <span style={{ color: 'var(--orange)' }}> · 已归档{track.archivedAt ? `（${md(track.archivedAt)}）` : ''}</span>}
             <span className="mono ml-1.5 text-[10px]" style={{ color: 'var(--faint)' }}>
               {track.id}
             </span>
           </div>
         </div>
-        <button className="btn btn-ghost" onClick={() => openTrack(null)} aria-label="关闭">
+        <button className="btn btn-ghost" onClick={close} aria-label="关闭">
           ✕
         </button>
       </div>
@@ -93,8 +108,34 @@ export function TrackDrawer({ view, mobile }: { view: PlanView; mobile: boolean 
             )}
           </ul>
         </div>
-        <div className="text-[10.5px]" style={{ color: 'var(--faint)' }}>
-          想调整这条线？跟 Claude 说「{track.id} 这条线…」就行。
+        <div className="space-y-2 border-t pt-3" style={{ borderColor: 'var(--line-2)' }}>
+          <div className="flex flex-wrap items-center gap-1">
+            {!track.archived && (
+              <button className="btn" onClick={() => apply(`${track.paused ? '恢复' : '暂停'}线程「${track.name}」`, (p) => setTrackFlags(p, track.id, { paused: !track.paused }, today))}>
+                {track.paused ? '▶ 恢复' : '⏸ 暂停'}
+              </button>
+            )}
+            {track.archived ? (
+              <button className="btn" onClick={() => apply(`取消归档「${track.name}」`, (p) => setTrackFlags(p, track.id, { archived: false }, today))}>
+                取消归档
+              </button>
+            ) : confirmArchive || !openTasks ? (
+              <button
+                className="btn"
+                style={{ background: 'var(--sticker-orange)', color: 'var(--bar-ink)' }}
+                onClick={() => apply(`归档线程「${track.name}」`, (p) => setTrackFlags(p, track.id, { archived: true }, today)) && close()}
+              >
+                {openTasks ? `确认归档（${openTasks} 个没完成的 task 会一起收起来）` : '归档这条线'}
+              </button>
+            ) : (
+              <button className="btn" onClick={() => setConfirmArchive(true)}>
+                归档…
+              </button>
+            )}
+          </div>
+          <div className="text-[10.5px]" style={{ color: 'var(--faint)' }}>
+            暂停 = 收进甘特图底部的「暂停」组；归档 = 从甘特图、需处理和统计里消失，可以在「已归档」里找回。也可以直接跟 Claude 说「{track.id} 这条线…」。
+          </div>
         </div>
       </div>
     </Sheet>

@@ -40,6 +40,7 @@ export function validatePlan(plan: Plan): Issue[] {
     claim(t.id, p)
     if (!t.name) err(`${p}.name`, '缺 name')
     if (!/^#[0-9a-fA-F]{6}$/.test(t.color ?? '')) err(`${p}.color`, 'color 应为 #rrggbb')
+    date(t.archivedAt, `${p}.archivedAt`, true)
   })
 
   plan.tasks.forEach((t, i) => {

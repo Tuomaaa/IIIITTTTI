@@ -1,9 +1,10 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { addDays, diffDays, isoWeek, isValidDate, isValidTime, todayIn, weekStart } from '../src/core/date'
-import { buildView, layoutBlocks, packLanes, pressureOf, taskPhase } from '../src/core/derive'
+import { archivedTrackView, buildView, layoutBlocks, pressureOf, taskPhase } from '../src/core/derive'
+import { packRow } from '../src/core/layout'
 import { formatJSON } from '../src/core/format'
-import { addTask, OpError, pushTask, remove, rollover, suggestPush, toggleTodo } from '../src/core/ops'
+import { addTask, OpError, pushTask, remove, rollover, setTrackFlags, suggestPush, toggleTodo } from '../src/core/ops'
 import { parseDay, parseQuick } from '../src/core/quickadd'
 import type { Plan, Task } from '../src/core/types'
 import { validatePlan } from '../src/core/validate'
@@ -121,13 +122,45 @@ describe('derive', () => {
     expect(kinds).not.toContain('unscheduled:hard')
   })
 
-  it('packs non-overlapping tasks into the same lane', () => {
+  it('packs tasks into shared lanes and tucks milestones into gaps', () => {
     const p = base()
     p.tasks.push(task({ id: 'x', start: '2026-10-20', end: '2026-10-25', done: true }))
     p.tasks.push(task({ id: 'y', start: '2026-10-26', end: '2026-10-30' }))
     p.tasks.push(task({ id: 'z', start: '2026-10-28', end: '2026-11-02' }))
+    // At y's end with free space after it -> shares lane 0 (diamond sits on y's last cell).
+    p.milestones.push({ id: 'm1', trackId: 'a', title: 'M1', date: '2026-10-30' })
+    // In the middle of z (lane 1) and over y's free tail -> lane 0 is free after 10-30.
+    p.milestones.push({ id: 'm2', trackId: 'a', title: 'M2', date: '2026-11-08' })
     const tv = buildView(p, TODAY).tracks.find((t) => t.track.id === 'a')!
-    expect(packLanes(tv.tasks).map((l) => l.map((t) => t.task.id))).toEqual([['x', 'y'], ['z']])
+    const r = packRow(tv.tasks, tv.milestones, '2026-10-01', '2026-12-31', 30)
+    expect(r.lanes.map((l) => l.map((t) => t.task.id))).toEqual([['x', 'y'], ['z']])
+    expect(r.ms.every((x) => x.label)).toBe(true)
+    expect(r.ms.map((x) => [x.m.id, x.lane])).toEqual([
+      ['m1', 0],
+      ['m2', 0],
+    ])
+    expect(r.laneCount).toBe(2)
+  })
+
+  it('draws just the diamond on a bar end when the label has no room', () => {
+    const p = base()
+    p.tasks.push(task({ id: 'a1', start: '2026-10-26', end: '2026-11-04' }))
+    p.tasks.push(task({ id: 'a2', start: '2026-11-05', end: '2026-11-14' }))
+    p.milestones.push({ id: 'm', trackId: 'a', title: 'Milestone 1：baseline 跑通', date: '2026-11-04' })
+    const tv = buildView(p, TODAY).tracks.find((t) => t.track.id === 'a')!
+    const r = packRow(tv.tasks, tv.milestones, '2026-10-01', '2026-12-31', 30)
+    expect(r.ms).toMatchObject([{ lane: 0, label: false }])
+    expect(r.laneCount).toBe(1)
+  })
+
+  it('opens a new lane for a milestone only when no lane has room', () => {
+    const p = base()
+    p.tasks.push(task({ id: 'long', start: '2026-10-20', end: '2026-11-20' }))
+    p.milestones.push({ id: 'mid', trackId: 'a', title: '中途检查', date: '2026-11-01' })
+    const tv = buildView(p, TODAY).tracks.find((t) => t.track.id === 'a')!
+    const r = packRow(tv.tasks, tv.milestones, '2026-10-01', '2026-12-31', 30)
+    expect(r.ms[0].lane).toBe(1)
+    expect(r.laneCount).toBe(2)
   })
 
   it('lays out overlapping blocks side by side', () => {
@@ -204,6 +237,27 @@ describe('ops', () => {
     const p = base()
     expect(() => addTask(p, { trackId: 'nope', title: 'x', start: TODAY, end: TODAY })).toThrow(OpError)
     expect(() => remove(p, 'nope')).toThrow(OpError)
+  })
+})
+
+describe('archive', () => {
+  it('hides archived threads and everything on them, but keeps them restorable', () => {
+    let p = base()
+    p.tasks.push(task({ id: 'gone', trackId: 'b', end: '2026-10-27' }), task({ id: 'kept' }))
+    p.todos.push({ id: 'd1', title: 'x', date: '2026-10-20', taskId: 'gone' }, { id: 'd2', title: 'y', date: TODAY, trackId: 'b' })
+    p.milestones.push({ id: 'm', trackId: 'b', title: 'm', date: '2026-10-20' })
+    p = setTrackFlags(p, 'b', { archived: true }, TODAY)
+    expect(p.tracks[1]).toMatchObject({ archived: true, archivedAt: TODAY })
+    const v = buildView(p, TODAY)
+    expect(v.tracks.map((t) => t.track.id)).toEqual(['a'])
+    expect(v.archived.map((t) => t.id)).toEqual(['b'])
+    expect(v.taskById.has('gone')).toBe(false)
+    expect(v.inbox.some((i) => i.id === 'gone' || i.id === 'd1' || i.id === 'm')).toBe(false)
+    expect(v.todos.map((t) => t.todo.id)).toEqual([])
+    expect(archivedTrackView(p, 'b', TODAY)?.tasks.map((t) => t.task.id)).toEqual(['gone'])
+    const back = setTrackFlags(p, 'b', { archived: false }, TODAY)
+    expect(back.tracks[1].archived).toBeUndefined()
+    expect(buildView(back, TODAY).taskById.has('gone')).toBe(true)
   })
 })
 

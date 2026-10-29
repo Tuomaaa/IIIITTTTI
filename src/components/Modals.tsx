@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { addDays, diffDays } from '../core/date'
 import { buildView, type PlanView } from '../core/derive'
+import { setTrackFlags } from '../core/ops'
 import type { ISODate, Plan } from '../core/types'
 import { Bar } from './Gantt'
 import { DEFAULT_SOURCE, fetchPlan, type Source } from '../data/github'
@@ -38,7 +39,59 @@ export function Modals() {
         <Settings />
       </Modal>
     )
+  if (modal === 'archive')
+    return (
+      <Modal title="已归档的线程" onClose={() => setModal(null)}>
+        <Archive />
+      </Modal>
+    )
   return null
+}
+
+function Archive() {
+  const plan = useStore((s) => s.plan)
+  const today = useStore((s) => s.today)
+  const apply = useStore((s) => s.apply)
+  const openTrack = useUI((s) => s.openTrack)
+  const setModal = useUI((s) => s.setModal)
+  const tracks = plan.tracks.filter((t) => t.archived).sort((a, b) => (b.archivedAt ?? '').localeCompare(a.archivedAt ?? ''))
+  if (!tracks.length)
+    return (
+      <div className="text-[12px]" style={{ color: 'var(--muted)' }}>
+        还没有归档的线程
+      </div>
+    )
+  return (
+    <ul className="space-y-1.5">
+      {tracks.map((t) => {
+        const tasks = plan.tasks.filter((x) => x.trackId === t.id)
+        const done = tasks.filter((x) => x.done).length
+        return (
+          <li key={t.id} className="flex items-center gap-2 rounded-md px-2 py-1.5" style={{ border: '1.5px solid var(--ink)' }}>
+            <span className="h-3 w-3 shrink-0 rounded-[3px]" style={{ background: t.color, border: '1.5px solid var(--bar-ink)' }} />
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-[12.5px] font-bold">{t.name}</div>
+              <div className="num text-[10.5px]" style={{ color: 'var(--muted)' }}>
+                {t.archivedAt ? `${t.archivedAt} 归档 · ` : ''}task {done}/{tasks.length} 完成 · <span className="mono">{t.id}</span>
+              </div>
+            </div>
+            <button
+              className="btn"
+              onClick={() => {
+                setModal(null)
+                openTrack(t.id)
+              }}
+            >
+              查看
+            </button>
+            <button className="btn" onClick={() => apply(`取消归档「${t.name}」`, (p) => setTrackFlags(p, t.id, { archived: false }, today))}>
+              取消归档
+            </button>
+          </li>
+        )
+      })}
+    </ul>
+  )
 }
 
 const C = '#10b981'
@@ -84,7 +137,7 @@ function BarSample({ id, view, origin, today }: { id: string; view: PlanView; or
   const DW = 15
   const tv = view.taskById.get(id)!
   return (
-    <div className="relative shrink-0" style={{ width: 13 * DW + 70, height: 20 }}>
+    <div className="relative shrink-0" style={{ width: 13 * DW + 70, height: 26 }}>
       <div className="absolute top-0 bottom-0" style={{ left: diffDays(origin, today) * DW, width: DW, background: 'var(--hl-soft)' }} />
       <Bar tv={tv} left={diffDays(origin, tv.task.start) * DW} top={2} dw={DW} today={today} stick={0} />
     </div>
@@ -97,9 +150,9 @@ function Legend() {
   const bar = (id: string) => <BarSample id={id} view={view} origin={origin} today={today} />
   const rows: [ReactNode, string][] = [
     [bar('window'), '浅色条 = task 的时间窗口（start → end），颜色 = 所属线程。黄色竖条 = 今天'],
-    [bar('focus'), '实心格 = 打算做它的日子（focus day），过去的变浅。来源：focus 字段、挂在它上面的时间块和 todo'],
-    [bar('progress'), '底部黑线 = 进度。没手动填时按挂在它上面的 todo 完成比例算'],
-    [bar('upcoming'), '没有阴影 = 还没开始；有黑色硬阴影 = 正在进行'],
+    [bar('focus'), '底部色带的实心段 = 打算做它的日子（focus day），过去的变浅。来源：focus 字段、挂在它上面的时间块和 todo'],
+    [bar('progress'), '标题后面的百分比 = 进度。没手动填时按挂在它上面的 todo 完成比例算'],
+    [bar('upcoming'), '半透明 = 还没开始'],
     [bar('overdue'), '红白警戒条纹 = 过了 end 还没完成，每天长一格，直到你推后或完成'],
     [bar('pushed'), '点线 = 原定的 end。+4d×3 = 一共推了 4 天、推了 3 次。贴纸颜色：黄 1 次 · 橙 2 次 · 红 ≥3 次'],
     [bar('hard'), '右端红块 = 硬 ddl，不能推'],

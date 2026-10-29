@@ -172,6 +172,27 @@ export function setFocus(plan: Plan, id: string, days: ISODate[]): Plan {
   return touch(p)
 }
 
+/** Pause / archive a whole thread. Archiving hides it (and its tasks, todos, blocks) everywhere but the archive list. */
+export function setTrackFlags(plan: Plan, id: string, flags: { paused?: boolean; archived?: boolean }, today: ISODate): Plan {
+  const p = clone(plan)
+  const t = p.tracks.find((x) => x.id === id)
+  if (!t) throw new OpError(`找不到 track ${id}`)
+  if (flags.paused !== undefined) {
+    if (flags.paused) t.paused = true
+    else delete t.paused
+  }
+  if (flags.archived !== undefined) {
+    if (flags.archived) {
+      t.archived = true
+      t.archivedAt = today
+    } else {
+      delete t.archived
+      delete t.archivedAt
+    }
+  }
+  return touch(p)
+}
+
 export function setMilestoneDone(plan: Plan, id: string, done: boolean): Plan {
   const p = clone(plan)
   const m = p.milestones.find((x) => x.id === id)
