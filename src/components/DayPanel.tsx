@@ -6,6 +6,7 @@ import type { Block, ISODate } from '../core/types'
 import { useStore } from '../data/store'
 import { useUI } from '../data/ui'
 import { cx, pct, tint } from '../lib/ui'
+import { MonthMini } from './MonthMini'
 
 function todosOn(view: PlanView, day: ISODate): TodoView[] {
   const { today } = view
@@ -58,6 +59,8 @@ export function DayPanel({ view, mobile = false }: { view: PlanView; mobile?: bo
           {(blockMin / 60).toFixed(1)}h 已排
         </span>
       </div>
+
+      <MonthMini view={view} cellH={mobile ? 34 : 30} />
 
       {focus.length > 0 && (
         <div className="px-3 pb-2">
@@ -252,9 +255,9 @@ export function TodoRow({ t, today, showDate = false }: { t: TodoView; today: IS
   const { todo } = t
   const color = t.track?.color
   return (
-    <li className="group flex items-start gap-1.5 rounded px-1 py-[3px] hover:bg-[var(--panel-2)]">
+    <li className="flex items-center gap-1.5 rounded px-1 py-[3px] hover:bg-[var(--panel-2)]">
       <button
-        className="mt-[1px] flex h-[13px] w-[13px] shrink-0 items-center justify-center rounded-[3px] text-[9px]"
+        className="flex h-[13px] w-[13px] shrink-0 items-center justify-center rounded-[3px] text-[9px]"
         style={{
           border: `1.5px solid ${todo.done ? 'var(--green)' : t.stale ? 'var(--red)' : 'var(--faint)'}`,
           background: todo.done ? 'var(--green)' : undefined,
@@ -265,42 +268,39 @@ export function TodoRow({ t, today, showDate = false }: { t: TodoView; today: IS
       >
         {todo.done ? '✓' : ''}
       </button>
-      <div className="min-w-0 flex-1">
-        <div className="flex items-baseline gap-1.5">
-          <span className={cx('min-w-0', todo.done && 'line-through')} style={{ color: todo.done ? 'var(--faint)' : undefined }}>
-            {todo.title}
-          </span>
-          {t.rolled && !todo.done && (
-            <span
-              className="num shrink-0 rounded px-1 text-[9.5px] font-semibold"
-              style={{ color: t.stale ? 'var(--red)' : 'var(--orange)', background: t.stale ? 'var(--red-soft)' : 'var(--orange-soft)' }}
-              title={`从 ${todo.origDate ?? todo.date} 拖到现在`}
-            >
-              ↻{t.age}d
-            </span>
-          )}
-          {todo.est && (
-            <span className="num shrink-0 text-[10px]" style={{ color: 'var(--faint)' }}>
-              {todo.est >= 60 ? `${+(todo.est / 60).toFixed(1)}h` : `${todo.est}m`}
-            </span>
-          )}
-          {showDate && t.showOn && (
-            <span className="num shrink-0 text-[10px]" style={{ color: 'var(--faint)' }}>
-              {relDay(t.showOn, today)}
-            </span>
-          )}
-        </div>
-        {(t.task || t.track) && (
-          <button
-            className="flex max-w-full items-center gap-1 text-[10px]"
-            style={{ color: 'var(--muted)' }}
-            onClick={() => t.task && openTask(t.task.id)}
-          >
-            <span className="h-[6px] w-[6px] shrink-0 rounded-full" style={{ background: color }} />
-            <span className="truncate">{t.task ? t.task.title : t.track?.name}</span>
-          </button>
-        )}
-      </div>
+      <span className={cx('min-w-[40%] flex-1 truncate', todo.done && 'line-through')} style={{ color: todo.done ? 'var(--faint)' : undefined }} title={todo.title}>
+        {todo.title}
+      </span>
+      {t.rolled && !todo.done && (
+        <span
+          className="num shrink-0 rounded px-1 text-[9.5px] font-semibold"
+          style={{ color: t.stale ? 'var(--red)' : 'var(--orange)', background: t.stale ? 'var(--red-soft)' : 'var(--orange-soft)' }}
+          title={`从 ${todo.origDate ?? todo.date} 拖到现在`}
+        >
+          ↻{t.age}d
+        </span>
+      )}
+      {todo.est && (
+        <span className="num shrink-0 text-[10px]" style={{ color: 'var(--faint)' }}>
+          {todo.est >= 60 ? `${+(todo.est / 60).toFixed(1)}h` : `${todo.est}m`}
+        </span>
+      )}
+      {showDate && t.showOn && (
+        <span className="num shrink-0 text-[10px]" style={{ color: 'var(--faint)' }}>
+          {relDay(t.showOn, today)}
+        </span>
+      )}
+      {(t.task || t.track) && (
+        <button
+          className="flex min-w-0 shrink items-center gap-1 text-[10px]"
+          style={{ color: 'var(--muted)', maxWidth: '42%' }}
+          onClick={() => t.task && openTask(t.task.id)}
+          title={t.task ? `${t.track?.name} / ${t.task.title}` : t.track?.name}
+        >
+          <span className="h-[6px] w-[6px] shrink-0 rounded-full" style={{ background: color }} />
+          <span className="truncate">{t.task ? t.task.title : t.track?.name}</span>
+        </button>
+      )}
     </li>
   )
 }

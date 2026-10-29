@@ -185,8 +185,17 @@ const Header = memo(function Header({
                   outline: selected === d && !isToday ? '1.5px solid var(--accent)' : undefined,
                 }}
               >
-                <span className="text-[9.5px] opacity-80">{WEEKDAY_ZH[wd]}</span>
-                <span className="text-[11px] font-medium">{Number(d.slice(8))}</span>
+                {dw >= 24 ? (
+                  <>
+                    <span className="text-[9.5px] opacity-80">{WEEKDAY_ZH[wd]}</span>
+                    <span className="text-[11px] font-medium">{Number(d.slice(8))}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-[9px] opacity-80">{wd === 1 ? '一' : '\u00a0'}</span>
+                    <span className="text-[9.5px] font-medium tracking-tighter">{Number(d.slice(8))}</span>
+                  </>
+                )}
               </div>
               <div
                 className="num mt-[1px] flex items-center justify-center text-[9.5px] font-semibold"
