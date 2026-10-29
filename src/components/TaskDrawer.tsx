@@ -6,6 +6,7 @@ import { useStore } from '../data/store'
 import { useUI } from '../data/ui'
 import { pct, pressureColor, tint } from '../lib/ui'
 import { TodoRow } from './DayPanel'
+import { Sheet } from './Sheet'
 import { PushForm } from './SidePanel'
 
 const PHASE = {
@@ -36,16 +37,7 @@ export function TaskDrawer({ view, mobile }: { view: PlanView; mobile: boolean }
   const [label, labelColor] = PHASE[tv.phase]
 
   return (
-    <>
-      <div className="fixed inset-0 z-40" style={{ background: 'rgba(0,0,0,.18)' }} onClick={() => openTask(null)} />
-      <aside
-        className="fade-in scroll-thin fixed z-50 overflow-y-auto"
-        style={
-          mobile
-            ? { left: 0, right: 0, bottom: 0, maxHeight: '82vh', background: 'var(--panel)', borderTop: '1px solid var(--line)', borderRadius: '12px 12px 0 0', boxShadow: 'var(--shadow)' }
-            : { top: 8, right: 8, bottom: 8, width: 380, background: 'var(--panel)', border: '1px solid var(--line)', borderRadius: 10, boxShadow: 'var(--shadow)' }
-        }
-      >
+    <Sheet mobile={mobile} onClose={() => openTask(null)} z={60}>
         <div className="sticky top-0 z-10 flex items-start gap-2 px-4 pt-3 pb-2" style={{ background: 'var(--panel)', borderBottom: '1px solid var(--line-2)' }}>
           <div className="mt-1 h-3 w-3 shrink-0 rounded-[3px]" style={{ background: color }} />
           <div className="min-w-0 flex-1">
@@ -226,8 +218,7 @@ export function TaskDrawer({ view, mobile }: { view: PlanView; mobile: boolean }
             </div>
           </div>
         </div>
-      </aside>
-    </>
+    </Sheet>
   )
 }
 

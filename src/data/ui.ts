@@ -16,6 +16,8 @@ interface UI {
   day: ISODate | null
   /** Task open in the detail drawer. */
   taskId: string | null
+  /** Track open in the thread drawer. */
+  trackId: string | null
   modal: 'legend' | 'settings' | null
   tab: MobileTab
   zoom: Zoom
@@ -23,6 +25,7 @@ interface UI {
   hover: Hover | null
   setDay(d: ISODate | null): void
   openTask(id: string | null): void
+  openTrack(id: string | null): void
   setModal(m: UI['modal']): void
   setTab(t: MobileTab): void
   setZoom(z: Zoom): void
@@ -50,6 +53,7 @@ function writePref(key: string, v: unknown) {
 export const useUI = create<UI>((set) => ({
   day: null,
   taskId: null,
+  trackId: null,
   modal: null,
   tab: 'today',
   zoom: readPref<Zoom>('planner.zoom', 'w4'),
@@ -57,6 +61,7 @@ export const useUI = create<UI>((set) => ({
   hover: null,
   setDay: (day) => set({ day }),
   openTask: (taskId) => set({ taskId, hover: null }),
+  openTrack: (trackId) => set({ trackId, hover: null }),
   setModal: (modal) => set({ modal }),
   setTab: (tab) => set({ tab }),
   setZoom: (zoom) => {

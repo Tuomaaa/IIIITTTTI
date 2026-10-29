@@ -331,11 +331,13 @@ function Row({
 
 function Label({ tv, labelW, today, compact }: { tv: TrackView; labelW: number; today: ISODate; compact: boolean }) {
   const { track } = tv
+  const openTrack = useUI((s) => s.openTrack)
   return (
-    <div
-      className="sticky left-0 z-10 flex shrink-0 overflow-hidden"
+    <button
+      className="sticky left-0 z-10 flex shrink-0 overflow-hidden text-left hover:brightness-[.97]"
       style={{ width: labelW, background: 'var(--panel)', borderRight: '1px solid var(--line)' }}
-      title={track.note}
+      title={track.note ?? `${track.name}：点开看这条线的全部内容`}
+      onClick={() => openTrack(track.id)}
     >
       <div className="shrink-0" style={{ width: 3, background: track.color }} />
       <div className="min-w-0 flex-1 px-1.5 pt-[3px]">
@@ -370,7 +372,7 @@ function Label({ tv, labelW, today, compact }: { tv: TrackView; labelW: number; 
           </div>
         )}
       </div>
-    </div>
+    </button>
   )
 }
 

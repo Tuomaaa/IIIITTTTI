@@ -1,20 +1,62 @@
 import { useEffect, useRef, useState } from 'react'
-import { diffDays, isoWeek, mdw } from '../core/date'
+import { diffDays, isoWeek, mdw, nowMinutes, toMinutes } from '../core/date'
+import { blocksOn } from '../core/derive'
 import type { PlanView } from '../core/derive'
 import { addBlock, addTask, addTodo, newId } from '../core/ops'
 import { describeQuick, parseQuick } from '../core/quickadd'
 import { useStore } from '../data/store'
 import { useUI } from '../data/ui'
 
-export function Stats({ view }: { view: PlanView }) {
+/** What's on right now / next, from today's time blocks. */
+export function NowChip({ view }: { view: PlanView }) {
+  const plan = useStore((s) => s.plan)
+  const openTask = useUI((s) => s.openTask)
+  const [now, setNow] = useState(() => nowMinutes())
+  useEffect(() => {
+    const t = setInterval(() => setNow(nowMinutes()), 30_000)
+    return () => clearInterval(t)
+  }, [])
+  const blocks = blocksOn(plan, view.today).filter((b) => b.kind !== 'routine')
+  const cur = blocks.find((b) => toMinutes(b.start) <= now && now < toMinutes(b.end))
+  const next = blocks.find((b) => toMinutes(b.start) > now)
+  if (!cur && !next) return null
+  const color = (b: typeof cur) => (b?.trackId ? view.trackById.get(b.trackId)?.color : b?.taskId ? view.taskById.get(b.taskId)?.track?.color : undefined) ?? 'var(--muted)'
+  const fmt = (m: number) => (m >= 60 ? `${Math.floor(m / 60)}h${m % 60 ? `${m % 60}m` : ''}` : `${m}m`)
+  return (
+    <span className="chip shrink-0" style={{ background: cur ? 'var(--accent-soft)' : undefined, borderColor: cur ? 'transparent' : undefined }}>
+      {cur && (
+        <button className="flex items-center gap-1" onClick={() => cur.taskId && openTask(cur.taskId)}>
+          <span style={{ color: 'var(--accent)' }}>▶</span>
+          <span className="h-[7px] w-[7px] rounded-full" style={{ background: color(cur) }} />
+          <b className="max-w-[110px] truncate">{cur.title}</b>
+          <span className="num" style={{ color: 'var(--muted)' }}>
+            剩 {fmt(toMinutes(cur.end) - now)}
+          </span>
+        </button>
+      )}
+      {cur && next && <span style={{ color: 'var(--line)' }}>|</span>}
+      {next && (
+        <button className="flex items-center gap-1" onClick={() => next.taskId && openTask(next.taskId)} title={`${next.start}–${next.end} ${next.title}`}>
+          <span style={{ color: 'var(--muted)' }}>下一个</span>
+          <span className="num">{next.start}</span>
+          <span className="h-[7px] w-[7px] rounded-full" style={{ background: color(next) }} />
+          <span className="max-w-[90px] truncate">{next.title}</span>
+        </button>
+      )}
+    </span>
+  )
+}
+
+export function Stats({ view, desktop = false }: { view: PlanView; desktop?: boolean }) {
   const s = view.stats
   const setTab = useUI((x) => x.setTab)
   const nm = s.nextMilestone
   const nmLeft = nm ? diffDays(view.today, nm.date) : 0
   return (
     <div className="scroll-thin flex min-w-0 items-center gap-1 overflow-x-auto">
-      <Stat label="进行中" value={s.active} />
-      <Stat label="今日聚焦" value={s.focusToday} />
+      <NowChip view={view} />
+      {!desktop && <Stat label="进行中" value={s.active} />}
+      {!desktop && <Stat label="今日聚焦" value={s.focusToday} />}
       <Stat label="todo" value={`${s.todosToday.done}/${s.todosToday.total}`} />
       <Stat label="过期" value={s.overdue} tone={s.overdue ? 'red' : undefined} onClick={() => setTab('inbox')} />
       <Stat label="拖延 todo" value={s.stale} tone={s.stale ? 'orange' : undefined} onClick={() => setTab('inbox')} />
@@ -197,7 +239,7 @@ export function TopBar({ view }: { view: PlanView }) {
           </span>
         )}
       </div>
-      <Stats view={view} />
+      <Stats view={view} desktop />
       <div className="ml-auto flex shrink-0 items-center gap-1" style={{ width: 'clamp(180px, 18vw, 320px)' }}>
         <QuickAdd />
       </div>

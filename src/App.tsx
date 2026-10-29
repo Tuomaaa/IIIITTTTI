@@ -8,6 +8,7 @@ import { Gantt, ZOOM_LABEL } from './components/Gantt'
 import { Modals } from './components/Modals'
 import { SidePanel } from './components/SidePanel'
 import { TaskDrawer } from './components/TaskDrawer'
+import { TrackDrawer } from './components/TrackDrawer'
 import { Tooltip } from './components/Tooltip'
 import { QuickAdd, Stats, SyncDot, TopBar } from './components/TopBar'
 
@@ -59,8 +60,10 @@ export default function App() {
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        useUI.getState().openTask(null)
-        useUI.getState().setModal(null)
+        const ui = useUI.getState()
+        if (ui.modal) ui.setModal(null)
+        else if (ui.taskId) ui.openTask(null)
+        else ui.openTrack(null)
       }
     }
     window.addEventListener('keydown', h)
@@ -70,6 +73,7 @@ export default function App() {
   return (
     <>
       {mobile ? <MobileLayout view={view} /> : <DesktopLayout view={view} />}
+      <TrackDrawer view={view} mobile={mobile} />
       <TaskDrawer view={view} mobile={mobile} />
       <Modals />
       <Tooltip />
