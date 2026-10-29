@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-29T23:34:39.297Z"
+    "updatedAt": "2026-10-29T23:34:47.457Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -242,11 +242,11 @@
       "taskId": "tk-arm-check",
       "kind": "focus"
     },
-    { "id": "bk-oer5", "date": "2026-10-29", "start": "20:00", "end": "20:30", "title": "HW15", "trackId": "csse232", "kind": "focus" },
-    { "id": "bk-7bap", "date": "2026-10-29", "start": "20:30", "end": "22:30", "title": "复习 Quiz 4（HW11、HW12）", "trackId": "csse232", "kind": "focus" },
+    { "id": "bk-oer5", "date": "2026-10-29", "start": "20:40", "end": "21:10", "title": "HW15", "trackId": "csse232", "kind": "focus" },
+    { "id": "bk-7bap", "date": "2026-10-29", "start": "21:10", "end": "23:00", "title": "复习 Quiz 4（HW11、HW12）", "trackId": "csse232", "kind": "focus" },
     { "id": "bk-lkhu", "date": "2026-10-30", "start": "12:00", "end": "13:30", "title": "ECE551 Project Proposal", "trackId": "ece551", "kind": "focus" },
     { "id": "bk-m0id", "date": "2026-10-30", "start": "19:00", "end": "21:30", "title": "ECG DNN Homework 3", "trackId": "ece497", "kind": "focus" },
     { "id": "bk-zkys", "date": "2026-10-30", "start": "21:30", "end": "22:00", "title": "写 tutorial", "trackId": "merl-sim", "kind": "focus" },
-    { "id": "bk-5bq4", "date": "2026-10-29", "start": "19:00", "end": "20:00", "title": "Lab 5 power analysis", "trackId": "ece551", "kind": "focus" }
+    { "id": "bk-5bq4", "date": "2026-10-29", "start": "19:40", "end": "20:40", "title": "Lab 5 power analysis", "trackId": "ece551", "kind": "focus" }
   ]
 }
