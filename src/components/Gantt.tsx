@@ -14,7 +14,8 @@ const BAR_H = 22
 const BAND_H = 6
 const ROW_PAD = 3
 const MINI_LANE = 9
-const GROUP_H = 26
+const ROW_H = ROW_PAD * 2 + LANE_H + 1
+const ARCHIVE_H = 26
 const HEAD_MONTH = 15
 const HEAD_DAY = 26
 const HEAD_LOAD = 16
@@ -31,8 +32,13 @@ interface Props {
   compact?: boolean
 }
 
-type GroupSection = { kind: 'group'; key: string; name: string; tracks: TrackView[]; collapsed: boolean }
-type Section = GroupSection | { kind: 'track'; tv: TrackView; inGroup: boolean }
+interface GroupInfo {
+  key: string
+  name: string
+  tracks: TrackView[]
+  collapsed: boolean
+}
+type Section = { kind: 'track'; tv: TrackView; group?: GroupInfo } | { kind: 'collapsed'; group: GroupInfo }
 
 export function Gantt({ view, compact = false }: Props) {
   const zoom = useUI((s) => s.zoom)
@@ -45,6 +51,7 @@ export function Gantt({ view, compact = false }: Props) {
   const [width, setWidth] = useState(800)
   const { today } = view
   const labelW = compact ? 96 : 212
+  const railW = compact ? 14 : 18
 
   useLayoutEffect(() => {
     const el = scroller.current
@@ -75,15 +82,25 @@ export function Gantt({ view, compact = false }: Props) {
   })
 
   const rows = buildSections(view.tracks, activeOnly, collapsed).map((s) => {
-    if (s.kind === 'group') {
-      const tasks = s.tracks.flatMap((t) => t.tasks).sort((a, b) => a.task.start.localeCompare(b.task.start))
-      const mini = s.collapsed ? packMini(tasks) : []
-      return { s, h: s.collapsed ? Math.max(GROUP_H, mini.length * MINI_LANE + 8) : GROUP_H, mini, packed: undefined }
+    if (s.kind === 'collapsed') {
+      const tasks = s.group.tracks.flatMap((t) => t.tasks).sort((a, b) => a.task.start.localeCompare(b.task.start))
+      const mini = packMini(tasks)
+      return { s, h: Math.max(ROW_H, mini.length * MINI_LANE + 8), mini, packed: undefined }
     }
     const packed = packRow(s.tv.tasks, s.tv.milestones, from, to, dw, badgeWidth)
     return { s, h: ROW_PAD * 2 + packed.laneCount * LANE_H + 1, mini: [] as TaskView[][], packed }
   })
-  const bodyH = rows.reduce((n, r) => n + r.h, 0) + (view.archived.length ? GROUP_H : 0)
+  // Each group becomes one continuous rail down the left edge of its rows.
+  const rails: { group: GroupInfo; y: number; h: number }[] = []
+  let y = 0
+  for (const r of rows) {
+    const g = r.s.group
+    const last = rails[rails.length - 1]
+    if (g && last && last.group.key === g.key) last.h += r.h
+    else if (g) rails.push({ group: g, y, h: r.h })
+    y += r.h
+  }
+  const bodyH = y + (view.archived.length ? ARCHIVE_H : 0)
   const totalW = labelW + days.length * dw
 
   return (
@@ -91,18 +108,31 @@ export function Gantt({ view, compact = false }: Props) {
       <div className="relative" style={{ width: totalW, minHeight: HEAD_H + bodyH }}>
         <Header days={days} dw={dw} labelW={labelW} today={today} selected={selected} view={view} maxParallel={maxParallel} trackCount={view.tracks.length} compact={compact} />
         <Grid days={days} dw={dw} labelW={labelW} today={today} height={bodyH} />
+        <Rails rails={rails} w={railW} />
         {rows.map(({ s, h, mini, packed }) =>
-          s.kind === 'group' ? (
-            <GroupRow key={s.key} s={s} h={h} mini={mini} x={x} dw={dw} labelW={labelW} today={today} compact={compact} />
+          s.kind === 'collapsed' ? (
+            <CollapsedRow key={s.group.key} g={s.group} h={h} mini={mini} x={x} dw={dw} labelW={labelW} railW={railW} today={today} compact={compact} />
           ) : (
-            <Row key={s.tv.track.id} tv={s.tv} inGroup={s.inGroup} packed={packed!} h={h} x={x} dw={dw} labelW={labelW} today={today} compact={compact} />
+            <Row
+              key={s.tv.track.id}
+              tv={s.tv}
+              inGroup={!!s.group && s.group.key !== PAUSED}
+              packed={packed!}
+              h={h}
+              x={x}
+              dw={dw}
+              labelW={labelW}
+              railW={railW}
+              today={today}
+              compact={compact}
+            />
           ),
         )}
         {view.archived.length > 0 && (
-          <div className="relative flex" style={{ height: GROUP_H }}>
+          <div className="relative flex" style={{ height: ARCHIVE_H }}>
             <button
-              className="sticky left-0 z-10 flex shrink-0 items-center gap-1.5 px-2 text-left text-[11px] font-semibold hover:bg-[var(--panel-2)]"
-              style={{ width: labelW, background: 'var(--panel)', borderRight: '2px solid var(--ink)', color: 'var(--muted)' }}
+              className="sticky left-0 z-10 flex shrink-0 items-center gap-1.5 text-left text-[11px] font-semibold hover:bg-[var(--panel-2)]"
+              style={{ width: labelW, paddingLeft: railW + 8, background: 'var(--panel)', borderRight: '2px solid var(--ink)', color: 'var(--muted)' }}
               onClick={() => setModal('archive')}
             >
               已归档 <span className="num">{view.archived.length}</span> 条 →
@@ -135,14 +165,14 @@ function buildSections(tracks: TrackView[], activeOnly: boolean, collapsed: stri
   }
   const out: Section[] = []
   const pushGroup = (key: string, name: string, list: TrackView[]) => {
-    const isCollapsed = collapsed.includes(key)
-    out.push({ kind: 'group', key, name, tracks: list, collapsed: isCollapsed })
-    if (!isCollapsed) for (const tv of list) out.push({ kind: 'track', tv, inGroup: true })
+    const group: GroupInfo = { key, name, tracks: list, collapsed: collapsed.includes(key) }
+    if (group.collapsed) out.push({ kind: 'collapsed', group })
+    else for (const tv of list) out.push({ kind: 'track', tv, group })
   }
   for (const key of order) {
     const list = members.get(key)!
     if (key.startsWith('g:') && list.length > 1) pushGroup(key, key.slice(2), list)
-    else for (const tv of list) out.push({ kind: 'track', tv, inGroup: false })
+    else for (const tv of list) out.push({ kind: 'track', tv })
   }
   if (paused.length) pushGroup(PAUSED, '暂停', paused)
   return out
@@ -338,83 +368,128 @@ const Grid = memo(function Grid({ days, dw, labelW, today, height }: { days: ISO
   )
 })
 
-function GroupRow({
-  s,
+/**
+ * Group rails: one block per group down the left edge of the label column, spanning the group's
+ * rows. The name is written vertically and stays in view while scrolling through a long group.
+ * Click to collapse / expand. Takes no rows of its own.
+ */
+function Rails({ rails, w }: { rails: { group: GroupInfo; y: number; h: number }[]; w: number }) {
+  const toggle = useUI((st) => st.toggleCollapsed)
+  if (!rails.length) return null
+  return (
+    <div className="sticky left-0 z-[15]" style={{ height: 0, width: w }}>
+      {rails.map(({ group, y, h }) => (
+        <button
+          key={group.key}
+          className="absolute left-0 flex items-start justify-center hover:bg-[var(--hl-soft)]"
+          // `clip`, not `hidden`: a hidden overflow would become the sticky label's scroll container.
+          style={{ top: y, height: h - 1, width: w, overflow: 'clip', background: 'var(--panel-2)', borderRight: '1.5px solid var(--ink)', borderBottom: '1.5px solid var(--ink)' }}
+          onClick={() => toggle(group.key)}
+          title={`${group.name}：点击${group.collapsed ? '展开' : '折叠'}`}
+          aria-label={`${group.collapsed ? '展开' : '折叠'} ${group.name}`}
+        >
+          <span className="sticky flex h-max flex-col items-center gap-[4px] pt-[6px]" style={{ top: HEAD_H }}>
+            <span className="text-[8px] leading-none" style={{ color: 'var(--muted)' }}>
+              {group.collapsed ? '▶' : '▼'}
+            </span>
+            {!group.collapsed && (
+              // One glyph per line: more robust than writing-mode inside flex, and keeps Latin upright.
+              <span className="display flex flex-col items-center text-[11px] font-bold">
+                {[...group.name].map((ch, i) => (
+                  <span key={i} className="block leading-[13px]">
+                    {ch}
+                  </span>
+                ))}
+              </span>
+            )}
+          </span>
+        </button>
+      ))}
+    </div>
+  )
+}
+
+/** A collapsed group: one row with the group's name and text-free mini bars of all its tasks. */
+function CollapsedRow({
+  g,
   h,
   mini,
   x,
   dw,
   labelW,
+  railW,
   today,
   compact,
 }: {
-  s: GroupSection
+  g: GroupInfo
   h: number
   mini: TaskView[][]
   x: (d: ISODate) => number
   dw: number
   labelW: number
+  railW: number
   today: ISODate
   compact: boolean
 }) {
   const toggle = useUI((st) => st.toggleCollapsed)
   const openTask = useUI((st) => st.openTask)
   const setHover = useUI((st) => st.setHover)
-  const overdue = s.tracks.reduce((n, t) => n + t.overdueCount, 0)
-  const slip = s.tracks.reduce((n, t) => n + t.slipDays, 0)
-  const active = s.tracks.reduce((n, t) => n + t.activeCount, 0)
+  const overdue = g.tracks.reduce((n, t) => n + t.overdueCount, 0)
+  const slip = g.tracks.reduce((n, t) => n + t.slipDays, 0)
+  const active = g.tracks.reduce((n, t) => n + t.activeCount, 0)
   return (
-    <div className="relative flex" style={{ height: h, background: 'var(--panel-2)', borderBottom: '1.5px solid var(--ink)', opacity: s.key === PAUSED ? 0.75 : 1 }}>
+    <div className="relative flex" style={{ height: h, borderBottom: '1px solid var(--line)', opacity: g.key === PAUSED ? 0.7 : 1 }}>
       <button
-        className="sticky left-0 z-10 flex shrink-0 items-center gap-1 px-2 text-left"
-        style={{ width: labelW, background: 'var(--panel-2)', borderRight: '2px solid var(--ink)' }}
-        onClick={() => toggle(s.key)}
-        title={s.collapsed ? '展开' : '折叠'}
+        className="sticky left-0 z-10 flex shrink-0 flex-col justify-center overflow-hidden pr-1.5 text-left hover:bg-[var(--panel-2)]"
+        style={{ width: labelW, paddingLeft: railW + 8, background: 'var(--panel)', borderRight: '2px solid var(--ink)' }}
+        onClick={() => toggle(g.key)}
+        title="展开"
       >
-        <span className="w-3 shrink-0 text-[10px]">{s.collapsed ? '▸' : '▾'}</span>
-        <span className="display truncate text-[12px] font-bold">{s.name}</span>
-        <span className="num shrink-0 text-[10.5px]" style={{ color: 'var(--muted)' }}>
-          {compact ? s.tracks.length : `${s.tracks.length} 条${active ? ` · ${active} 进行中` : ''}`}
-        </span>
-        <span className="ml-auto flex shrink-0 items-center gap-1">
-          {overdue > 0 && (
-            <span className="sticker" style={stickerStyle('overdue')}>
-              !{overdue}
-            </span>
-          )}
-          {!compact && slip > 0 && (
-            <span className="sticker" style={stickerStyle(2)}>
-              +{slip}d
-            </span>
-          )}
-        </span>
-      </button>
-      {s.collapsed && (
-        <div className="relative flex-1">
-          {mini.map((lane, li) =>
-            lane.map((t) => {
-              const color = t.track?.color ?? '#888'
-              const winW = (diffDays(t.task.start, t.task.end) + 1) * dw
-              return (
-                <div
-                  key={t.task.id}
-                  className="absolute cursor-pointer"
-                  style={{ left: x(t.task.start), top: 4 + li * MINI_LANE, height: MINI_LANE - 2, width: (diffDays(t.task.start, t.visualEnd) + 1) * dw }}
-                  onClick={() => openTask(t.task.id)}
-                  onMouseEnter={(e) => setHover({ x: e.clientX, y: e.clientY, content: <TaskTip tv={t} today={today} /> })}
-                  onMouseLeave={() => setHover(null)}
-                >
-                  {t.phase === 'overdue' && <div className="tape absolute top-0 bottom-0 rounded-r-[2px]" style={{ left: winW - 2, right: 0, border: '1px solid var(--bar-ink)' }} />}
-                  <div
-                    className="absolute top-0 bottom-0 left-0 rounded-[2px]"
-                    style={{ width: winW, background: t.phase === 'upcoming' ? pastel(color, 45) : color, border: '1px solid var(--bar-ink)', opacity: t.phase === 'parked' ? 0.5 : 1 }}
-                  />
-                </div>
-              )
-            }),
-          )}
+        <div className="flex items-center gap-1">
+          <span className="display truncate text-[12px] font-bold">{g.name}</span>
+          <span className="ml-auto flex shrink-0 items-center gap-1">
+            {overdue > 0 && (
+              <span className="sticker" style={stickerStyle('overdue')}>
+                !{overdue}
+              </span>
+            )}
+            {!compact && slip > 0 && (
+              <span className="sticker" style={stickerStyle(2)}>
+                +{slip}d
+              </span>
+            )}
+          </span>
         </div>
-      )}
+        {!compact && (
+          <div className="num truncate text-[10.5px] leading-[13px]" style={{ color: 'var(--muted)' }}>
+            {g.tracks.length} 条线程{active ? ` · ${active} 进行中` : ''} · 已折叠
+          </div>
+        )}
+      </button>
+      <div className="relative flex-1">
+        {mini.map((lane, li) =>
+          lane.map((t) => {
+            const color = t.track?.color ?? '#888'
+            const winW = (diffDays(t.task.start, t.task.end) + 1) * dw
+            return (
+              <div
+                key={t.task.id}
+                className="absolute cursor-pointer"
+                style={{ left: x(t.task.start), top: Math.max(4, (h - mini.length * MINI_LANE) / 2) + li * MINI_LANE, height: MINI_LANE - 2, width: (diffDays(t.task.start, t.visualEnd) + 1) * dw }}
+                onClick={() => openTask(t.task.id)}
+                onMouseEnter={(e) => setHover({ x: e.clientX, y: e.clientY, content: <TaskTip tv={t} today={today} /> })}
+                onMouseLeave={() => setHover(null)}
+              >
+                {t.phase === 'overdue' && <div className="tape absolute top-0 bottom-0 rounded-r-[2px]" style={{ left: winW - 2, right: 0, border: '1px solid var(--bar-ink)' }} />}
+                <div
+                  className="absolute top-0 bottom-0 left-0 rounded-[2px]"
+                  style={{ width: winW, background: t.phase === 'upcoming' ? pastel(color, 45) : color, border: '1px solid var(--bar-ink)', opacity: t.phase === 'parked' ? 0.5 : 1 }}
+                />
+              </div>
+            )
+          }),
+        )}
+      </div>
     </div>
   )
 }
@@ -427,6 +502,7 @@ function Row({
   x,
   dw,
   labelW,
+  railW,
   today,
   compact,
 }: {
@@ -437,6 +513,7 @@ function Row({
   x: (d: ISODate) => number
   dw: number
   labelW: number
+  railW: number
   today: ISODate
   compact: boolean
 }) {
@@ -444,7 +521,7 @@ function Row({
   const setHover = useUI((s) => s.setHover)
   return (
     <div className="relative flex" style={{ height: h, borderBottom: '1px solid var(--line)', opacity: track.paused ? 0.6 : 1 }}>
-      <Label tv={tv} labelW={labelW} today={today} compact={compact} inGroup={inGroup} />
+      <Label tv={tv} labelW={labelW} railW={railW} today={today} compact={compact} inGroup={inGroup} />
       <div className="relative flex-1">
         {packed.lanes.map((lane, li) =>
           lane.map((t) => <Bar key={t.task.id} tv={t} left={x(t.task.start)} top={ROW_PAD + li * LANE_H + (LANE_H - BAR_H) / 2} dw={dw} today={today} stick={labelW + 4} />),
@@ -504,7 +581,7 @@ function withoutGroupPrefix(track: Track): string {
   return rest && rest !== track.name.slice(g.length) ? rest : track.name
 }
 
-function Label({ tv, labelW, today, compact, inGroup }: { tv: TrackView; labelW: number; today: ISODate; compact: boolean; inGroup: boolean }) {
+function Label({ tv, labelW, railW, today, compact, inGroup }: { tv: TrackView; labelW: number; railW: number; today: ISODate; compact: boolean; inGroup: boolean }) {
   const { track } = tv
   const openTrack = useUI((s) => s.openTrack)
   return (
@@ -514,7 +591,8 @@ function Label({ tv, labelW, today, compact, inGroup }: { tv: TrackView; labelW:
       title={track.note ?? `${track.name}：点开看这条线的全部内容`}
       onClick={() => openTrack(track.id)}
     >
-      {inGroup && <div className="shrink-0" style={{ width: 8, background: 'var(--panel-2)' }} />}
+      {/* room for the group rail (drawn on top by <Rails>); kept on every row so names line up */}
+      <div className="shrink-0" style={{ width: railW }} />
       <div className="shrink-0" style={{ width: 6, background: track.color, borderRight: '1.5px solid var(--ink)' }} />
       <div className="flex min-w-0 flex-1 flex-col justify-center px-1.5">
         <div className="flex items-center gap-1">
