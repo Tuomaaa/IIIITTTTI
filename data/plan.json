@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-29T15:36:28.931Z"
+    "updatedAt": "2026-10-29T17:12:40.606Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -185,7 +185,7 @@
     { "id": "ms-rlmi", "trackId": "csse232", "title": "HW16", "date": "2026-11-06", "hard": true },
     { "id": "ms-hevv", "trackId": "csse232", "title": "Practical9", "date": "2026-11-12", "hard": true },
     { "id": "ms-hwsp", "trackId": "csse232", "title": "CATME pipeline team eval", "date": "2026-11-16", "hard": true },
-    { "id": "ms-hrbt", "trackId": "ece551", "title": "Hw 7", "date": "2026-10-29", "hard": true },
+    { "id": "ms-hrbt", "trackId": "ece551", "title": "Hw 7", "date": "2026-10-29", "hard": true, "done": true },
     { "id": "ms-qpzm", "trackId": "ece551", "title": "Hw 8", "date": "2026-11-05", "hard": true },
     { "id": "ms-vbls", "trackId": "ece551", "title": "Hw 9", "date": "2026-11-12", "hard": true }
   ],
