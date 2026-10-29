@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-29T14:22:45.628Z"
+    "updatedAt": "2026-10-29T14:25:38.369Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -170,7 +170,9 @@
     { "id": "ms-lup0", "trackId": "merl-sim", "title": "写 tutorial（今晚，约 30 分钟）", "date": "2026-10-29" },
     { "id": "ms-j9ge", "trackId": "ece551", "title": "Project: Proposal", "date": "2026-10-30", "hard": true },
     { "id": "ms-b2aw", "trackId": "ece551", "title": "Proj: Proposal Timing", "date": "2026-11-04", "hard": true },
-    { "id": "ms-2m6d", "trackId": "ece551", "title": "Proj: Proposal P&R", "date": "2026-11-11", "hard": true }
+    { "id": "ms-2m6d", "trackId": "ece551", "title": "Proj: Proposal P&R", "date": "2026-11-11", "hard": true },
+    { "id": "ms-u3s3", "trackId": "ece497", "title": "Homework 3", "date": "2026-10-30", "hard": true },
+    { "id": "ms-82fc", "trackId": "ece497", "title": "ECG DNN Part 2a", "date": "2026-11-01", "hard": true }
   ],
   "todos": [
     {
@@ -222,7 +224,6 @@
     { "id": "td-p9gc", "title": "int8 PTQ（sanity check）", "trackId": "so101", "taskId": "tk-so-e", "est": 240 },
     { "id": "td-dt6u", "title": "int4：PTQ vs QAT", "trackId": "so101", "taskId": "tk-so-e", "est": 960 },
     { "id": "td-v3ul", "title": "Eval", "trackId": "so101", "taskId": "tk-so-e", "est": 480 },
-    { "id": "td-ityn", "title": "问 csseadmin 能否在 cluster 上跑 pi0.5 推理（越早问越好）", "date": "2026-10-29", "trackId": "so101", "taskId": "tk-so-f", "est": 30 },
     { "id": "td-5x40", "title": "L40S 上 LoRA fine-tune（+1 晚）", "trackId": "so101", "taskId": "tk-so-f", "est": 480 },
     { "id": "td-bbs9", "title": "解决推理硬件 ⚠️", "trackId": "so101", "taskId": "tk-so-f", "est": 480 },
     { "id": "td-031n", "title": "Eval", "trackId": "so101", "taskId": "tk-so-f", "est": 480 },
