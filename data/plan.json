@@ -9,11 +9,62 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-29T13:25:58.570Z"
+    "updatedAt": "2026-10-29T13:30:37.636Z"
   },
-  "tracks": [],
-  "tasks": [],
-  "milestones": [],
+  "tracks": [
+    { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
+    { "id": "surf-act", "name": "SURF · ACT 实验", "color": "#2f6db8", "group": "SURF" },
+    { "id": "surf-bay", "name": "SURF · Bayesian gate", "color": "#1f8f99", "group": "SURF" },
+    { "id": "surf-out", "name": "SURF · 联系", "color": "#2f8a5f", "group": "SURF" },
+    { "id": "surf-app", "name": "SURF · 申请", "color": "#7a4fb3", "group": "SURF" }
+  ],
+  "tasks": [
+    { "id": "tk-surf-pad", "trackId": "surf-hw", "title": "铜箔 15×8 pad 制作", "start": "2026-10-31", "end": "2026-10-31", "note": "前提：Amazon 的料周五前到" },
+    { "id": "tk-surf-fw", "trackId": "surf-hw", "title": "F411 firmware（ADC scan + DMA、USB CDC、双时间戳、热力图）", "start": "2026-10-31", "end": "2026-11-01" },
+    { "id": "tk-surf-selftest", "trackId": "surf-hw", "title": "自检：crosstalk、TPU 弯折基线 b(θ)", "start": "2026-11-01", "end": "2026-11-02" },
+    { "id": "tk-surf-offfw", "trackId": "surf-hw", "title": "官方 firmware 跑通，作参考基线", "start": "2026-11-06", "end": "2026-11-07" },
+    { "id": "tk-surf-flexi", "trackId": "surf-hw", "title": "F411 驱动 FlexiTac 控制板（先核对 3.3V）", "start": "2026-11-07", "end": "2026-11-10" },
+    { "id": "tk-surf-expdesign", "trackId": "surf-act", "title": "实验设计：任务、接触真值标定、指标", "start": "2026-10-28", "end": "2026-10-30" },
+    {
+      "id": "tk-surf-demo",
+      "trackId": "surf-act",
+      "title": "采 demo（同步录 tactile），训 vision-only ACT baseline",
+      "start": "2026-11-02",
+      "end": "2026-11-05",
+      "note": "铜箔 pad 的 demo 只给 vision-only baseline 和延迟测量用"
+    },
+    { "id": "tk-surf-latency", "trackId": "surf-act", "title": "阶段 2：rollout 中测接触到推理的延迟", "start": "2026-11-04", "end": "2026-11-08" },
+    {
+      "id": "tk-surf-stage3",
+      "trackId": "surf-act",
+      "title": "阶段 3：FPC 重采 demo，tactile ACT、soft gate、事件触发重推理",
+      "start": "2026-11-16",
+      "end": "2027-01-15",
+      "note": "估计；不影响发邮件，邮件里写成正在做"
+    },
+    { "id": "tk-surf-likeli", "trackId": "surf-bay", "title": "采似然标定数据：L0 空夹爪开合，L1 夹物", "start": "2026-11-02", "end": "2026-11-03" },
+    { "id": "tk-surf-bayes", "trackId": "surf-bay", "title": "离线拟合 binary Bayes filter，和阈值规则比延迟、误报", "start": "2026-11-04", "end": "2026-11-09" },
+    { "id": "tk-surf-pt", "trackId": "surf-bay", "title": "移植到 F411，按 sensor 频率输出 p_t（可选）", "start": "2026-11-10", "end": "2026-11-14", "note": "可选" },
+    { "id": "tk-surf-watch", "trackId": "surf-out", "title": "盯 SURF project list", "start": "2026-10-27", "end": "2026-11-10" },
+    { "id": "tk-surf-heng", "trackId": "surf-out", "title": "给 Heng Zhang 发技术问题（先确认身份）", "start": "2026-10-28", "end": "2026-10-31" },
+    { "id": "tk-surf-draft", "trackId": "surf-out", "title": "起草给 Yu She 的邮件", "start": "2026-11-09", "end": "2026-11-12" },
+    { "id": "tk-surf-recs", "trackId": "surf-out", "title": "确定并联系推荐人", "start": "2026-11-09", "end": "2026-11-25", "note": "感恩节那周（11/23 起）教授回复慢" },
+    {
+      "id": "tk-surf-facpost",
+      "trackId": "surf-app",
+      "title": "Faculty 发布 project（往年 10 月初到 11 月初）",
+      "start": "2026-10-26",
+      "end": "2026-11-06",
+      "note": "外部窗口，估计"
+    },
+    { "id": "tk-surf-sop", "trackId": "surf-app", "title": "填申请、Statement of Purpose", "start": "2026-12-01", "end": "2026-12-15" }
+  ],
+  "milestones": [
+    { "id": "ms-d6gk", "trackId": "surf-hw", "title": "FPC 和控制板到货（估计）", "date": "2026-11-06" },
+    { "id": "ms-65su", "trackId": "surf-out", "title": "给 Yu She 发邮件", "date": "2026-11-13" },
+    { "id": "ms-k3dq", "trackId": "surf-app", "title": "学生申请开放（往年 12/1，待确认）", "date": "2026-12-01" },
+    { "id": "ms-eilq", "trackId": "surf-app", "title": "SURF Priority deadline（travel subsidy）", "date": "2027-01-15", "hard": true }
+  ],
   "todos": [],
   "blocks": []
 }
