@@ -73,6 +73,12 @@ const { values: opt, positionals } = parseArgs({
 
 const [cmd = 'help', ...args] = positionals
 
+// `npm run plan -- summary | head` should not crash.
+process.stdout.on('error', (e: NodeJS.ErrnoException) => {
+  if (e.code === 'EPIPE') process.exit(0)
+  throw e
+})
+
 function die(msg: string): never {
   console.error(`✕ ${msg}`)
   process.exit(1)
@@ -148,8 +154,6 @@ function findAny(id: string) {
 }
 
 // ---------- summary ----------
-
-const PHASE_ZH = { done: '完成', parked: '暂停', overdue: '过期', active: '进行中', upcoming: '未开始' } as const
 
 function taskLine(tv: TaskView, v: PlanView): string {
   const t = tv.task
