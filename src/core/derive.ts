@@ -154,14 +154,17 @@ export function todoView(todo: Todo, today: ISODate, staleAfter: number, plan?: 
   const first = todo.origDate ?? todo.date
   const late = !todo.done && !!todo.date && todo.date < today
   const age = !todo.done && first && first < today ? diffDays(first, today) : 0
+  const showOn = late ? today : todo.date
   return {
     todo,
     task,
     track,
-    showOn: late ? today : todo.date,
+    showOn,
     age,
     rolled: late || (!todo.done && !!todo.origDate && todo.origDate < (todo.date ?? today)),
-    stale: age >= staleAfter,
+    // Only todos that are due by today count: rescheduling to a later day buys time until
+    // that day, and backlog items are parked on purpose.
+    stale: !!showOn && showOn <= today && age >= staleAfter,
   }
 }
 

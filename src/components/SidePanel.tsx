@@ -146,7 +146,10 @@ export function PushForm({ id, view, onDone }: { id: string; view: PlanView; onD
   const [to, setTo] = useState<ISODate>(sug.to)
   const [reason, setReason] = useState('')
   const days = diffDays(tv.task.end, to)
-  const big = diffDays(view.today, to) + 1 > maxPush
+  // Overdue: count the days granted from today on; otherwise the days added past the current end.
+  const overdue = tv.task.end < view.today
+  const from = overdue ? view.today : addDays(tv.task.end, 1)
+  const big = diffDays(from, to) + 1 > maxPush
   return (
     <div className="w-full space-y-1 rounded-md p-1.5" style={{ background: 'var(--panel-2)', border: '1px solid var(--line)' }}>
       <div className="text-[10.5px]" style={{ color: 'var(--muted)' }}>
@@ -154,11 +157,11 @@ export function PushForm({ id, view, onDone }: { id: string; view: PlanView; onD
         {sug.fits ? `建议推到 ${md(sug.to)}。` : `超过单次上限 ${maxPush} 天，建议先拆小或砍 scope，再推。`}
       </div>
       <div className="flex flex-wrap items-center gap-1">
-        {[1, 2, 3].map((n) => {
-          const d = addDays(view.today, n - 1)
+        {[0, 1, 2].map((n) => {
+          const d = addDays(from, n)
           return (
             <button key={n} className="btn" aria-pressed={to === d} onClick={() => setTo(d)}>
-              到{relDay(d, view.today)}
+              到{diffDays(view.today, d) <= 2 ? relDay(d, view.today) : md(d)}
             </button>
           )
         })}
@@ -180,7 +183,7 @@ export function PushForm({ id, view, onDone }: { id: string; view: PlanView; onD
             if (apply(`推后「${tv.task.title}」到 ${to}`, (p) => pushTask(p, id, to, { today: view.today, reason: reason.trim() || undefined, by: 'user' }))) onDone()
           }}
         >
-          推 {days} 天
+          推到 {md(to)}（+{days}d）
         </button>
         <button className="btn btn-ghost" onClick={onDone}>
           取消

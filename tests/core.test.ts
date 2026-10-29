@@ -96,6 +96,17 @@ describe('derive', () => {
     expect(v.inbox.filter((i) => i.kind === 'todo-stale').map((i) => i.id).sort()).toEqual(['d1', 'd3'])
   })
 
+  it('does not count rescheduled-to-later or backlog todos as stale', () => {
+    const p = base()
+    p.todos.push({ id: 'later', title: 'x', date: '2026-10-30', origDate: '2026-10-20' })
+    p.todos.push({ id: 'parked', title: 'y', origDate: '2026-10-20' })
+    const v = buildView(p, TODAY)
+    expect(v.todos.every((t) => !t.stale)).toBe(true)
+    const tomorrow = buildView(p, '2026-10-30').todos.find((t) => t.todo.id === 'later')!
+    expect(tomorrow.stale).toBe(true)
+    expect(tomorrow.age).toBe(10)
+  })
+
   it('puts overdue, over-pushed, unscheduled and soon-hard items in the inbox', () => {
     const p = base()
     p.tasks.push(task({ id: 'over', end: '2026-10-27' }))
