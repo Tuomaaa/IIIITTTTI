@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-30T00:34:12.500Z"
+    "updatedAt": "2026-10-30T15:17:16.237Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -217,7 +217,15 @@
     { "id": "td-slcg", "title": "支线：Ternary ACT QAT + bitnet.cpp kernel（1 到 2 周）", "trackId": "so101" },
     { "id": "td-gqdk", "title": "支线：FINN 可行性调研", "trackId": "so101", "est": 480 },
     { "id": "td-s69q", "title": "支线：BitVLA（未估）", "trackId": "so101" },
-    { "id": "td-t4e4", "title": "跑完昨天 Lab 5 的 power analysis", "date": "2026-10-29", "trackId": "ece551" },
+    {
+      "id": "td-t4e4",
+      "title": "跑完昨天 Lab 5 的 power analysis",
+      "date": "2026-10-30",
+      "trackId": "ece551",
+      "done": true,
+      "doneAt": "2026-10-30",
+      "origDate": "2026-10-29"
+    },
     { "id": "td-gnnl", "title": "Final Exam（期末周，日期待定）", "trackId": "ece551" },
     { "id": "td-1yew", "title": "Proj: Paper and Pres（期末周，日期待定）", "trackId": "ece551", "taskId": "tk-551-proj" }
   ],
