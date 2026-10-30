@@ -9,6 +9,8 @@ self.addEventListener('fetch', (e) => {
   const req = e.request
   const url = new URL(req.url)
   if (req.method !== 'GET' || url.origin !== self.location.origin) return
+  // Live data from the Cloudflare proxy / MCP endpoint is never served from cache.
+  if (/^\/(api|mcp)\//.test(url.pathname)) return
   e.respondWith(
     fetch(req)
       .then((res) => {

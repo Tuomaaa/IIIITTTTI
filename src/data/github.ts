@@ -1,6 +1,8 @@
 // Read / write data/plan.json through the GitHub Contents API.
 // Reads of a public repo work without a token (60 requests/hour per IP); writes need a
-// fine-grained token with Contents read & write on that one repo.
+// fine-grained token with Contents read & write on that one repo. Behind the Cloudflare proxy
+// (`api` set, see functions/api/gh) the proxy adds the token, so the browser needs none.
+// Also imported by the MCP function, which runs in a Worker: keep this free of DOM-only APIs.
 import { formatJSON } from '../core/format'
 import type { Plan } from '../core/types'
 
@@ -10,6 +12,15 @@ export interface Source {
   branch: string
   path: string
   token?: string
+  /** API base instead of https://api.github.com, e.g. the same-origin proxy `/api/gh`. */
+  api?: string
+  /** GitHub rejects requests without one; browsers send their own, Workers must set it. */
+  userAgent?: string
+}
+
+/** Writes are possible: either a token here, or a proxy that holds one. */
+export function canWrite(src: Source): boolean {
+  return !!(src.token || src.api)
 }
 
 export const DEFAULT_SOURCE: Source = {
@@ -29,9 +40,13 @@ export class GitHubError extends Error {
 
 export class ConflictError extends GitHubError {}
 
+function repoUrl(src: Source) {
+  return `${src.api ?? 'https://api.github.com'}/repos/${src.owner}/${src.repo}`
+}
+
 function url(src: Source) {
   const path = src.path.split('/').map(encodeURIComponent).join('/')
-  return `https://api.github.com/repos/${src.owner}/${src.repo}/contents/${path}`
+  return `${repoUrl(src)}/contents/${path}`
 }
 
 function headers(src: Source): HeadersInit {
@@ -40,6 +55,7 @@ function headers(src: Source): HeadersInit {
     'X-GitHub-Api-Version': '2022-11-28',
   }
   if (src.token) h.Authorization = `Bearer ${src.token}`
+  if (src.userAgent) h['User-Agent'] = src.userAgent
   return h
 }
 
@@ -84,7 +100,7 @@ export async function fetchPlan(src: Source): Promise<{ plan: Plan; sha: string 
 }
 
 export async function savePlan(src: Source, plan: Plan, sha: string, message: string): Promise<string> {
-  if (!src.token) throw new GitHubError(401, '没有 token，不能保存')
+  if (!canWrite(src)) throw new GitHubError(401, '没有 token，不能保存')
   const res = await fetch(url(src), {
     method: 'PUT',
     headers: { ...headers(src), 'Content-Type': 'application/json' },
@@ -118,7 +134,7 @@ export interface CommitInfo {
 /** Recent commits that touched the data file. */
 export async function fetchCommits(src: Source, n = 15): Promise<CommitInfo[]> {
   const q = new URLSearchParams({ path: src.path, sha: src.branch, per_page: String(n) })
-  const res = await fetch(`https://api.github.com/repos/${src.owner}/${src.repo}/commits?${q}`, {
+  const res = await fetch(`${repoUrl(src)}/commits?${q}`, {
     headers: headers(src),
     cache: 'no-store',
   })

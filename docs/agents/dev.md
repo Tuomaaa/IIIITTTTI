@@ -11,7 +11,12 @@
   - `types.ts` 数据类型；`derive.ts` 派生状态（phase、过期、推迟压力、inbox、负载、归档过滤）
   - `ops.ts` 所有编辑操作（不可变，返回新 Plan）；`validate.ts` 引用和日期检查
   - `layout.ts` 甘特图一行里 task / milestone 的分 lane；`quickadd.ts` 快速添加语法；`format.ts` 稳定的 JSON 格式
-- **`scripts/plan.ts`**：给 plan agent 用的 CLI。加新的数据操作时，先在 `ops.ts` 写 op，再在 CLI 里暴露，并更新 plan.md。
+  - `commands.ts` CLI 的全部命令（argv 进，文本 + 新 Plan 出），CLI 和 MCP 共用
+- **`scripts/plan.ts`**：给 plan agent 用的 CLI，只负责读写文件。加新的数据操作时，先在 `ops.ts` 写 op，再在 `commands.ts` 里暴露，并更新 plan.md。
+- **`functions/` + `src/server/`**：Cloudflare Pages Functions（部署和鉴权见 [deploy.md](../deploy.md)）。
+  `_middleware.ts` 校验 Access JWT；`api/gh/[[path]].ts` 是给网页用的 GitHub 代理；`mcp/[secret].ts` 是给 claude.ai 用的 MCP endpoint，
+  逻辑在 `src/server/mcp.ts`。MCP 的 `INSTRUCTIONS` 是 plan.md 规则的压缩版，改 plan.md 的约定时同步改它。
+  `src/data/github.ts` 也会被 Worker 引用，不要在里面用 DOM 专有的 API。
 - **`src/components/`**：React + Tailwind v4 + zustand。
   - `Gantt.tsx` 甘特图（分组侧轨、行打包、Bar）；`DayPanel.tsx` 日视图 + 小时表 + todo；`MonthMini.tsx` 5 周滚动日历
   - `SidePanel.tsx` 需处理 / milestone / 最近 7 天 / 最近改动；`TaskDrawer.tsx`、`TrackDrawer.tsx` 详情抽屉
@@ -35,7 +40,8 @@ npm run build            # tsc + vite build
 
 ## 部署
 
-push 到 `main` 触发 `.github/workflows/deploy.yml`（test + build + 发布到 Pages）。只改 `data/plan.json` 或 `*.md` 不会触发。
+正在从 GitHub Pages 迁到 Cloudflare Pages（`plan.tuostmm.com`），步骤见 [deploy.md](../deploy.md)。迁移完成前两边都会部署：
+push 到 `main` 触发 `.github/workflows/deploy.yml`（test + build + 发布到 GitHub Pages），Cloudflare Pages 也会自己构建。只改 `data/plan.json` 或 `*.md` 不会触发。
 `.github/workflows/validate-data.yml` 在数据改动时跑 `npm run plan -- validate`。
 部署后确认线上页面换成了新的构建（`dist/index.html` 里的 js 文件名出现在线上 HTML 里），再打开看一眼有没有报错。
 

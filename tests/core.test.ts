@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import { CmdError, parseArgv, runCommand } from '../src/core/commands'
 import { addDays, diffDays, isoWeek, isValidDate, isValidTime, todayIn, weekStart } from '../src/core/date'
 import { archivedTrackView, buildView, layoutBlocks, pressureOf, taskPhase } from '../src/core/derive'
 import { packRow } from '../src/core/layout'
@@ -318,5 +319,44 @@ describe('format + validate', () => {
     const plan = JSON.parse(text) as Plan
     expect(validatePlan(plan).filter((i) => i.level === 'error')).toEqual([])
     expect(formatJSON(plan)).toBe(text)
+  })
+})
+
+describe('commands', () => {
+  const run = (p: Plan, ...argv: string[]) => runCommand(p, [...argv, '--today', TODAY])
+
+  it('parses options like node:util parseArgs', () => {
+    expect(parseArgv(['push', 't', '--days', '2', '--no-focus', '--reason=a b'])).toEqual({
+      opt: { days: '2', 'no-focus': true, reason: 'a b' },
+      positionals: ['push', 't'],
+    })
+    expect(() => parseArgv(['--nope'])).toThrow(CmdError)
+    expect(() => parseArgv(['--to'])).toThrow(CmdError)
+  })
+
+  it('read commands return text and no plan', () => {
+    const p = base()
+    p.tasks.push(task({ id: 't' }))
+    const r = run(p, 'summary')
+    expect(r.next).toBeUndefined()
+    expect(r.out[0]).toContain(TODAY)
+    expect(r.out.join('\n')).toContain('(t)')
+  })
+
+  it('write commands return a validated plan and leave the input alone', () => {
+    const p = base()
+    p.tasks.push(task({ id: 't' }))
+    const r = run(p, 'push', 't', '--days', '1', '--reason', 'x')
+    expect(r.next?.tasks[0].end).toBe('2026-10-31')
+    expect(r.next?.tasks[0].slips).toHaveLength(1)
+    expect(r.what).toContain('推后 t')
+    expect(p.tasks[0].end).toBe('2026-10-30')
+  })
+
+  it('rejects writes that break validation and unknown ids', () => {
+    const p = base()
+    p.tasks.push(task({ id: 't' }))
+    expect(() => run(p, 'set', 't', 'trackId="zzz"')).toThrow(/校验失败/)
+    expect(() => run(p, 'done', 'nope')).toThrow(CmdError)
   })
 })

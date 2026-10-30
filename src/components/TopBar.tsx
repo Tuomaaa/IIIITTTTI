@@ -4,6 +4,7 @@ import { blocksOn } from '../core/derive'
 import type { PlanView } from '../core/derive'
 import { addBlock, addTask, addTodo, newId } from '../core/ops'
 import { describeQuick, parseQuick } from '../core/quickadd'
+import { canWrite } from '../data/github'
 import { useStore } from '../data/store'
 import { useUI } from '../data/ui'
 
@@ -94,7 +95,7 @@ export function SyncDot() {
   const sync = useStore((s) => s.sync)
   const error = useStore((s) => s.error)
   const origin = useStore((s) => s.origin)
-  const token = useStore((s) => !!s.source.token)
+  const token = useStore((s) => canWrite(s.source))
   const lastSync = useStore((s) => s.lastSync)
   const pending = useStore((s) => s.pending.length + s.inflight.length)
   const setModal = useUI((s) => s.setModal)

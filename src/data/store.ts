@@ -4,7 +4,14 @@ import { OpError } from '../core/ops'
 import type { ISODate, Plan } from '../core/types'
 import { validatePlan } from '../core/validate'
 import bundled from '../../data/plan.json'
-import { ConflictError, DEFAULT_SOURCE, fetchPlan, GitHubError, savePlan, type Source } from './github'
+import { canWrite, ConflictError, DEFAULT_SOURCE, fetchPlan, GitHubError, savePlan, type Source } from './github'
+
+/** Set at build time on Cloudflare Pages: same-origin proxy that holds the GitHub token. */
+export const PROXY = (import.meta.env.VITE_GH_PROXY as string | undefined) || undefined
+
+export function withProxy(src: Source): Source {
+  return PROXY ? { ...src, api: PROXY } : src
+}
 
 export interface Op {
   label: string
@@ -94,7 +101,7 @@ let toastTimer: ReturnType<typeof setTimeout> | undefined
 let lastRefresh = 0
 
 export const useStore = create<State>((set, get) => {
-  const source = { ...DEFAULT_SOURCE, ...(read<Source>(CFG_KEY) ?? {}) }
+  const source = withProxy({ ...DEFAULT_SOURCE, ...(read<Source>(CFG_KEY) ?? {}) })
   const cache = read<{ key: string; plan: Plan; sha: string; at: number }>(CACHE_KEY)
   const cached = cache && cache.key === sourceKey(source) ? cache : null
   const base = (cached?.plan ?? bundled) as Plan
@@ -111,7 +118,7 @@ export const useStore = create<State>((set, get) => {
   const flush = async () => {
     const s = get()
     if (s.inflight.length || !s.pending.length) return
-    if (!s.source.token) return
+    if (!canWrite(s.source)) return
     const ops = s.pending
     set({ inflight: ops, pending: [], sync: 'saving' })
     let base = get().base
@@ -199,7 +206,7 @@ export const useStore = create<State>((set, get) => {
 
     apply(label, fn) {
       const s = get()
-      if (!s.source.token) {
+      if (!canWrite(s.source)) {
         get().notify('只读模式：在「设置」里填 GitHub token 之后才能保存修改', 'error')
         return false
       }
@@ -214,9 +221,10 @@ export const useStore = create<State>((set, get) => {
       return true
     },
 
-    setSource(src) {
+    setSource(next) {
+      const src = withProxy(next)
       const changed = sourceKey(src) !== sourceKey(get().source)
-      write(CFG_KEY, src)
+      write(CFG_KEY, { ...src, api: undefined })
       set({ source: src })
       if (changed) {
         write(CACHE_KEY, null)

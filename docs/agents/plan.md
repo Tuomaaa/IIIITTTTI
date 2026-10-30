@@ -34,6 +34,9 @@ npm run plan -- validate
 批量改的时候也可以直接编辑 JSON，但 commit 前一定要跑 `npm run plan -- fmt`（会顺便校验）。
 **不要手改 `slips` / `baseline`**，推后一律走 `push`，否则推迟统计会失真。
 
+claude.ai 的 chat 通过 MCP connector 跑同一套命令（`src/server/mcp.ts`），它读不到这份文件，
+靠 `INSTRUCTIONS` 里的压缩版规则。改这里的约定时同步改那边。
+
 ## 数据模型
 
 | 实体 | 关键字段 | 说明 |

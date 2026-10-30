@@ -4,8 +4,8 @@ import { buildView, type PlanView } from '../core/derive'
 import { setTrackFlags } from '../core/ops'
 import type { ISODate, Plan } from '../core/types'
 import { Bar } from './Gantt'
-import { DEFAULT_SOURCE, fetchPlan, type Source } from '../data/github'
-import { useStore, type Theme } from '../data/store'
+import { canWrite, DEFAULT_SOURCE, fetchPlan, type Source } from '../data/github'
+import { PROXY, useStore, withProxy, type Theme } from '../data/store'
 import { useUI } from '../data/ui'
 
 function Modal({ title, children, onClose }: { title: string; children: ReactNode; onClose: () => void }) {
@@ -239,7 +239,14 @@ function Settings() {
           {field('branch', 'branch')}
           {field('path', '文件路径')}
         </div>
-        {field('token', 'Fine-grained token（只存在这台设备的浏览器里）', 'github_pat_…', 'password')}
+        {PROXY ? (
+          <div className="text-[11px]" style={{ color: 'var(--muted)' }}>
+            读写走本站的 Cloudflare 代理（{PROXY}），token 存在服务端，这台设备不用填。
+          </div>
+        ) : (
+          field('token', 'Fine-grained token（只存在这台设备的浏览器里）', 'github_pat_…', 'password')
+        )}
+        {!PROXY && (
         <details className="text-[11px]" style={{ color: 'var(--muted)' }}>
           <summary className="cursor-pointer">怎么拿 token？</summary>
           <ol className="mt-1 list-decimal space-y-0.5 pl-4">
@@ -255,6 +262,7 @@ function Settings() {
           </ol>
           <div className="mt-1">不填 token 也能看（公开 repo），只是不能在网页上改。</div>
         </details>
+        )}
         <div className="flex items-center gap-2">
           <button
             className="btn"
@@ -271,8 +279,9 @@ function Settings() {
             onClick={async () => {
               setTest('测试中…')
               try {
-                const { plan } = await fetchPlan({ ...DEFAULT_SOURCE, ...draft })
-                setTest(`✓ 读到 ${plan.tracks.length} 条线程 / ${plan.tasks.length} 个 task${draft.token ? '' : '（没填 token：只读）'}`)
+                const src = withProxy({ ...DEFAULT_SOURCE, ...draft })
+                const { plan } = await fetchPlan(src)
+                setTest(`✓ 读到 ${plan.tracks.length} 条线程 / ${plan.tasks.length} 个 task${canWrite(src) ? '' : '（没填 token：只读）'}`)
               } catch (e) {
                 setTest(`✕ ${e instanceof Error ? e.message : e}`)
               }
