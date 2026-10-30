@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-29T23:34:47.457Z"
+    "updatedAt": "2026-10-30T00:34:12.500Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -247,6 +247,12 @@
     { "id": "bk-lkhu", "date": "2026-10-30", "start": "12:00", "end": "13:30", "title": "ECE551 Project Proposal", "trackId": "ece551", "kind": "focus" },
     { "id": "bk-m0id", "date": "2026-10-30", "start": "19:00", "end": "21:30", "title": "ECG DNN Homework 3", "trackId": "ece497", "kind": "focus" },
     { "id": "bk-zkys", "date": "2026-10-30", "start": "21:30", "end": "22:00", "title": "写 tutorial", "trackId": "merl-sim", "kind": "focus" },
-    { "id": "bk-5bq4", "date": "2026-10-29", "start": "19:40", "end": "20:40", "title": "Lab 5 power analysis", "trackId": "ece551", "kind": "focus" }
+    { "id": "bk-5bq4", "date": "2026-10-29", "start": "19:40", "end": "20:40", "title": "Lab 5 power analysis", "trackId": "ece551", "kind": "focus" },
+    { "id": "bk-egd1", "date": "2026-10-30", "start": "22:00", "end": "23:30", "title": "ECG DNN Part 2a", "trackId": "ece497", "kind": "focus" },
+    { "id": "bk-mh44", "date": "2026-10-31", "start": "12:00", "end": "14:00", "title": "ECG DNN Part 2a", "trackId": "ece497", "kind": "focus" },
+    { "id": "bk-35kw", "date": "2026-10-31", "start": "14:30", "end": "18:00", "title": "铜箔 pad 制作", "taskId": "tk-surf-pad", "kind": "focus" },
+    { "id": "bk-lfb5", "date": "2026-10-31", "start": "19:00", "end": "22:00", "title": "F411 firmware", "taskId": "tk-surf-fw", "kind": "focus" },
+    { "id": "bk-gbnm", "date": "2026-11-01", "start": "10:00", "end": "17:00", "title": "F411 firmware", "taskId": "tk-surf-fw", "kind": "focus" },
+    { "id": "bk-8epu", "date": "2026-11-01", "start": "19:00", "end": "21:00", "title": "复习 ECE551 Quiz 4", "trackId": "ece551", "kind": "focus" }
   ]
 }
