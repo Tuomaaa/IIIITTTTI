@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-30T15:17:16.237Z"
+    "updatedAt": "2026-10-30T18:32:56.267Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -117,7 +117,9 @@
       "title": "确认所有 existing arm working",
       "start": "2026-10-29",
       "end": "2026-10-30",
-      "focus": ["2026-10-29", "2026-10-30"]
+      "focus": ["2026-10-29", "2026-10-30"],
+      "progress": 0.22,
+      "note": "共 13 个 arm（a 到 m）。a 到 i 9 个已 calibrate。第二轮测试中：d g 已确认，剩 a b c e f h i"
     },
     { "id": "tk-arm-print", "trackId": "merl-arm", "title": "Print new arm part", "start": "2026-10-29", "end": "2026-11-06" },
     {
@@ -126,7 +128,8 @@
       "title": "Build 5 more arm",
       "start": "2026-10-29",
       "end": "2026-11-06",
-      "focus": ["2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06"]
+      "focus": ["2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06"],
+      "note": "j 缺最后组装；k 缺电控；l m 还没做"
     },
     { "id": "tk-so-b", "trackId": "so101", "title": "B 赌狗篇硬件", "start": "2026-11-20", "end": "2026-11-23", "note": "flexible，无硬 ddl；日期是暂排", "parked": true },
     {
@@ -227,7 +230,11 @@
       "origDate": "2026-10-29"
     },
     { "id": "td-gnnl", "title": "Final Exam（期末周，日期待定）", "trackId": "ece551" },
-    { "id": "td-1yew", "title": "Proj: Paper and Pres（期末周，日期待定）", "trackId": "ece551", "taskId": "tk-551-proj" }
+    { "id": "td-1yew", "title": "Proj: Paper and Pres（期末周，日期待定）", "trackId": "ece551", "taskId": "tk-551-proj" },
+    { "id": "td-fkq0", "title": "arm j：最后组装", "trackId": "merl-arm", "taskId": "tk-arm-build" },
+    { "id": "td-68hz", "title": "arm k：电控", "trackId": "merl-arm", "taskId": "tk-arm-build" },
+    { "id": "td-lwax", "title": "arm l：从头做", "trackId": "merl-arm", "taskId": "tk-arm-build" },
+    { "id": "td-e104", "title": "arm m：从头做", "trackId": "merl-arm", "taskId": "tk-arm-build" }
   ],
   "blocks": [
     {
