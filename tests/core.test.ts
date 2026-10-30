@@ -314,6 +314,13 @@ describe('format + validate', () => {
     expect(msgs.some((m) => m.includes('YYYY-MM-DD'))).toBe(true)
   })
 
+  it('reports non-array focus/slips instead of throwing', () => {
+    const p = base()
+    p.tasks.push(task({ id: 't1', focus: '2026-10-29,2026-10-30' as unknown as string[] }))
+    const issues = validatePlan(p).filter((i) => i.level === 'error')
+    expect(issues.some((i) => i.path.endsWith('.focus') && i.msg.includes('数组'))).toBe(true)
+  })
+
   it('the committed data file is valid and stably formatted', () => {
     const text = readFileSync('data/plan.json', 'utf8')
     const plan = JSON.parse(text) as Plan

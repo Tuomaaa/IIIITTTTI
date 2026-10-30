@@ -51,20 +51,26 @@ export function validatePlan(plan: Plan): Issue[] {
     date(t.start, `${p}.start`)
     date(t.end, `${p}.end`)
     if (t.start > t.end) err(p, `start ${t.start} 晚于 end ${t.end}`)
-    t.focus?.forEach((d, j) => date(d, `${p}.focus[${j}]`))
+    const arr = <T>(v: T[] | undefined, key: string) => {
+      if (v === undefined || Array.isArray(v)) return v
+      err(`${p}.${key}`, `${key} 必须是数组，实际是 ${JSON.stringify(v)}（用 plan focus 命令，或 set ${key}='[...]'）`)
+    }
+    const focus = arr(t.focus, 'focus')
+    const slips = arr(t.slips, 'slips')
+    focus?.forEach((d, j) => date(d, `${p}.focus[${j}]`))
     if (t.progress !== undefined && !(t.progress >= 0 && t.progress <= 1))
       err(`${p}.progress`, 'progress 应在 0..1')
     if (t.milestoneId && !msIds.has(t.milestoneId)) err(`${p}.milestoneId`, `milestone「${t.milestoneId}」不存在`)
     date(t.baseline, `${p}.baseline`, true)
     date(t.doneAt, `${p}.doneAt`, true)
-    t.slips?.forEach((s, j) => {
+    slips?.forEach((s, j) => {
       date(s.at, `${p}.slips[${j}].at`)
       date(s.from, `${p}.slips[${j}].from`)
       date(s.to, `${p}.slips[${j}].to`)
     })
-    if (t.slips?.length && !t.baseline) warn(`${p}.baseline`, '有 slips 但没有 baseline')
-    if (t.hard && t.slips?.length) warn(p, '硬 ddl 不应该被推')
-    const outside = t.focus?.filter((d) => d < t.start || d > t.end) ?? []
+    if (slips?.length && !t.baseline) warn(`${p}.baseline`, '有 slips 但没有 baseline')
+    if (t.hard && slips?.length) warn(p, '硬 ddl 不应该被推')
+    const outside = focus?.filter((d) => d < t.start || d > t.end) ?? []
     if (outside.length) warn(`${p}.focus`, `focus 日 ${outside.join(', ')} 在 start..end 之外`)
   })
 
