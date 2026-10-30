@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-30T18:56:50.943Z"
+    "updatedAt": "2026-10-30T19:15:49.018Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -118,8 +118,8 @@
       "start": "2026-10-29",
       "end": "2026-10-30",
       "focus": ["2026-10-29", "2026-10-30"],
-      "progress": 0.22,
-      "note": "共 13 个 arm（a 到 m）。a 到 i 9 个已 calibrate。第二轮测试中：d g 已确认，剩 a b c e f h i"
+      "progress": 0.33,
+      "note": "共 13 个 arm（a 到 m）。a 到 i 9 个已 calibrate。第二轮测试中：d g f 已确认，i 的 elbow servo 坏了（等 Charles 换），剩 a b c e h"
     },
     { "id": "tk-arm-print", "trackId": "merl-arm", "title": "Print new arm part", "start": "2026-10-29", "end": "2026-11-06" },
     {
@@ -234,7 +234,8 @@
     { "id": "td-fkq0", "title": "arm j：最后组装", "trackId": "merl-arm", "taskId": "tk-arm-build" },
     { "id": "td-68hz", "title": "arm k：电控", "trackId": "merl-arm", "taskId": "tk-arm-build" },
     { "id": "td-lwax", "title": "arm l：从头做", "trackId": "merl-arm", "taskId": "tk-arm-build" },
-    { "id": "td-e104", "title": "arm m：从头做", "trackId": "merl-arm", "taskId": "tk-arm-build" }
+    { "id": "td-e104", "title": "arm m：从头做", "trackId": "merl-arm", "taskId": "tk-arm-build" },
+    { "id": "td-ozkm", "title": "让 Charles 换 arm i 的 elbow servo", "date": "2026-10-30", "trackId": "merl-arm", "taskId": "tk-arm-check" }
   ],
   "blocks": [
     {
