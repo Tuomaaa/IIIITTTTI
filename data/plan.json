@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-30T18:32:56.267Z"
+    "updatedAt": "2026-10-30T18:56:50.943Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -125,7 +125,7 @@
     {
       "id": "tk-arm-build",
       "trackId": "merl-arm",
-      "title": "Build 5 more arm",
+      "title": "Build 4 more arm",
       "start": "2026-10-29",
       "end": "2026-11-06",
       "focus": ["2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06"],
