@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-31T23:01:50.023Z"
+    "updatedAt": "2026-10-31T23:02:29.046Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -48,7 +48,16 @@
       "doneAt": "2026-10-31",
       "progress": 1
     },
-    { "id": "tk-surf-selftest", "trackId": "surf-hw", "title": "自检：crosstalk、TPU 弯折基线 b(θ)", "start": "2026-11-01", "end": "2026-11-02" },
+    {
+      "id": "tk-surf-selftest",
+      "trackId": "surf-hw",
+      "title": "自检：crosstalk、TPU 弯折基线 b(θ)",
+      "start": "2026-11-01",
+      "end": "2026-11-02",
+      "done": true,
+      "doneAt": "2026-10-31",
+      "progress": 1
+    },
     { "id": "tk-surf-offfw", "trackId": "surf-hw", "title": "官方 firmware 跑通，作参考基线", "start": "2026-11-06", "end": "2026-11-07" },
     { "id": "tk-surf-flexi", "trackId": "surf-hw", "title": "F411 驱动 FlexiTac 控制板（先核对 3.3V）", "start": "2026-11-07", "end": "2026-11-10" },
     {
