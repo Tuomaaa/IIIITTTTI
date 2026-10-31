@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-30T20:02:35.013Z"
+    "updatedAt": "2026-10-31T22:59:44.285Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -167,7 +167,7 @@
     { "id": "ms-8vzi", "trackId": "school", "title": "寒假开始（课后）", "date": "2026-12-18" },
     { "id": "ms-xhji", "trackId": "school", "title": "Winter 复课", "date": "2027-01-04" },
     { "id": "ms-4esk", "trackId": "csse416", "title": "Test 2", "date": "2026-11-03", "hard": true },
-    { "id": "ms-8m5x", "trackId": "csse232", "title": "Quiz 4（HW11、HW12）", "date": "2026-10-30", "hard": true },
+    { "id": "ms-8m5x", "trackId": "csse232", "title": "Quiz 4（HW11、HW12）", "date": "2026-10-30", "hard": true, "done": true },
     { "id": "ms-oh5e", "trackId": "csse232", "title": "Quiz 5（HW15、HW16）", "date": "2026-11-10", "hard": true },
     { "id": "ms-tzp8", "trackId": "ece551", "title": "Quiz 4", "date": "2026-11-02", "hard": true },
     { "id": "ms-1yfe", "trackId": "ece551", "title": "Quiz 5", "date": "2026-11-13", "hard": true },
