@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-31T22:59:49.602Z"
+    "updatedAt": "2026-10-31T22:59:52.102Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -185,7 +185,7 @@
     { "id": "ms-t3gr", "trackId": "csse416", "title": "给其他组写 feedback（Moodle，自己不展示的那天）", "date": "2026-11-12", "hard": true },
     { "id": "ms-yrmc", "trackId": "csse416", "title": "给其他组写 feedback（Moodle，自己不展示的那天）", "date": "2026-11-13", "hard": true },
     { "id": "ms-y1zf", "trackId": "csse416", "title": "Final Project：code、slides、reflections", "date": "2026-11-13", "hard": true },
-    { "id": "ms-ukfz", "trackId": "csse232", "title": "HW15", "date": "2026-10-30", "hard": true },
+    { "id": "ms-ukfz", "trackId": "csse232", "title": "HW15", "date": "2026-10-30", "hard": true, "done": true },
     { "id": "ms-vta4", "trackId": "csse232", "title": "Practical8", "date": "2026-11-05", "hard": true },
     { "id": "ms-rlmi", "trackId": "csse232", "title": "HW16", "date": "2026-11-06", "hard": true },
     { "id": "ms-hevv", "trackId": "csse232", "title": "Practical9", "date": "2026-11-12", "hard": true },
