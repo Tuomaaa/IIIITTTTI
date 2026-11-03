@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-03T02:48:05.127Z"
+    "updatedAt": "2026-11-03T02:48:52.079Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -238,7 +238,7 @@
       "doneAt": "2026-10-31",
       "origDate": "2026-10-30"
     },
-    { "id": "td-1hyw", "title": "Test 2 复习", "date": "2026-11-02", "trackId": "csse416" },
+    { "id": "td-1hyw", "title": "Test 2 复习", "date": "2026-11-02", "trackId": "csse416", "done": true, "doneAt": "2026-11-02" },
     { "id": "td-naxf", "title": "Sprint 2 System Demo + Meeting", "date": "2026-11-06", "trackId": "csse416", "taskId": "tk-416-final" },
     { "id": "td-nn32", "title": "Wrap up（必须出勤）", "date": "2026-11-13", "trackId": "csse232" },
     { "id": "td-ue7m", "title": "Practical 10 Pipeline Design Presentation（期末周，日期待定）", "trackId": "csse232" },
@@ -279,7 +279,15 @@
     { "id": "td-68hz", "title": "arm k：电控", "trackId": "merl-arm", "taskId": "tk-arm-build" },
     { "id": "td-lwax", "title": "arm l：从头做", "trackId": "merl-arm", "taskId": "tk-arm-build" },
     { "id": "td-e104", "title": "arm m：从头做", "trackId": "merl-arm", "taskId": "tk-arm-build" },
-    { "id": "td-ozkm", "title": "让 Charles 换 arm h 的 elbow servo", "date": "2026-11-02", "trackId": "merl-arm", "taskId": "tk-arm-check" },
+    {
+      "id": "td-ozkm",
+      "title": "让 Charles 换 arm h 的 elbow servo",
+      "date": "2026-11-02",
+      "trackId": "merl-arm",
+      "taskId": "tk-arm-check",
+      "done": true,
+      "doneAt": "2026-11-02"
+    },
     { "id": "td-pukz", "title": "add", "date": "2026-10-31", "done": true, "doneAt": "2026-10-31" }
   ],
   "blocks": [
