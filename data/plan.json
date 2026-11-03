@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-03T02:48:52.079Z"
+    "updatedAt": "2026-11-03T16:55:53.078Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -202,7 +202,7 @@
     { "id": "ms-4esk", "trackId": "csse416", "title": "Test 2", "date": "2026-11-03", "hard": true },
     { "id": "ms-8m5x", "trackId": "csse232", "title": "Quiz 4（HW11、HW12）", "date": "2026-10-30", "hard": true, "done": true },
     { "id": "ms-oh5e", "trackId": "csse232", "title": "Quiz 5（HW15、HW16）", "date": "2026-11-10", "hard": true },
-    { "id": "ms-tzp8", "trackId": "ece551", "title": "Quiz 4", "date": "2026-11-02", "hard": true },
+    { "id": "ms-tzp8", "trackId": "ece551", "title": "Quiz 4", "date": "2026-11-02", "hard": true, "done": true },
     { "id": "ms-1yfe", "trackId": "ece551", "title": "Quiz 5", "date": "2026-11-13", "hard": true },
     { "id": "ms-lup0", "trackId": "merl-sim", "title": "写 tutorial（约 30 分钟）", "date": "2026-10-30", "hard": true, "note": "原定 10/29 晚，用户推到周五", "done": true },
     { "id": "ms-j9ge", "trackId": "ece551", "title": "Project: Proposal", "date": "2026-10-30", "hard": true, "done": true },
@@ -211,7 +211,7 @@
     { "id": "ms-u3s3", "trackId": "ece497", "title": "Homework 3", "date": "2026-10-30", "hard": true, "done": true },
     { "id": "ms-82fc", "trackId": "ece497", "title": "ECG DNN Part 2a", "date": "2026-11-01", "hard": true, "done": true },
     { "id": "ms-d6mt", "trackId": "csse416", "title": "Sprint 1 Status Report（3pm）", "date": "2026-10-29", "hard": true, "done": true },
-    { "id": "ms-3kox", "trackId": "csse416", "title": "Random lesson", "date": "2026-11-02", "hard": true },
+    { "id": "ms-3kox", "trackId": "csse416", "title": "Random lesson", "date": "2026-11-02", "hard": true, "done": true },
     { "id": "ms-3ftj", "trackId": "csse416", "title": "Sprint 2 Status Report（3pm）", "date": "2026-11-05", "hard": true },
     { "id": "ms-sgb4", "trackId": "csse416", "title": "给其他组写 feedback（Moodle，自己不展示的那天）", "date": "2026-11-09", "hard": true },
     { "id": "ms-2w5x", "trackId": "csse416", "title": "给其他组写 feedback（Moodle，自己不展示的那天）", "date": "2026-11-10", "hard": true },
