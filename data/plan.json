@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-10-31T23:02:53.786Z"
+    "updatedAt": "2026-11-03T02:47:29.941Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -204,7 +204,7 @@
     { "id": "ms-b2aw", "trackId": "ece551", "title": "Proj: Proposal Timing", "date": "2026-11-04", "hard": true },
     { "id": "ms-2m6d", "trackId": "ece551", "title": "Proj: Proposal P&R", "date": "2026-11-11", "hard": true },
     { "id": "ms-u3s3", "trackId": "ece497", "title": "Homework 3", "date": "2026-10-30", "hard": true, "done": true },
-    { "id": "ms-82fc", "trackId": "ece497", "title": "ECG DNN Part 2a", "date": "2026-11-01", "hard": true },
+    { "id": "ms-82fc", "trackId": "ece497", "title": "ECG DNN Part 2a", "date": "2026-11-01", "hard": true, "done": true },
     { "id": "ms-d6mt", "trackId": "csse416", "title": "Sprint 1 Status Report（3pm）", "date": "2026-10-29", "hard": true, "done": true },
     { "id": "ms-3kox", "trackId": "csse416", "title": "Random lesson", "date": "2026-11-02", "hard": true },
     { "id": "ms-3ftj", "trackId": "csse416", "title": "Sprint 2 Status Report（3pm）", "date": "2026-11-05", "hard": true },
