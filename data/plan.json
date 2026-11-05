@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-05T17:13:34.146Z"
+    "updatedAt": "2026-11-05T17:13:44.488Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -118,7 +118,17 @@
       "slips": [{ "at": "2026-11-05", "from": "2026-11-09", "to": "2026-11-15", "reason": "等jlc", "by": "user" }],
       "focus": ["2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-14", "2026-11-15"]
     },
-    { "id": "tk-surf-pt", "trackId": "surf-bay", "title": "移植到 F411，按 sensor 频率输出 p_t（可选）", "start": "2026-11-10", "end": "2026-11-14", "note": "可选" },
+    {
+      "id": "tk-surf-pt",
+      "trackId": "surf-bay",
+      "title": "移植到 F411，按 sensor 频率输出 p_t（可选）",
+      "start": "2026-11-10",
+      "end": "2026-11-16",
+      "note": "可选",
+      "baseline": "2026-11-14",
+      "slips": [{ "at": "2026-11-05", "from": "2026-11-14", "to": "2026-11-16", "reason": "等jlc", "by": "user" }],
+      "focus": ["2026-11-15", "2026-11-16"]
+    },
     { "id": "tk-surf-watch", "trackId": "surf-out", "title": "盯 SURF project list", "start": "2026-10-27", "end": "2026-11-10" },
     {
       "id": "tk-surf-heng",
