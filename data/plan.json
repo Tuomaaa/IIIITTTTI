@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-05T17:20:17.106Z"
+    "updatedAt": "2026-11-05T17:23:14.309Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -77,23 +77,26 @@
     {
       "id": "tk-surf-demo",
       "trackId": "surf-act",
-      "title": "采 demo（同步录 tactile），训 vision-only ACT baseline",
+      "title": "采 demo，训 vision-only ACT baseline（无触觉）",
       "start": "2026-11-04",
-      "end": "2026-11-07",
-      "note": "铜箔 pad 的 demo 只给 vision-only baseline 和延迟测量用",
-      "focus": ["2026-11-04", "2026-11-05", "2026-11-06", "2026-11-07"],
+      "end": "2026-11-08",
+      "focus": ["2026-11-07", "2026-11-08"],
       "baseline": "2026-11-05",
-      "slips": [{ "at": "2026-11-05", "from": "2026-11-05", "to": "2026-11-07", "by": "user" }]
+      "slips": [
+        { "at": "2026-11-05", "from": "2026-11-05", "to": "2026-11-07", "by": "user" },
+        { "at": "2026-11-05", "from": "2026-11-07", "to": "2026-11-08", "reason": "改成无触觉 ACT，不再做简易传感器，周末做", "by": "user" }
+      ]
     },
     {
       "id": "tk-surf-latency",
       "trackId": "surf-act",
       "title": "阶段 2：rollout 中测接触到推理的延迟",
-      "start": "2026-11-06",
+      "start": "2026-11-12",
       "end": "2026-11-15",
-      "focus": ["2026-11-06", "2026-11-07", "2026-11-08", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-14", "2026-11-15"],
+      "focus": [],
       "baseline": "2026-11-08",
-      "slips": [{ "at": "2026-11-05", "from": "2026-11-08", "to": "2026-11-15", "reason": "等jlc", "by": "user" }]
+      "slips": [{ "at": "2026-11-05", "from": "2026-11-08", "to": "2026-11-15", "reason": "等jlc", "by": "user" }],
+      "note": "不再用简易传感器测，改等 FPC 到货后再测；到货后再排 focus"
     },
     {
       "id": "tk-surf-stage3",
@@ -223,7 +226,7 @@
     { "id": "tk-551-proj", "trackId": "ece551", "title": "ECE551 Project", "start": "2026-10-29", "end": "2026-11-19", "note": "Paper and Pres 在期末周，具体日期待定" }
   ],
   "milestones": [
-    { "id": "ms-d6gk", "trackId": "surf-hw", "title": "FPC 和控制板到货（估计）", "date": "2026-11-06" },
+    { "id": "ms-d6gk", "trackId": "surf-hw", "title": "FPC 和控制板到货（估计）", "date": "2026-11-12", "note": "jlc 估计 11/7 做完发货，到货日未知；11/12 按国际快递 3 到 5 天粗估" },
     { "id": "ms-65su", "trackId": "surf-out", "title": "给 Yu She 发邮件", "date": "2026-11-13" },
     { "id": "ms-k3dq", "trackId": "surf-app", "title": "学生申请开放（往年 12/1，待确认）", "date": "2026-12-01" },
     { "id": "ms-eilq", "trackId": "surf-app", "title": "SURF Priority deadline（travel subsidy）", "date": "2027-01-15", "hard": true },
