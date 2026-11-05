@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-03T16:55:53.078Z"
+    "updatedAt": "2026-11-05T17:13:02.689Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -98,7 +98,16 @@
       "end": "2027-01-15",
       "note": "估计；不影响发邮件，邮件里写成正在做"
     },
-    { "id": "tk-surf-likeli", "trackId": "surf-bay", "title": "采似然标定数据：L0 空夹爪开合，L1 夹物", "start": "2026-11-02", "end": "2026-11-03" },
+    {
+      "id": "tk-surf-likeli",
+      "trackId": "surf-bay",
+      "title": "采似然标定数据：L0 空夹爪开合，L1 夹物",
+      "start": "2026-11-02",
+      "end": "2026-11-03",
+      "done": true,
+      "doneAt": "2026-11-05",
+      "progress": 1
+    },
     { "id": "tk-surf-bayes", "trackId": "surf-bay", "title": "离线拟合 binary Bayes filter，和阈值规则比延迟、误报", "start": "2026-11-04", "end": "2026-11-09" },
     { "id": "tk-surf-pt", "trackId": "surf-bay", "title": "移植到 F411，按 sensor 频率输出 p_t（可选）", "start": "2026-11-10", "end": "2026-11-14", "note": "可选" },
     { "id": "tk-surf-watch", "trackId": "surf-out", "title": "盯 SURF project list", "start": "2026-10-27", "end": "2026-11-10" },
