@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-05T17:14:41.237Z"
+    "updatedAt": "2026-11-05T17:14:45.523Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -79,9 +79,11 @@
       "trackId": "surf-act",
       "title": "采 demo（同步录 tactile），训 vision-only ACT baseline",
       "start": "2026-11-04",
-      "end": "2026-11-05",
+      "end": "2026-11-07",
       "note": "铜箔 pad 的 demo 只给 vision-only baseline 和延迟测量用",
-      "focus": ["2026-11-04", "2026-11-05"]
+      "focus": ["2026-11-04", "2026-11-05", "2026-11-06", "2026-11-07"],
+      "baseline": "2026-11-05",
+      "slips": [{ "at": "2026-11-05", "from": "2026-11-05", "to": "2026-11-07", "by": "user" }]
     },
     {
       "id": "tk-surf-latency",
