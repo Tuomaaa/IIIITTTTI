@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-05T17:23:14.309Z"
+    "updatedAt": "2026-11-05T17:25:44.601Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -58,12 +58,28 @@
       "doneAt": "2026-10-31",
       "progress": 1
     },
-    { "id": "tk-surf-offfw", "trackId": "surf-hw", "title": "官方 firmware 跑通，作参考基线", "start": "2026-11-06", "end": "2026-11-07" },
-    { "id": "tk-surf-flexi", "trackId": "surf-hw", "title": "F411 驱动 FlexiTac 控制板（先核对 3.3V）", "start": "2026-11-07", "end": "2026-11-10" },
+    {
+      "id": "tk-surf-offfw",
+      "trackId": "surf-hw",
+      "title": "官方 firmware 跑通，作参考基线",
+      "start": "2026-11-12",
+      "end": "2026-11-13",
+      "baseline": "2026-11-07",
+      "slips": [{ "at": "2026-11-05", "from": "2026-11-07", "to": "2026-11-13", "reason": "等 jlc 控制板，估计 11/12 到", "by": "user" }]
+    },
+    {
+      "id": "tk-surf-flexi",
+      "trackId": "surf-hw",
+      "title": "F411 驱动 FlexiTac 控制板（先核对 3.3V）",
+      "start": "2026-11-13",
+      "end": "2026-11-16",
+      "baseline": "2026-11-10",
+      "slips": [{ "at": "2026-11-05", "from": "2026-11-10", "to": "2026-11-16", "reason": "等 jlc 控制板，估计 11/12 到", "by": "user" }]
+    },
     {
       "id": "tk-surf-expdesign",
       "trackId": "surf-act",
-      "title": "实验设计：任务、接触真值标定、指标",
+      "title": "实验设计：任务、指标",
       "start": "2026-11-02",
       "end": "2026-11-07",
       "baseline": "2026-10-30",
@@ -72,7 +88,8 @@
         { "at": "2026-11-02", "from": "2026-11-03", "to": "2026-11-05", "reason": "pcb晚了", "by": "user" },
         { "at": "2026-11-05", "from": "2026-11-05", "to": "2026-11-07", "by": "user" }
       ],
-      "focus": ["2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-07"]
+      "focus": ["2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-07"],
+      "note": "接触真值标定拆到 tk-surf-gt，等 FPC"
     },
     {
       "id": "tk-surf-demo",
@@ -200,7 +217,7 @@
       "start": "2026-10-29",
       "end": "2026-11-06",
       "focus": ["2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06"],
-      "note": "j 缺最后组装；k 缺电控；l m 还没做"
+      "note": "11/5 做到约 50%，剩下等 parts 到了交接给 technician"
     },
     { "id": "tk-so-b", "trackId": "so101", "title": "B 赌狗篇硬件", "start": "2026-11-20", "end": "2026-11-23", "note": "flexible，无硬 ddl；日期是暂排", "parked": true },
     {
@@ -223,7 +240,8 @@
       "note": "flexible，无硬 ddl；日期是暂排",
       "parked": true
     },
-    { "id": "tk-551-proj", "trackId": "ece551", "title": "ECE551 Project", "start": "2026-10-29", "end": "2026-11-19", "note": "Paper and Pres 在期末周，具体日期待定" }
+    { "id": "tk-551-proj", "trackId": "ece551", "title": "ECE551 Project", "start": "2026-10-29", "end": "2026-11-19", "note": "Paper and Pres 在期末周，具体日期待定" },
+    { "id": "tk-surf-gt", "trackId": "surf-act", "title": "接触真值标定（FPC）", "start": "2026-11-12", "end": "2026-11-14", "note": "从实验设计拆出来；等 FPC 到货后再排 focus" }
   ],
   "milestones": [
     { "id": "ms-d6gk", "trackId": "surf-hw", "title": "FPC 和控制板到货（估计）", "date": "2026-11-12", "note": "jlc 估计 11/7 做完发货，到货日未知；11/12 按国际快递 3 到 5 天粗估" },
@@ -261,7 +279,8 @@
     { "id": "ms-hwsp", "trackId": "csse232", "title": "CATME pipeline team eval", "date": "2026-11-16", "hard": true },
     { "id": "ms-hrbt", "trackId": "ece551", "title": "Hw 7", "date": "2026-10-29", "hard": true, "done": true },
     { "id": "ms-qpzm", "trackId": "ece551", "title": "Hw 8", "date": "2026-11-05", "hard": true, "done": true },
-    { "id": "ms-vbls", "trackId": "ece551", "title": "Hw 9", "date": "2026-11-12", "hard": true }
+    { "id": "ms-vbls", "trackId": "ece551", "title": "Hw 9", "date": "2026-11-12", "hard": true },
+    { "id": "ms-e8fj", "trackId": "ece497", "title": "Exam 2", "date": "2026-11-09", "hard": true }
   ],
   "todos": [
     {
