@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-09T21:03:06.463Z"
+    "updatedAt": "2026-11-09T23:01:18.052Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -344,7 +344,15 @@
       "doneAt": "2026-11-02"
     },
     { "id": "td-pukz", "title": "add", "date": "2026-10-31", "done": true, "doneAt": "2026-10-31" },
-    { "id": "td-mprv", "title": "DigiKey/Mouser 补订控制板 parts（先核对 595/4067/FPC 连接器封装）", "date": "2026-11-09", "trackId": "surf-hw", "est": 20 },
+    {
+      "id": "td-mprv",
+      "title": "DigiKey/Mouser 补订控制板 parts（先核对 595/4067/FPC 连接器封装）",
+      "date": "2026-11-09",
+      "trackId": "surf-hw",
+      "est": 20,
+      "done": true,
+      "doneAt": "2026-11-09"
+    },
     { "id": "td-otgs", "title": "打印给 FlexiTac 做过适配的 SO-101 gripper", "date": "2026-11-09", "trackId": "so101" }
   ],
   "blocks": [
