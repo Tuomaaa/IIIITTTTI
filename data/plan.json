@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-09T23:01:18.052Z"
+    "updatedAt": "2026-11-10T04:06:25.176Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -165,7 +165,16 @@
       "slips": [{ "at": "2026-10-29", "from": "2026-10-31", "to": "2026-11-06", "reason": "用户推到下周", "by": "user" }],
       "focus": ["2026-11-02"]
     },
-    { "id": "tk-surf-draft", "trackId": "surf-out", "title": "起草给 Yu She 的邮件", "start": "2026-11-09", "end": "2026-11-12" },
+    {
+      "id": "tk-surf-draft",
+      "trackId": "surf-out",
+      "title": "起草给 Yu She 的邮件",
+      "start": "2026-11-16",
+      "end": "2026-11-19",
+      "baseline": "2026-11-12",
+      "slips": [{ "at": "2026-11-09", "from": "2026-11-12", "to": "2026-11-19", "reason": "托马要求推后至少一周", "by": "user" }],
+      "focus": ["2026-11-13", "2026-11-14", "2026-11-15", "2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19"]
+    },
     { "id": "tk-surf-recs", "trackId": "surf-out", "title": "确定并联系推荐人", "start": "2026-11-09", "end": "2026-11-25", "note": "感恩节那周（11/23 起）教授回复慢" },
     {
       "id": "tk-surf-facpost",
@@ -245,7 +254,7 @@
   ],
   "milestones": [
     { "id": "ms-d6gk", "trackId": "surf-hw", "title": "FPC 和控制板到货（估计）", "date": "2026-11-12", "note": "jlc 估计 11/7 做完发货，到货日未知；11/12 按国际快递 3 到 5 天粗估" },
-    { "id": "ms-65su", "trackId": "surf-out", "title": "给 Yu She 发邮件", "date": "2026-11-13" },
+    { "id": "ms-65su", "trackId": "surf-out", "title": "给 Yu She 发邮件", "date": "2026-11-20" },
     { "id": "ms-k3dq", "trackId": "surf-app", "title": "学生申请开放（往年 12/1，待确认）", "date": "2026-12-01" },
     { "id": "ms-eilq", "trackId": "surf-app", "title": "SURF Priority deadline（travel subsidy）", "date": "2027-01-15", "hard": true },
     { "id": "ms-tipo", "trackId": "school", "title": "Fall term 结束 / 秋冬之间放假", "date": "2026-11-23" },
@@ -267,14 +276,12 @@
     { "id": "ms-d6mt", "trackId": "csse416", "title": "Sprint 1 Status Report（3pm）", "date": "2026-10-29", "hard": true, "done": true },
     { "id": "ms-3kox", "trackId": "csse416", "title": "Random lesson", "date": "2026-11-02", "hard": true, "done": true },
     { "id": "ms-3ftj", "trackId": "csse416", "title": "Sprint 2 Status Report（3pm）", "date": "2026-11-05", "hard": true, "done": true },
-    { "id": "ms-sgb4", "trackId": "csse416", "title": "给其他组写 feedback（Moodle，自己不展示的那天）", "date": "2026-11-09", "hard": true },
-    { "id": "ms-2w5x", "trackId": "csse416", "title": "给其他组写 feedback（Moodle，自己不展示的那天）", "date": "2026-11-10", "hard": true },
-    { "id": "ms-t3gr", "trackId": "csse416", "title": "给其他组写 feedback（Moodle，自己不展示的那天）", "date": "2026-11-12", "hard": true },
-    { "id": "ms-yrmc", "trackId": "csse416", "title": "给其他组写 feedback（Moodle，自己不展示的那天）", "date": "2026-11-13", "hard": true },
+    { "id": "ms-sgb4", "trackId": "csse416", "title": "给其他组写 feedback（Moodle，自己不展示的那天）", "date": "2026-11-09", "hard": true, "done": true },
+    { "id": "ms-2w5x", "trackId": "csse416", "title": "给其他组写 feedback（Moodle，自己不展示的那天）", "date": "2026-11-10", "hard": true, "done": true },
     { "id": "ms-y1zf", "trackId": "csse416", "title": "Final Project：code、slides、reflections", "date": "2026-11-13", "hard": true },
     { "id": "ms-ukfz", "trackId": "csse232", "title": "HW15", "date": "2026-10-30", "hard": true, "done": true },
     { "id": "ms-vta4", "trackId": "csse232", "title": "Practical8", "date": "2026-11-05", "hard": true, "done": true },
-    { "id": "ms-rlmi", "trackId": "csse232", "title": "HW16", "date": "2026-11-06", "hard": true },
+    { "id": "ms-rlmi", "trackId": "csse232", "title": "HW16", "date": "2026-11-06", "hard": true, "done": true },
     { "id": "ms-hevv", "trackId": "csse232", "title": "Practical9", "date": "2026-11-12", "hard": true },
     { "id": "ms-hwsp", "trackId": "csse232", "title": "CATME pipeline team eval", "date": "2026-11-16", "hard": true },
     { "id": "ms-hrbt", "trackId": "ece551", "title": "Hw 7", "date": "2026-10-29", "hard": true, "done": true },
@@ -294,7 +301,16 @@
       "origDate": "2026-10-30"
     },
     { "id": "td-1hyw", "title": "Test 2 复习", "date": "2026-11-02", "trackId": "csse416", "done": true, "doneAt": "2026-11-02" },
-    { "id": "td-naxf", "title": "Sprint 2 System Demo + Meeting", "date": "2026-11-06", "trackId": "csse416", "taskId": "tk-416-final" },
+    {
+      "id": "td-naxf",
+      "title": "Sprint 2 System Demo + Meeting",
+      "date": "2026-11-09",
+      "trackId": "csse416",
+      "taskId": "tk-416-final",
+      "done": true,
+      "doneAt": "2026-11-09",
+      "origDate": "2026-11-06"
+    },
     { "id": "td-nn32", "title": "Wrap up（必须出勤）", "date": "2026-11-13", "trackId": "csse232" },
     { "id": "td-ue7m", "title": "Practical 10 Pipeline Design Presentation（期末周，日期待定）", "trackId": "csse232" },
     { "id": "td-p7w1", "title": "手丢球测试：确认不卡，看同一位置的落点散布", "trackId": "so101", "taskId": "tk-so-b", "est": 240 },
@@ -353,7 +369,7 @@
       "done": true,
       "doneAt": "2026-11-09"
     },
-    { "id": "td-otgs", "title": "打印给 FlexiTac 做过适配的 SO-101 gripper", "date": "2026-11-09", "trackId": "so101" }
+    { "id": "td-otgs", "title": "打印给 FlexiTac 做过适配的 SO-101 gripper", "date": "2026-11-10", "trackId": "so101" }
   ],
   "blocks": [
     {
