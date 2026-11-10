@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-10T13:40:46.165Z"
+    "updatedAt": "2026-11-10T13:47:55.268Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -231,9 +231,12 @@
       "trackId": "merl-arm",
       "title": "Build 4 more arm",
       "start": "2026-10-29",
-      "end": "2026-11-06",
+      "end": "2026-11-13",
       "focus": ["2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06"],
-      "note": "11/5 做到约 50%，剩下等 parts 到了交接给 technician"
+      "note": "11/10：两台在 technician 那边等 parts，然后调试；一台组装完，装上 Arduino 后送 technician；一台组装约 50%。卡在找合适 size 的螺丝",
+      "baseline": "2026-11-06",
+      "slips": [{ "at": "2026-11-10", "from": "2026-11-06", "to": "2026-11-13", "reason": "等 parts，还没找到合适 size 的螺丝", "by": "user" }],
+      "progress": 0.5
     },
     { "id": "tk-so-b", "trackId": "so101", "title": "B 赌狗篇硬件", "start": "2026-11-20", "end": "2026-11-23", "note": "flexible，无硬 ddl；日期是暂排", "parked": true },
     {
@@ -387,7 +390,8 @@
       "done": true,
       "doneAt": "2026-11-09"
     },
-    { "id": "td-otgs", "title": "打印给 FlexiTac 做过适配的 SO-101 gripper", "date": "2026-11-10", "trackId": "so101" }
+    { "id": "td-otgs", "title": "打印给 FlexiTac 做过适配的 SO-101 gripper", "date": "2026-11-10", "trackId": "so101" },
+    { "id": "td-05gi", "title": "找 arm 用的合适 size 螺丝", "date": "2026-11-10", "taskId": "tk-arm-build" }
   ],
   "blocks": [
     {
