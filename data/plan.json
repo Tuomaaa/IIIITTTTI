@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-10T13:37:29.431Z"
+    "updatedAt": "2026-11-10T13:40:46.165Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -63,10 +63,13 @@
       "id": "tk-surf-offfw",
       "trackId": "surf-hw",
       "title": "官方 firmware 跑通，作参考基线",
-      "start": "2026-11-12",
-      "end": "2026-11-13",
+      "start": "2026-11-13",
+      "end": "2026-11-14",
       "baseline": "2026-11-07",
-      "slips": [{ "at": "2026-11-05", "from": "2026-11-07", "to": "2026-11-13", "reason": "等 jlc 控制板，估计 11/12 到", "by": "user" }]
+      "slips": [
+        { "at": "2026-11-05", "from": "2026-11-07", "to": "2026-11-13", "reason": "等 jlc 控制板，估计 11/12 到", "by": "user" },
+        { "at": "2026-11-10", "from": "2026-11-13", "to": "2026-11-14", "reason": "控制板要等 Mouser parts，周五才能开工", "by": "user" }
+      ]
     },
     {
       "id": "tk-surf-flexi",
@@ -109,11 +112,14 @@
       "id": "tk-surf-latency",
       "trackId": "surf-act",
       "title": "阶段 2：rollout 中测接触到推理的延迟",
-      "start": "2026-11-12",
-      "end": "2026-11-15",
+      "start": "2026-11-13",
+      "end": "2026-11-16",
       "focus": [],
       "baseline": "2026-11-08",
-      "slips": [{ "at": "2026-11-05", "from": "2026-11-08", "to": "2026-11-15", "reason": "等jlc", "by": "user" }],
+      "slips": [
+        { "at": "2026-11-05", "from": "2026-11-08", "to": "2026-11-15", "reason": "等jlc", "by": "user" },
+        { "at": "2026-11-10", "from": "2026-11-15", "to": "2026-11-16", "reason": "控制板要等 Mouser parts，周五才能开工", "by": "user" }
+      ],
       "note": "不再用简易传感器测，改等 FPC 到货后再测；到货后再排 focus"
     },
     {
@@ -251,7 +257,16 @@
       "parked": true
     },
     { "id": "tk-551-proj", "trackId": "ece551", "title": "ECE551 Project", "start": "2026-10-29", "end": "2026-11-19", "note": "Paper and Pres 在期末周，具体日期待定" },
-    { "id": "tk-surf-gt", "trackId": "surf-act", "title": "接触真值标定（FPC）", "start": "2026-11-12", "end": "2026-11-14", "note": "从实验设计拆出来；等 FPC 到货后再排 focus" }
+    {
+      "id": "tk-surf-gt",
+      "trackId": "surf-act",
+      "title": "接触真值标定（FPC）",
+      "start": "2026-11-13",
+      "end": "2026-11-15",
+      "note": "从实验设计拆出来；等 FPC 到货后再排 focus",
+      "baseline": "2026-11-14",
+      "slips": [{ "at": "2026-11-10", "from": "2026-11-14", "to": "2026-11-15", "reason": "控制板要等 Mouser parts，周五才能开工", "by": "user" }]
+    }
   ],
   "milestones": [
     { "id": "ms-d6gk", "trackId": "surf-hw", "title": "FPC 和控制板到货（UPS）", "date": "2026-11-11", "note": "jlc 已发货；UPS 估计 11/11 上午 8:45 到 12:45 送到" },
