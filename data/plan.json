@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-10T13:47:55.268Z"
+    "updatedAt": "2026-11-10T17:09:03.395Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -390,7 +390,7 @@
       "done": true,
       "doneAt": "2026-11-09"
     },
-    { "id": "td-otgs", "title": "打印给 FlexiTac 做过适配的 SO-101 gripper", "date": "2026-11-10", "trackId": "so101" },
+    { "id": "td-otgs", "title": "打印给 FlexiTac 做过适配的 SO-101 gripper", "date": "2026-11-11", "trackId": "so101" },
     { "id": "td-05gi", "title": "找 arm 用的合适 size 螺丝", "date": "2026-11-10", "taskId": "tk-arm-build" }
   ],
   "blocks": [
