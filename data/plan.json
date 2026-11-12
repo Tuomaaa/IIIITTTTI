@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-10T20:58:50.758Z"
+    "updatedAt": "2026-11-12T03:57:19.124Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -289,7 +289,7 @@
     { "id": "ms-lup0", "trackId": "merl-sim", "title": "写 tutorial（约 30 分钟）", "date": "2026-10-30", "hard": true, "note": "原定 10/29 晚，用户推到周五", "done": true },
     { "id": "ms-j9ge", "trackId": "ece551", "title": "Project: Proposal", "date": "2026-10-30", "hard": true, "done": true },
     { "id": "ms-b2aw", "trackId": "ece551", "title": "Proj: Proposal Timing", "date": "2026-11-04", "hard": true, "done": true },
-    { "id": "ms-2m6d", "trackId": "ece551", "title": "Proj: Proposal P&R", "date": "2026-11-11", "hard": true },
+    { "id": "ms-2m6d", "trackId": "ece551", "title": "Proj: Proposal P&R", "date": "2026-11-11", "hard": true, "done": true },
     { "id": "ms-u3s3", "trackId": "ece497", "title": "Homework 3", "date": "2026-10-30", "hard": true, "done": true },
     { "id": "ms-82fc", "trackId": "ece497", "title": "ECG DNN Part 2a", "date": "2026-11-01", "hard": true, "done": true },
     { "id": "ms-d6mt", "trackId": "csse416", "title": "Sprint 1 Status Report（3pm）", "date": "2026-10-29", "hard": true, "done": true },
@@ -308,7 +308,7 @@
     { "id": "ms-vbls", "trackId": "ece551", "title": "Hw 9", "date": "2026-11-12", "hard": true },
     { "id": "ms-e8fj", "trackId": "ece497", "title": "Exam 2", "date": "2026-11-09", "hard": true, "done": true },
     { "id": "ms-3o7t", "trackId": "surf-hw", "title": "Mouser parts 到货（FH12、595、4067、电阻）", "date": "2026-11-13" },
-    { "id": "ms-4yh4", "trackId": "edge-ai", "title": "Homework 4（11:59 PM）", "date": "2026-11-11", "hard": true }
+    { "id": "ms-4yh4", "trackId": "edge-ai", "title": "Homework 4（11:59 PM）", "date": "2026-11-11", "hard": true, "done": true }
   ],
   "todos": [
     {
@@ -390,8 +390,16 @@
       "done": true,
       "doneAt": "2026-11-09"
     },
-    { "id": "td-otgs", "title": "打印给 FlexiTac 做过适配的 SO-101 gripper", "date": "2026-11-11", "trackId": "so101" },
-    { "id": "td-05gi", "title": "找 arm 用的合适 size 螺丝", "date": "2026-11-10", "taskId": "tk-arm-build" },
+    { "id": "td-otgs", "title": "打印给 FlexiTac 做过适配的 SO-101 gripper", "date": "2026-11-11", "trackId": "so101", "done": true, "doneAt": "2026-11-11" },
+    {
+      "id": "td-05gi",
+      "title": "找 arm 用的合适 size 螺丝",
+      "date": "2026-11-11",
+      "taskId": "tk-arm-build",
+      "done": true,
+      "doneAt": "2026-11-11",
+      "origDate": "2026-11-10"
+    },
     { "id": "td-ufs6", "title": "让 Codex 批作业", "date": "2026-11-10" }
   ],
   "blocks": [
