@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-14T20:27:31.495Z"
+    "updatedAt": "2026-11-20T19:47:20.301Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -401,7 +401,8 @@
       "doneAt": "2026-11-11",
       "origDate": "2026-11-10"
     },
-    { "id": "td-ufs6", "title": "让 Codex 批作业", "date": "2026-11-10" }
+    { "id": "td-ufs6", "title": "让 Codex 批作业", "date": "2026-11-10" },
+    { "id": "td-5mnf", "title": "Mouser 重新下单读出板全套 parts（4x 74HC595、CD74HC4067、FPC 座子、电阻），上批已用完，作备件", "trackId": "surf-hw" }
   ],
   "blocks": [
     {
