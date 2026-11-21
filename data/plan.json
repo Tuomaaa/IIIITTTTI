@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-21T05:05:24.949Z"
+    "updatedAt": "2026-11-21T05:22:22.743Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -402,11 +402,7 @@
       "origDate": "2026-11-10"
     },
     { "id": "td-ufs6", "title": "让 Codex 批作业", "date": "2026-11-10" },
-    {
-      "id": "td-5mnf",
-      "title": "LCSC 补单读出板 parts：FPC 座子按 BOM 原型号多买（16P C2856801、32P C283153，各 10 个），595 C191873、4067 C496123。不要再用 Mouser FH12",
-      "trackId": "surf-hw"
-    }
+    { "id": "td-5mnf", "title": "JLC 下 PCBA 订单：读出板用 JLC 库存零件贴片（文件在 SURF/reference/readout_board_32x16/jlc_order，R1=10k，预览里核对座子方向）", "trackId": "surf-hw" }
   ],
   "blocks": [
     {
