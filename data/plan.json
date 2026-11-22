@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-22T09:21:06.989Z"
+    "updatedAt": "2026-11-22T09:26:11.945Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -192,14 +192,16 @@
     {
       "id": "tk-surf-heng",
       "trackId": "surf-out",
-      "title": "给 Heng Zhang 发技术问题（先确认身份）",
-      "start": "2026-11-02",
-      "end": "2026-11-06",
+      "title": "小红书私信 Heng Zhang：soft/learnable gating 踩过什么坑（附传感器照片）",
+      "start": "2026-11-23",
+      "end": "2026-11-23",
       "baseline": "2026-10-31",
-      "slips": [{ "at": "2026-10-29", "from": "2026-10-31", "to": "2026-11-06", "reason": "用户推到下周", "by": "user" }],
-      "focus": ["2026-11-02"],
-      "note": "开始做的时候碰到具体技术问题再发",
-      "parked": true
+      "slips": [
+        { "at": "2026-10-29", "from": "2026-10-31", "to": "2026-11-06", "reason": "用户推到下周", "by": "user" },
+        { "at": "2026-11-22", "from": "2026-11-06", "to": "2026-11-23", "reason": "有了具体技术问题（gate 是不是坑），11/22 重排", "by": "agent" }
+      ],
+      "focus": ["2026-11-23"],
+      "note": "TacVLA co-first author，主要在 IIT。先确认小红书账号就是他。Yu She 那封仍 11/30 带结果发"
     },
     {
       "id": "tk-surf-draft",
