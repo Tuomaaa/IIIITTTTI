@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-22T09:19:01.622Z"
+    "updatedAt": "2026-11-22T09:19:30.427Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -197,7 +197,9 @@
       "end": "2026-11-06",
       "baseline": "2026-10-31",
       "slips": [{ "at": "2026-10-29", "from": "2026-10-31", "to": "2026-11-06", "reason": "用户推到下周", "by": "user" }],
-      "focus": ["2026-11-02"]
+      "focus": ["2026-11-02"],
+      "note": "开始做的时候碰到具体技术问题再发",
+      "parked": true
     },
     {
       "id": "tk-surf-draft",
@@ -218,7 +220,7 @@
       "title": "确定并联系推荐人",
       "start": "2026-11-09",
       "end": "2026-12-07",
-      "note": "人选待用户从之前的 chat 复核；12/7 前开口",
+      "note": "推荐人：Dr. Berry（CLAUDE.md）。上传链接要提交申请后才发；官网建议留 2-3 周；12/7 前开口",
       "baseline": "2026-11-25",
       "slips": [{ "at": "2026-11-22", "from": "2026-11-25", "to": "2026-12-07", "reason": "开学后再联系；官网建议给推荐人留 2-3 周", "by": "agent" }]
     },
@@ -239,7 +241,7 @@
       "title": "填申请、Statement of Purpose",
       "start": "2026-12-01",
       "end": "2026-12-15",
-      "note": "F-1 在美国读书走 1/15 priority；等 Yu She 回信后再填，申请里写她的名字和项目"
+      "note": "F-1 在美国读书走 1/15 priority。推荐信链接要提交后才发，所以 12/14 前提交（Yu She 回信后最好，最晚不等），给 Berry 留够时间"
     },
     {
       "id": "tk-fall-finals",
@@ -334,7 +336,7 @@
     {
       "id": "tk-surf-h2",
       "trackId": "surf-hw",
-      "title": "H2 装到 moving jaw + 走线测试（臂和手腕动一圈、开合不到底无假信号；闭合到底有信号是正常的）",
+      "title": "H2 装到固定侧 jaw + 走线测试（臂和手腕动一圈无假信号；直焊 FPC，焊点不能受力）",
       "start": "2026-11-22",
       "end": "2026-11-22",
       "focus": ["2026-11-22"]
