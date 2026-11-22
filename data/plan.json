@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-22T09:17:38.961Z"
+    "updatedAt": "2026-11-22T09:19:01.622Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -544,6 +544,7 @@
     { "id": "bk-7tqs", "date": "2026-11-14", "start": "15:30", "end": "18:30", "title": "复习 IC", "trackId": "ece551", "kind": "focus" },
     { "id": "bk-ubb7", "date": "2026-11-14", "start": "19:30", "end": "23:00", "title": "Edge AI CNN 作业", "trackId": "edge-ai", "kind": "focus" },
     { "id": "bk-phpo", "date": "2026-11-15", "start": "10:00", "end": "17:00", "title": "复习 pipeline", "trackId": "csse232", "kind": "focus" },
-    { "id": "bk-78v5", "date": "2026-11-15", "start": "19:00", "end": "22:30", "title": "复习 Practical 10", "trackId": "csse232", "kind": "focus" }
+    { "id": "bk-78v5", "date": "2026-11-15", "start": "19:00", "end": "22:30", "title": "复习 Practical 10", "trackId": "csse232", "kind": "focus" },
+    { "id": "bk-wftg", "date": "2026-12-02", "start": "18:00", "end": "18:30", "title": "MxV Rail phone screen（等 Sherri 确认时间）", "kind": "event" }
   ]
 }
