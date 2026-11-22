@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-21T05:22:22.743Z"
+    "updatedAt": "2026-11-22T09:17:38.961Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -69,16 +69,24 @@
       "slips": [
         { "at": "2026-11-05", "from": "2026-11-07", "to": "2026-11-13", "reason": "等 jlc 控制板，估计 11/12 到", "by": "user" },
         { "at": "2026-11-10", "from": "2026-11-13", "to": "2026-11-14", "reason": "控制板要等 Mouser parts，周五才能开工", "by": "user" }
-      ]
+      ],
+      "note": "砍掉：自己的 firmware 用官方帧格式，heatmap 用官方脚本，不单独跑官方 firmware",
+      "done": true,
+      "doneAt": "2026-11-22",
+      "progress": 1
     },
     {
       "id": "tk-surf-flexi",
       "trackId": "surf-hw",
-      "title": "F411 驱动 FlexiTac 控制板（先核对 3.3V）",
+      "title": "F103 驱动 FlexiTac 控制板（原 F411）",
       "start": "2026-11-13",
       "end": "2026-11-16",
       "baseline": "2026-11-10",
-      "slips": [{ "at": "2026-11-05", "from": "2026-11-10", "to": "2026-11-16", "reason": "等 jlc 控制板，估计 11/12 到", "by": "user" }]
+      "slips": [{ "at": "2026-11-05", "from": "2026-11-10", "to": "2026-11-16", "reason": "等 jlc 控制板，估计 11/12 到", "by": "user" }],
+      "note": "F103 已通；行 r0-r11 已验证，剩下的列和成像并入 tk-surf-h1",
+      "done": true,
+      "doneAt": "2026-11-22",
+      "progress": 1
     },
     {
       "id": "tk-surf-expdesign",
@@ -93,19 +101,23 @@
         { "at": "2026-11-05", "from": "2026-11-05", "to": "2026-11-07", "by": "user" }
       ],
       "focus": ["2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-07"],
-      "note": "接触真值标定拆到 tk-surf-gt，等 FPC"
+      "note": "11/22 定稿：in-box picking，指标 success rate；三个版本 SmolVLA vision-only / +binary gate / +soft gate，ACT 不做",
+      "done": true,
+      "doneAt": "2026-11-22",
+      "progress": 1
     },
     {
       "id": "tk-surf-demo",
       "trackId": "surf-act",
-      "title": "采 demo，训 vision-only ACT baseline（无触觉）",
-      "start": "2026-11-04",
-      "end": "2026-11-08",
-      "focus": ["2026-11-07", "2026-11-08"],
+      "title": "采集：D1 环境、D2 同步记录脚本、D3 50 条 demo（同步录 tactile）",
+      "start": "2026-11-23",
+      "end": "2026-11-23",
+      "focus": ["2026-11-23"],
       "baseline": "2026-11-05",
       "slips": [
         { "at": "2026-11-05", "from": "2026-11-05", "to": "2026-11-07", "by": "user" },
-        { "at": "2026-11-05", "from": "2026-11-07", "to": "2026-11-08", "reason": "改成无触觉 ACT，不再做简易传感器，周末做", "by": "user" }
+        { "at": "2026-11-05", "from": "2026-11-07", "to": "2026-11-08", "reason": "改成无触觉 ACT，不再做简易传感器，周末做", "by": "user" },
+        { "at": "2026-11-22", "from": "2026-11-08", "to": "2026-11-23", "reason": "11/22 一周重排（开学前计划）", "by": "agent" }
       ]
     },
     {
@@ -120,7 +132,8 @@
         { "at": "2026-11-05", "from": "2026-11-08", "to": "2026-11-15", "reason": "等jlc", "by": "user" },
         { "at": "2026-11-10", "from": "2026-11-15", "to": "2026-11-16", "reason": "控制板要等 Mouser parts，周五才能开工", "by": "user" }
       ],
-      "note": "不再用简易传感器测，改等 FPC 到货后再测；到货后再排 focus"
+      "note": "不再用简易传感器测，改等 FPC 到货后再测；到货后再排 focus",
+      "parked": true
     },
     {
       "id": "tk-surf-stage3",
@@ -143,12 +156,15 @@
     {
       "id": "tk-surf-bayes",
       "trackId": "surf-bay",
-      "title": "离线拟合 binary Bayes filter，和阈值规则比延迟、误报",
-      "start": "2026-11-04",
-      "end": "2026-11-15",
+      "title": "M1 离线对比：TacVLA threshold / improved threshold / Bayes filter（延迟、误报）",
+      "start": "2026-11-24",
+      "end": "2026-11-24",
       "baseline": "2026-11-09",
-      "slips": [{ "at": "2026-11-05", "from": "2026-11-09", "to": "2026-11-15", "reason": "等jlc", "by": "user" }],
-      "focus": ["2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-14", "2026-11-15"]
+      "slips": [
+        { "at": "2026-11-05", "from": "2026-11-09", "to": "2026-11-15", "reason": "等jlc", "by": "user" },
+        { "at": "2026-11-22", "from": "2026-11-15", "to": "2026-11-24", "reason": "11/22 一周重排（开学前计划）", "by": "agent" }
+      ],
+      "focus": ["2026-11-24"]
     },
     {
       "id": "tk-surf-pt",
@@ -159,9 +175,20 @@
       "note": "可选",
       "baseline": "2026-11-14",
       "slips": [{ "at": "2026-11-05", "from": "2026-11-14", "to": "2026-11-16", "reason": "等jlc", "by": "user" }],
-      "focus": ["2026-11-15", "2026-11-16"]
+      "focus": ["2026-11-15", "2026-11-16"],
+      "parked": true
     },
-    { "id": "tk-surf-watch", "trackId": "surf-out", "title": "盯 SURF project list", "start": "2026-10-27", "end": "2026-11-10" },
+    {
+      "id": "tk-surf-watch",
+      "trackId": "surf-out",
+      "title": "盯 SURF project list",
+      "start": "2026-10-27",
+      "end": "2026-11-10",
+      "note": "官网：教授可以加项目到 4/15",
+      "done": true,
+      "doneAt": "2026-11-22",
+      "progress": 1
+    },
     {
       "id": "tk-surf-heng",
       "trackId": "surf-out",
@@ -175,23 +202,45 @@
     {
       "id": "tk-surf-draft",
       "trackId": "surf-out",
-      "title": "起草给 Yu She 的邮件",
-      "start": "2026-11-16",
-      "end": "2026-11-19",
+      "title": "写 Yu She 邮件（事件 deadline：M1 + baseline success rate，M2 有就带上）",
+      "start": "2026-11-29",
+      "end": "2026-11-29",
       "baseline": "2026-11-12",
-      "slips": [{ "at": "2026-11-09", "from": "2026-11-12", "to": "2026-11-19", "reason": "托马要求推后至少一周", "by": "user" }],
-      "focus": []
+      "slips": [
+        { "at": "2026-11-09", "from": "2026-11-12", "to": "2026-11-19", "reason": "托马要求推后至少一周", "by": "user" },
+        { "at": "2026-11-22", "from": "2026-11-19", "to": "2026-11-29", "reason": "11/22 一周重排（开学前计划）", "by": "agent" }
+      ],
+      "focus": ["2026-11-29"]
     },
-    { "id": "tk-surf-recs", "trackId": "surf-out", "title": "确定并联系推荐人", "start": "2026-11-09", "end": "2026-11-25", "note": "感恩节那周（11/23 起）教授回复慢" },
+    {
+      "id": "tk-surf-recs",
+      "trackId": "surf-out",
+      "title": "确定并联系推荐人",
+      "start": "2026-11-09",
+      "end": "2026-12-07",
+      "note": "人选待用户从之前的 chat 复核；12/7 前开口",
+      "baseline": "2026-11-25",
+      "slips": [{ "at": "2026-11-22", "from": "2026-11-25", "to": "2026-12-07", "reason": "开学后再联系；官网建议给推荐人留 2-3 周", "by": "agent" }]
+    },
     {
       "id": "tk-surf-facpost",
       "trackId": "surf-app",
       "title": "Faculty 发布 project（往年 10 月初到 11 月初）",
       "start": "2026-10-26",
       "end": "2026-11-06",
-      "note": "外部窗口，估计"
+      "note": "外部窗口，估计",
+      "done": true,
+      "doneAt": "2026-11-22",
+      "progress": 1
     },
-    { "id": "tk-surf-sop", "trackId": "surf-app", "title": "填申请、Statement of Purpose", "start": "2026-12-01", "end": "2026-12-15" },
+    {
+      "id": "tk-surf-sop",
+      "trackId": "surf-app",
+      "title": "填申请、Statement of Purpose",
+      "start": "2026-12-01",
+      "end": "2026-12-15",
+      "note": "F-1 在美国读书走 1/15 priority；等 Yu She 回信后再填，申请里写她的名字和项目"
+    },
     {
       "id": "tk-fall-finals",
       "trackId": "school",
@@ -263,19 +312,62 @@
     {
       "id": "tk-surf-gt",
       "trackId": "surf-act",
-      "title": "接触真值标定（FPC）",
-      "start": "2026-11-13",
-      "end": "2026-11-15",
+      "title": "G1 相机标接触真值（两爪对碰记为无物体接触）",
+      "start": "2026-11-24",
+      "end": "2026-11-24",
       "note": "从实验设计拆出来；等 FPC 到货后再排 focus",
       "baseline": "2026-11-14",
-      "slips": [{ "at": "2026-11-10", "from": "2026-11-14", "to": "2026-11-15", "reason": "控制板要等 Mouser parts，周五才能开工", "by": "user" }]
+      "slips": [
+        { "at": "2026-11-10", "from": "2026-11-14", "to": "2026-11-15", "reason": "控制板要等 Mouser parts，周五才能开工", "by": "user" },
+        { "at": "2026-11-22", "from": "2026-11-15", "to": "2026-11-24", "reason": "11/22 一周重排（开学前计划）", "by": "agent" }
+      ],
+      "focus": ["2026-11-24"]
+    },
+    {
+      "id": "tk-surf-h1",
+      "trackId": "surf-hw",
+      "title": "H1 列 FPC 直焊 + 桌上成像（测线、两片接触、Velostat、heatmap、调 SETTLE_US/sampling）",
+      "start": "2026-11-22",
+      "end": "2026-11-22",
+      "focus": ["2026-11-22"]
+    },
+    {
+      "id": "tk-surf-h2",
+      "trackId": "surf-hw",
+      "title": "H2 装到 moving jaw + 走线测试（臂和手腕动一圈、开合不到底无假信号；闭合到底有信号是正常的）",
+      "start": "2026-11-22",
+      "end": "2026-11-22",
+      "focus": ["2026-11-22"]
+    },
+    {
+      "id": "tk-surf-base",
+      "trackId": "surf-act",
+      "title": "SmolVLA vision-only baseline：训练 + eval 20 次",
+      "start": "2026-11-23",
+      "end": "2026-11-25",
+      "focus": ["2026-11-23", "2026-11-25"]
+    },
+    { "id": "tk-surf-p1", "trackId": "surf-bay", "title": "P1 Bayes filter PC 端在线输出 p_t", "start": "2026-11-25", "end": "2026-11-25", "focus": ["2026-11-25"] },
+    {
+      "id": "tk-surf-m2",
+      "trackId": "surf-act",
+      "title": "M2：binary gate vs soft gate（同一个 SmolVLA）",
+      "start": "2026-11-26",
+      "end": "2026-11-28",
+      "focus": ["2026-11-26", "2026-11-27", "2026-11-28"]
     }
   ],
   "milestones": [
-    { "id": "ms-d6gk", "trackId": "surf-hw", "title": "FPC 和控制板到货（UPS）", "date": "2026-11-11", "note": "jlc 已发货；UPS 估计 11/11 上午 8:45 到 12:45 送到" },
-    { "id": "ms-65su", "trackId": "surf-out", "title": "给 Yu She 发邮件", "date": "2026-11-20" },
-    { "id": "ms-k3dq", "trackId": "surf-app", "title": "学生申请开放（往年 12/1，待确认）", "date": "2026-12-01" },
-    { "id": "ms-eilq", "trackId": "surf-app", "title": "SURF Priority deadline（travel subsidy）", "date": "2027-01-15", "hard": true },
+    { "id": "ms-d6gk", "trackId": "surf-hw", "title": "FPC 和控制板到货（UPS）", "date": "2026-11-11", "note": "jlc 已发货；UPS 估计 11/11 上午 8:45 到 12:45 送到", "done": true },
+    {
+      "id": "ms-65su",
+      "trackId": "surf-out",
+      "title": "给 Yu She 发邮件",
+      "date": "2026-11-30",
+      "note": "Purdue 感恩节假 11/25-28，11/30 复课；最佳窗口 11/30-12/11（12/14-19 期末）"
+    },
+    { "id": "ms-k3dq", "trackId": "surf-app", "title": "学生申请已开放（官网：11 月初）", "date": "2026-12-01", "done": true },
+    { "id": "ms-eilq", "trackId": "surf-app", "title": "SURF Priority deadline（F-1 在美国读书走这条，rolling after）", "date": "2027-01-15", "hard": true },
     { "id": "ms-tipo", "trackId": "school", "title": "Fall term 结束 / 秋冬之间放假", "date": "2026-11-23" },
     { "id": "ms-j30v", "trackId": "school", "title": "Winter 开课", "date": "2026-11-30" },
     { "id": "ms-22kz", "trackId": "school", "title": "Winter 选课截止 4pm", "date": "2026-12-02", "hard": true },
@@ -307,9 +399,12 @@
     { "id": "ms-qpzm", "trackId": "ece551", "title": "Hw 8", "date": "2026-11-05", "hard": true, "done": true },
     { "id": "ms-vbls", "trackId": "ece551", "title": "Hw 9", "date": "2026-11-12", "hard": true },
     { "id": "ms-e8fj", "trackId": "ece497", "title": "Exam 2", "date": "2026-11-09", "hard": true, "done": true },
-    { "id": "ms-3o7t", "trackId": "surf-hw", "title": "Mouser parts 到货（FH12、595、4067、电阻）", "date": "2026-11-13" },
+    { "id": "ms-3o7t", "trackId": "surf-hw", "title": "Mouser parts 到货（FH12、595、4067、电阻）", "date": "2026-11-13", "done": true },
     { "id": "ms-4yh4", "trackId": "edge-ai", "title": "Homework 4（11:59 PM）", "date": "2026-11-11", "hard": true, "done": true },
-    { "id": "ms-kdoh", "trackId": "edge-ai", "title": "Image Classification Using CNN（11:59 PM）", "date": "2026-11-15", "hard": true }
+    { "id": "ms-kdoh", "trackId": "edge-ai", "title": "Image Classification Using CNN（11:59 PM）", "date": "2026-11-15", "hard": true },
+    { "id": "ms-poba", "trackId": "surf-bay", "title": "M1 完成", "date": "2026-11-24" },
+    { "id": "ms-mofj", "trackId": "surf-act", "title": "M2 完成（stretch）", "date": "2026-11-28" },
+    { "id": "ms-yrb4", "trackId": "surf-out", "title": "Yu She 邮件时间 deadline：不管 M2 做没做完都发", "date": "2026-12-04", "hard": true }
   ],
   "todos": [
     {
@@ -402,7 +497,16 @@
       "origDate": "2026-11-10"
     },
     { "id": "td-ufs6", "title": "让 Codex 批作业", "date": "2026-11-10" },
-    { "id": "td-5mnf", "title": "JLC 下 PCBA 订单：读出板用 JLC 库存零件贴片（文件在 SURF/reference/readout_board_32x16/jlc_order，R1=10k，预览里核对座子方向）", "trackId": "surf-hw" }
+    { "id": "td-5mnf", "title": "Mouser 补订 FH12（已下单，到货作备件；直焊 FPC 能用就不换）", "trackId": "surf-hw", "done": true, "doneAt": "2026-11-22" },
+    { "id": "td-oum6", "title": "D1 采集环境：固定相机、标定 leader/follower、摆场景", "date": "2026-11-23", "taskId": "tk-surf-demo" },
+    { "id": "td-o05y", "title": "D2 同步记录脚本：LeRobot record + tactile，录 2 条回放对齐", "date": "2026-11-23", "taskId": "tk-surf-demo" },
+    { "id": "td-lhsq", "title": "D3 采 50 条 demo", "date": "2026-11-23", "taskId": "tk-surf-demo" },
+    { "id": "td-8c7j", "title": "周一晚提交 SmolVLA vision-only 训练（只用分到的 GPU）", "date": "2026-11-23", "taskId": "tk-surf-base" },
+    { "id": "td-ltu6", "title": "配 async inference，baseline eval 20 次，记 success rate", "date": "2026-11-25", "taskId": "tk-surf-base" },
+    { "id": "td-iqcp", "title": "P2 cluster lerobot 环境装 smolvla extras", "date": "2026-11-26", "taskId": "tk-surf-m2" },
+    { "id": "td-tzen", "title": "P3 写 tactile encoder + gating", "date": "2026-11-26", "taskId": "tk-surf-m2" },
+    { "id": "td-vqn4", "title": "P4 训 binary gate 版和 soft gate 版", "date": "2026-11-27", "taskId": "tk-surf-m2" },
+    { "id": "td-02ea", "title": "P5 两版各 eval 20 次", "date": "2026-11-28", "taskId": "tk-surf-m2" }
   ],
   "blocks": [
     {
