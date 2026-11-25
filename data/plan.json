@@ -9,7 +9,7 @@
     "maxParallel": 4,
     "staleAfterDays": 3,
     "maxPushDays": 2,
-    "updatedAt": "2026-11-23T22:27:57.474Z"
+    "updatedAt": "2026-11-25T22:01:18.460Z"
   },
   "tracks": [
     { "id": "surf-hw", "name": "SURF · 硬件", "color": "#b8692f", "group": "SURF" },
@@ -109,16 +109,17 @@
     {
       "id": "tk-surf-demo",
       "trackId": "surf-act",
-      "title": "采集：D1 环境、D2 同步记录脚本、D3 50 条 demo（同步录 tactile）",
-      "start": "2026-11-23",
-      "end": "2026-11-26",
-      "focus": ["2026-11-24", "2026-11-26"],
+      "title": "采集（到货后）：D2b tactile 对齐、D3 50 条 demo（同步录 tactile）",
+      "start": "2026-11-28",
+      "end": "2026-11-28",
+      "focus": ["2026-11-28"],
       "baseline": "2026-11-05",
       "slips": [
         { "at": "2026-11-05", "from": "2026-11-05", "to": "2026-11-07", "by": "user" },
         { "at": "2026-11-05", "from": "2026-11-07", "to": "2026-11-08", "reason": "改成无触觉 ACT，不再做简易传感器，周末做", "by": "user" },
         { "at": "2026-11-22", "from": "2026-11-08", "to": "2026-11-23", "reason": "11/22 一周重排（开学前计划）", "by": "agent" },
-        { "at": "2026-11-23", "from": "2026-11-23", "to": "2026-11-26", "reason": "今天不想搞 SURF，等 Mouser 零件（11/23 发货，估计两三天到）", "by": "user" }
+        { "at": "2026-11-23", "from": "2026-11-23", "to": "2026-11-26", "reason": "今天不想搞 SURF，等 Mouser 零件（11/23 发货，估计两三天到）", "by": "user" },
+        { "at": "2026-11-25", "from": "2026-11-26", "to": "2026-11-28", "reason": "拆分：到货前部分拆成 tk-c5y6；Mouser 零件 UPS 周五 11/27 到，按到货日拆两段重排", "by": "agent" }
       ]
     },
     {
@@ -158,15 +159,16 @@
       "id": "tk-surf-bayes",
       "trackId": "surf-bay",
       "title": "M1 离线对比：TacVLA threshold / improved threshold / Bayes filter（延迟、误报）",
-      "start": "2026-11-27",
-      "end": "2026-11-27",
+      "start": "2026-11-29",
+      "end": "2026-11-29",
       "baseline": "2026-11-09",
       "slips": [
         { "at": "2026-11-05", "from": "2026-11-09", "to": "2026-11-15", "reason": "等jlc", "by": "user" },
         { "at": "2026-11-22", "from": "2026-11-15", "to": "2026-11-24", "reason": "11/22 一周重排（开学前计划）", "by": "agent" },
-        { "at": "2026-11-23", "from": "2026-11-24", "to": "2026-11-27", "reason": "今天不想搞 SURF，等 Mouser 零件（11/23 发货，估计两三天到）", "by": "user" }
+        { "at": "2026-11-23", "from": "2026-11-24", "to": "2026-11-27", "reason": "今天不想搞 SURF，等 Mouser 零件（11/23 发货，估计两三天到）", "by": "user" },
+        { "at": "2026-11-25", "from": "2026-11-27", "to": "2026-11-29", "reason": "要用 D3 的 tactile 数据，Mouser 零件 UPS 周五 11/27 到，按到货日拆两段重排", "by": "agent" }
       ],
-      "focus": ["2026-11-27"]
+      "focus": ["2026-11-29"]
     },
     {
       "id": "tk-surf-pt",
@@ -208,15 +210,22 @@
     {
       "id": "tk-surf-draft",
       "trackId": "surf-out",
-      "title": "写 Yu She 邮件（事件 deadline：M1 + baseline success rate，M2 有就带上）",
-      "start": "2026-11-29",
-      "end": "2026-11-29",
+      "title": "写 + 发 Yu She 邮件（M1 + baseline success rate）",
+      "start": "2026-12-01",
+      "end": "2026-12-01",
       "baseline": "2026-11-12",
       "slips": [
         { "at": "2026-11-09", "from": "2026-11-12", "to": "2026-11-19", "reason": "托马要求推后至少一周", "by": "user" },
-        { "at": "2026-11-22", "from": "2026-11-19", "to": "2026-11-29", "reason": "11/22 一周重排（开学前计划）", "by": "agent" }
+        { "at": "2026-11-22", "from": "2026-11-19", "to": "2026-11-29", "reason": "11/22 一周重排（开学前计划）", "by": "agent" },
+        {
+          "at": "2026-11-25",
+          "from": "2026-11-29",
+          "to": "2026-12-01",
+          "reason": "等 M1 和 baseline eval（11/30），Mouser 零件 UPS 周五 11/27 到，按到货日拆两段重排",
+          "by": "agent"
+        }
       ],
-      "focus": ["2026-11-29"]
+      "focus": ["2026-12-01"]
     },
     {
       "id": "tk-surf-recs",
@@ -319,64 +328,85 @@
       "id": "tk-surf-gt",
       "trackId": "surf-act",
       "title": "G1 相机标接触真值（两爪对碰记为无物体接触）",
-      "start": "2026-11-27",
-      "end": "2026-11-27",
+      "start": "2026-11-29",
+      "end": "2026-11-29",
       "note": "从实验设计拆出来；等 FPC 到货后再排 focus",
       "baseline": "2026-11-14",
       "slips": [
         { "at": "2026-11-10", "from": "2026-11-14", "to": "2026-11-15", "reason": "控制板要等 Mouser parts，周五才能开工", "by": "user" },
         { "at": "2026-11-22", "from": "2026-11-15", "to": "2026-11-24", "reason": "11/22 一周重排（开学前计划）", "by": "agent" },
-        { "at": "2026-11-23", "from": "2026-11-24", "to": "2026-11-27", "reason": "今天不想搞 SURF，等 Mouser 零件（11/23 发货，估计两三天到）", "by": "user" }
+        { "at": "2026-11-23", "from": "2026-11-24", "to": "2026-11-27", "reason": "今天不想搞 SURF，等 Mouser 零件（11/23 发货，估计两三天到）", "by": "user" },
+        { "at": "2026-11-25", "from": "2026-11-27", "to": "2026-11-29", "reason": "要用 D3 的录像，Mouser 零件 UPS 周五 11/27 到，按到货日拆两段重排", "by": "agent" }
       ],
-      "focus": ["2026-11-27"]
+      "focus": ["2026-11-29"]
     },
     {
       "id": "tk-surf-h1",
       "trackId": "surf-hw",
       "title": "H1 列 FPC 直焊 + 桌上成像（测线、两片接触、Velostat、heatmap、调 SETTLE_US/sampling）",
-      "start": "2026-11-22",
-      "end": "2026-11-22",
-      "focus": ["2026-11-22"]
+      "start": "2026-11-27",
+      "end": "2026-11-27",
+      "focus": ["2026-11-27"],
+      "baseline": "2026-11-22",
+      "slips": [{ "at": "2026-11-25", "from": "2026-11-22", "to": "2026-11-27", "reason": "等 Mouser 零件，Mouser 零件 UPS 周五 11/27 到，按到货日拆两段重排", "by": "agent" }]
     },
     {
       "id": "tk-surf-h2",
       "trackId": "surf-hw",
       "title": "H2 装到固定侧 jaw + 走线测试（臂和手腕动一圈无假信号；直焊 FPC，焊点不能受力）",
-      "start": "2026-11-22",
-      "end": "2026-11-22",
-      "focus": ["2026-11-22"]
+      "start": "2026-11-28",
+      "end": "2026-11-28",
+      "focus": ["2026-11-28"],
+      "baseline": "2026-11-22",
+      "slips": [{ "at": "2026-11-25", "from": "2026-11-22", "to": "2026-11-28", "reason": "等 Mouser 零件，Mouser 零件 UPS 周五 11/27 到，按到货日拆两段重排", "by": "agent" }]
     },
     {
       "id": "tk-surf-base",
       "trackId": "surf-act",
       "title": "SmolVLA vision-only baseline：训练 + eval 20 次",
-      "start": "2026-11-26",
-      "end": "2026-11-28",
-      "focus": ["2026-11-26", "2026-11-28"],
+      "start": "2026-11-28",
+      "end": "2026-11-30",
+      "focus": ["2026-11-28", "2026-11-30"],
       "baseline": "2026-11-25",
       "slips": [
-        { "at": "2026-11-23", "from": "2026-11-25", "to": "2026-11-28", "reason": "今天不想搞 SURF，等 Mouser 零件（11/23 发货，估计两三天到）；训练要用 D3 的 demo", "by": "user" }
+        { "at": "2026-11-23", "from": "2026-11-25", "to": "2026-11-28", "reason": "今天不想搞 SURF，等 Mouser 零件（11/23 发货，估计两三天到）；训练要用 D3 的 demo", "by": "user" },
+        { "at": "2026-11-25", "from": "2026-11-28", "to": "2026-11-30", "reason": "训练要用 D3 的 demo，Mouser 零件 UPS 周五 11/27 到，按到货日拆两段重排", "by": "agent" }
       ]
     },
     {
       "id": "tk-surf-p1",
       "trackId": "surf-bay",
       "title": "P1 Bayes filter PC 端在线输出 p_t",
-      "start": "2026-11-28",
-      "end": "2026-11-28",
-      "focus": ["2026-11-28"],
+      "start": "2026-11-29",
+      "end": "2026-11-29",
+      "focus": ["2026-11-29"],
       "baseline": "2026-11-25",
-      "slips": [{ "at": "2026-11-23", "from": "2026-11-25", "to": "2026-11-28", "reason": "今天不想搞 SURF，等 Mouser 零件（11/23 发货，估计两三天到）", "by": "user" }]
+      "slips": [
+        { "at": "2026-11-23", "from": "2026-11-25", "to": "2026-11-28", "reason": "今天不想搞 SURF，等 Mouser 零件（11/23 发货，估计两三天到）", "by": "user" },
+        { "at": "2026-11-25", "from": "2026-11-28", "to": "2026-11-29", "reason": "Mouser 零件 UPS 周五 11/27 到，按到货日拆两段重排", "by": "agent" }
+      ]
     },
     {
       "id": "tk-surf-m2",
       "trackId": "surf-act",
       "title": "M2：binary gate vs soft gate（同一个 SmolVLA）",
-      "start": "2026-11-29",
-      "end": "2026-12-01",
-      "focus": ["2026-11-29", "2026-11-30", "2026-12-01"],
+      "start": "2026-12-02",
+      "end": "2026-12-03",
+      "focus": ["2026-12-02", "2026-12-03"],
       "baseline": "2026-11-28",
-      "slips": [{ "at": "2026-11-23", "from": "2026-11-28", "to": "2026-12-01", "reason": "今天不想搞 SURF，等 Mouser 零件（11/23 发货，估计两三天到）", "by": "user" }]
+      "slips": [
+        { "at": "2026-11-23", "from": "2026-11-28", "to": "2026-12-01", "reason": "今天不想搞 SURF，等 Mouser 零件（11/23 发货，估计两三天到）", "by": "user" },
+        { "at": "2026-11-25", "from": "2026-12-01", "to": "2026-12-03", "reason": "改成 stretch，不卡 Yu She 邮件；Mouser 零件 UPS 周五 11/27 到，按到货日拆两段重排", "by": "agent" }
+      ]
+    },
+    {
+      "id": "tk-c5y6",
+      "trackId": "surf-act",
+      "title": "采集准备（到货前）：D1 环境、D2 vision 部分、cluster 环境、async inference、tactile encoder 代码",
+      "start": "2026-11-26",
+      "end": "2026-11-27",
+      "focus": ["2026-11-26", "2026-11-27"],
+      "note": "11/25 从「采集」task 拆出来，不依赖 Mouser 零件"
     }
   ],
   "milestones": [
@@ -385,7 +415,7 @@
       "id": "ms-65su",
       "trackId": "surf-out",
       "title": "给 Yu She 发邮件",
-      "date": "2026-11-30",
+      "date": "2026-12-01",
       "note": "Purdue 感恩节假 11/25-28，11/30 复课；最佳窗口 11/30-12/11（12/14-19 期末）"
     },
     { "id": "ms-k3dq", "trackId": "surf-app", "title": "学生申请已开放（官网：11 月初）", "date": "2026-12-01", "done": true },
@@ -424,10 +454,10 @@
     { "id": "ms-3o7t", "trackId": "surf-hw", "title": "Mouser parts 到货（FH12、595、4067、电阻）", "date": "2026-11-13", "done": true },
     { "id": "ms-4yh4", "trackId": "edge-ai", "title": "Homework 4（11:59 PM）", "date": "2026-11-11", "hard": true, "done": true },
     { "id": "ms-kdoh", "trackId": "edge-ai", "title": "Image Classification Using CNN（11:59 PM）", "date": "2026-11-15", "hard": true },
-    { "id": "ms-poba", "trackId": "surf-bay", "title": "M1 完成", "date": "2026-11-27" },
-    { "id": "ms-mofj", "trackId": "surf-act", "title": "M2 完成（stretch）", "date": "2026-12-01" },
+    { "id": "ms-poba", "trackId": "surf-bay", "title": "M1 完成", "date": "2026-11-29" },
+    { "id": "ms-mofj", "trackId": "surf-act", "title": "M2 完成（stretch）", "date": "2026-12-03" },
     { "id": "ms-yrb4", "trackId": "surf-out", "title": "Yu She 邮件时间 deadline：不管 M2 做没做完都发", "date": "2026-12-04", "hard": true },
-    { "id": "ms-itjh", "trackId": "surf-hw", "title": "Mouser 零件到货（估计）", "date": "2026-11-26" }
+    { "id": "ms-itjh", "trackId": "surf-hw", "title": "Mouser 零件到货（UPS，周五）", "date": "2026-11-27" }
   ],
   "todos": [
     {
@@ -521,15 +551,17 @@
     },
     { "id": "td-ufs6", "title": "让 Codex 批作业", "date": "2026-11-10" },
     { "id": "td-5mnf", "title": "Mouser 补订 FH12（已下单，到货作备件；直焊 FPC 能用就不换）", "trackId": "surf-hw", "done": true, "doneAt": "2026-11-22" },
-    { "id": "td-oum6", "title": "D1 采集环境：固定相机、标定 leader/follower、摆场景", "date": "2026-11-24", "taskId": "tk-surf-demo" },
-    { "id": "td-o05y", "title": "D2 同步记录脚本：LeRobot record + tactile，录 2 条回放对齐", "date": "2026-11-24", "taskId": "tk-surf-demo" },
-    { "id": "td-lhsq", "title": "D3 采 50 条 demo", "date": "2026-11-26", "taskId": "tk-surf-demo" },
-    { "id": "td-8c7j", "title": "提交 SmolVLA vision-only 训练（只用分到的 GPU）", "date": "2026-11-26", "taskId": "tk-surf-base" },
-    { "id": "td-ltu6", "title": "配 async inference，baseline eval 20 次，记 success rate", "date": "2026-11-28", "taskId": "tk-surf-base" },
-    { "id": "td-iqcp", "title": "P2 cluster lerobot 环境装 smolvla extras", "date": "2026-11-29", "taskId": "tk-surf-m2" },
-    { "id": "td-tzen", "title": "P3 写 tactile encoder + gating", "date": "2026-11-29", "taskId": "tk-surf-m2" },
-    { "id": "td-vqn4", "title": "P4 训 binary gate 版和 soft gate 版", "date": "2026-11-30", "taskId": "tk-surf-m2" },
-    { "id": "td-02ea", "title": "P5 两版各 eval 20 次", "date": "2026-12-01", "taskId": "tk-surf-m2" }
+    { "id": "td-oum6", "title": "D1 采集环境：固定相机、标定 leader/follower、摆场景", "date": "2026-11-26", "taskId": "tk-c5y6" },
+    { "id": "td-o05y", "title": "D2a 录制脚本 vision 部分：LeRobot record 跑通，tactile 留接口", "date": "2026-11-26", "taskId": "tk-c5y6" },
+    { "id": "td-lhsq", "title": "D3 采 50 条 demo", "date": "2026-11-28", "taskId": "tk-surf-demo" },
+    { "id": "td-8c7j", "title": "提交 SmolVLA vision-only 训练（只用分到的 GPU）", "date": "2026-11-28", "taskId": "tk-surf-base" },
+    { "id": "td-ltu6", "title": "baseline eval 20 次，记 success rate", "date": "2026-11-30", "taskId": "tk-surf-base" },
+    { "id": "td-iqcp", "title": "P2 cluster lerobot 环境装 smolvla extras", "date": "2026-11-26", "taskId": "tk-c5y6" },
+    { "id": "td-tzen", "title": "P3 写 tactile encoder + gating", "date": "2026-11-27", "taskId": "tk-c5y6" },
+    { "id": "td-vqn4", "title": "P4 训 binary gate 版和 soft gate 版", "date": "2026-12-02", "taskId": "tk-surf-m2" },
+    { "id": "td-02ea", "title": "P5 两版各 eval 20 次", "date": "2026-12-03", "taskId": "tk-surf-m2" },
+    { "id": "td-gd9g", "title": "配 async inference（baseline eval 要用）", "date": "2026-11-26", "taskId": "tk-c5y6" },
+    { "id": "td-oaeo", "title": "D2b tactile 对齐：录 2 条回放，确认和相机同步", "date": "2026-11-28", "taskId": "tk-surf-demo" }
   ],
   "blocks": [
     {
